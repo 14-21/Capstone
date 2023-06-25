@@ -3,9 +3,7 @@
 // import client connection
 const client = require("./index");
 
-//what do you look like, what are you filled with
-
-//function make db tables
+//what do you look like, what data are you going to be filled with
 
 async function createTables() {
   try {
