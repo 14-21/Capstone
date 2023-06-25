@@ -55,7 +55,7 @@ async function createTables() {
           score INTEGER NOT NULL,
           ourscore INTEGER NOT NULL,
           user_id INTEGER REFERENCES users(id),
-          product_id INTEGER REFERENCES products(id)
+          game_id INTEGER REFERENCES games(id)
   
   )`);
           console.log("Finished creating tables");
