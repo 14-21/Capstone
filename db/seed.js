@@ -53,6 +53,7 @@ async function createTables() {
           id SERIAL PRIMARY KEY,
           content VARCHAR(255) NOT NULL,
           score INTEGER NOT NULL,
+          ourscore INTEGER NOT NULL,
           user_id INTEGER REFERENCES users(id),
           product_id INTEGER REFERENCES products(id)
   
