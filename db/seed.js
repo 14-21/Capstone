@@ -7,7 +7,9 @@ async function dropTables() {
   console.log("Dropping Tables");
   try {
     await client.query(`
-    DROP TABLE IF EXISTS games;`);
+    DROP TABLE IF EXISTS games;);
+    DROP TABLE IF EXISTS users;);
+    DROP TABLE IF EXISTS reviews;`);
 
     console.log("Finished dropping tables...");
   } catch (error) {
@@ -23,7 +25,7 @@ async function createTables() {
     await client.query(`
             CREATE TABLE games(
             
-                id SERIAL PRIMARY KEY,
+                "gameId" SERIAL PRIMARY KEY,
                 title VARCHAR(255) NOT NULL,
                 platform VARCHAR(255) NOT NULL,
                 genre VARCHAR(255) NOT NULL,
@@ -68,6 +70,8 @@ async function destroyTables() {
   try {
     await client.query(`
             DROP TABLE IF EXISTS games;
+            DROP TABLE IF EXISTS users;
+            DROP TABLE IF EXISTS reviews;
         `);
   } catch (error) {
     throw error;
@@ -159,7 +163,7 @@ async function buildDatabase() {
   }
 }
 
-// buildDatabase();
+buildDatabase();
 
 module.exports = {
   fetchAllGames,
