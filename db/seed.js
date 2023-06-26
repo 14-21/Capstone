@@ -154,7 +154,8 @@ async function buildDatabase() {
 
     await dropTables();
     await createTables();
-    const gameDiablo = await createNewGame({
+
+    const gameDiablo4 = await createNewGame({
       title: "Diablo 4",
       platform: "PC, XBox, PlayStation",
       genre: "Action RPG",
