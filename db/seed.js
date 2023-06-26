@@ -7,9 +7,10 @@ async function dropTables() {
   console.log("Dropping Tables");
   try {
     await client.query(`
-    DROP TABLE IF EXISTS games;);
-    DROP TABLE IF EXISTS users;);
-    DROP TABLE IF EXISTS reviews;`);
+    DROP TABLE IF EXISTS games;
+    DROP TABLE IF EXISTS users;
+    DROP TABLE IF EXISTS reviews;
+    `);
 
     console.log("Finished dropping tables...");
   } catch (error) {
@@ -23,8 +24,7 @@ async function createTables() {
   try {
     console.log("Starting to create tables");
     await client.query(`
-            CREATE TABLE games(
-            
+            CREATE TABLE games(        
                 "gameId" SERIAL PRIMARY KEY,
                 title VARCHAR(255) NOT NULL,
                 platform VARCHAR(255) NOT NULL,
@@ -35,48 +35,58 @@ async function createTables() {
                 author VARCHAR (255) NOT NULL,
                 comments TEXT DEFAULT 'no comments',
                 ourscore VARCHAR (255) NOT NULL,
-                picture TEXT NOT NULL,
-            )
-        
+                picture TEXT NOT NULL
+            );
         `);
-
-    await client.query(`
-        CREATE TABLE users (
-          id SERIAL PRIMARY KEY,
-          name VARCHAR(255) NOT NULL,
-          password VARCHAR(255) NOT NULL,
-          email VARCHAR(255) UNIQUE NOT NULL,
-          is_admin BOOLEAN DEFAULT false
-  
-  )`);
-
-    await client.query(`
-        CREATE TABLE reviews (
-          id SERIAL PRIMARY KEY,
-          content VARCHAR(255) NOT NULL,
-          score INTEGER NOT NULL,
-          ourscore INTEGER NOT NULL,
-          user_id INTEGER REFERENCES users(id),
-          game_id INTEGER REFERENCES games(id)
-  
-  )`);
-          console.log("Finished creating tables");
+    console.log("Finished creating tables");
   } catch (error) {
     throw error;
   }
 }
 
-async function destroyTables() {
-  try {
-    await client.query(`
-            DROP TABLE IF EXISTS games;
-            DROP TABLE IF EXISTS users;
-            DROP TABLE IF EXISTS reviews;
-        `);
-  } catch (error) {
-    throw error;
-  }
-}
+//   await client.query(`
+//       CREATE TABLE users (
+//         id SERIAL PRIMARY KEY,
+//         name VARCHAR(255) NOT NULL,
+//         password VARCHAR(255) NOT NULL,
+//         email VARCHAR(255) UNIQUE NOT NULL,
+//         is_admin BOOLEAN DEFAULT false
+
+// )`);
+
+//   await client.query(`
+//       CREATE TABLE reviews (
+//         id SERIAL PRIMARY KEY,
+//         content VARCHAR(255) NOT NULL,
+//         score INTEGER NOT NULL,
+//         ourscore INTEGER NOT NULL,
+//         user_id INTEGER REFERENCES users(id),
+//         game_id INTEGER REFERENCES games(id)
+
+// )`);
+
+// async function createDiablo() {
+//   try {
+//     console.log("Starting to create test game");
+//     await client.query (`
+
+  // `);
+
+//   } catch (error) {
+//     throw error;
+// };
+// }
+// async function destroyTables() {
+//   try {
+//     await client.query(`
+//             DROP TABLE IF EXISTS games;
+//             DROP TABLE IF EXISTS users;
+//             DROP TABLE IF EXISTS reviews;
+//         `);
+//   } catch (error) {
+//     throw error;
+//   }
+// }
 
 async function createNewGame(newGameObj) {
   try {
@@ -130,32 +140,41 @@ async function fetchGameById(idValue) {
   }
 }
 
+// async function fetchGameByTitle(titleValue) {
+
+// }
+
+// async function fetchGameByPlatform(platformValue) {
+
+// }
+
 async function buildDatabase() {
   try {
     client.connect();
 
-    await destroyTables();
+    await dropTables();
     await createTables();
-
-    const firstGame = await createNewGame({
+    const gameDiablo = await createNewGame({
       title: "Diablo 4",
       platform: "PC, XBox, PlayStation",
       genre: "Action RPG",
       msrp: "$69.99",
       score: "4",
       review:
-        "Diablo 4 is a game available on Battle.net. It costs almost $70 and will run higher for the ultimate collector's edition.",
+      "Diablo 4 is a game available on Battle.net. It costs almost $70 and will run higher for the ultimate collector's edition.",
       author: "Blizzard",
       comments:
-        "Diablo 4 is the 4th game released in the Diablo game franchise",
+      "Diablo 4 is the 4th game released in the Diablo game franchise",
       ourscore: "3",
       picture: "url",
     });
 
-    const allGames = await fetchAllGames();
 
+    
+    const allGames = await fetchAllGames();
     const findSpecificGame = await fetchGameById(1);
-    // console.log(findSpecificGame);
+    
+    console.log(findSpecificGame);
 
     client.end();
   } catch (error) {
@@ -169,4 +188,5 @@ module.exports = {
   fetchAllGames,
   fetchGameById,
   createNewGame,
+  buildDatabase,
 };
