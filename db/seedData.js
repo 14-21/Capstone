@@ -314,8 +314,8 @@ async function buildDatabase() {
       studio: "Paradox Interaction",
       ourscore: "3",
       picture: "url for golf with friends eventually",
-    })
-    
+    });
+
     const gameShadowOfTheTombRaider = await createNewGame({
       title: "Shadow of the Tomb Raider",
       platform: "PS4",
@@ -326,8 +326,7 @@ async function buildDatabase() {
       studio: "Crystal Dynamics",
       ourscore: "3",
       picture: "url for Shadow of the Tomb Raider eventually",
-    })  
-
+    });
 
     const gameFinalFantasy = await createNewGame({
       title: "Final Fantasy XIV Online",
@@ -339,8 +338,7 @@ async function buildDatabase() {
       studio: "Squre Enix",
       ourscore: "5",
       picture: "url for Final Fantasy XIV Online eventually",
-    })  
-
+    });
 
     const gamePhantasyStarOnline2 = await createNewGame({
       title: "Phantasy Star Online 2",
@@ -348,12 +346,12 @@ async function buildDatabase() {
       genre: "MMO, RPG",
       msrp: "Free",
       score: "3",
-      ourreview: "JRPG and at first it was okay, but then it kinda turned pay to win.",
+      ourreview:
+        "JRPG and at first it was okay, but then it kinda turned pay to win.",
       studio: "Hi-Rez Studios",
       ourscore: "2",
       picture: "url for Phantasy Star Online 2 eventually",
-    })  
-
+    });
 
     const gameSMITE = await createNewGame({
       title: "SMITE",
@@ -365,10 +363,7 @@ async function buildDatabase() {
       studio: "Hi-Rez Studios",
       ourscore: "2",
       picture: "url for SMITE eventually",
-    })  
-
-
-
+    });
 
     const gameDisneyDreamlightValley = await createNewGame({
       title: "Disney Dreamlight Valley",
@@ -380,8 +375,7 @@ async function buildDatabase() {
       studio: "Disney",
       ourscore: "5",
       picture: "url for Disney Dreamlight Valley eventually",
-    })  
-
+    });
 
     const gameCrusaderKings = await createNewGame({
       title: "Crusader Kings III",
@@ -393,14 +387,7 @@ async function buildDatabase() {
       studio: "Paradox Interaction",
       ourscore: "4",
       picture: "url for Crusader Kings III eventually",
-    })  
-    
-
-    
-    
-    
-    
-    ;
+    });
 
     const allGames = await fetchAllGames();
     const findSpecificGame = await fetchGameById(1);
