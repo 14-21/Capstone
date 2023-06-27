@@ -141,7 +141,6 @@ async function fetchGameByPlatform(platformValue) {
   }
 }
 
-
 async function fetchGameByOurscore(ourscoreValue) {
   try {
     const { rows } = await client.query(`
@@ -155,7 +154,6 @@ async function fetchGameByOurscore(ourscoreValue) {
   }
 }
 
-
 async function fetchGameByStudio(studioValue) {
   try {
     const { rows } = await client.query(`
@@ -168,9 +166,6 @@ async function fetchGameByStudio(studioValue) {
     console.log(error);
   }
 }
-
-
-
 
 async function buildDatabase() {
   try {
