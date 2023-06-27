@@ -11,10 +11,36 @@ app.use(cors());
 
 app.use(express.json());
 
-const client = require("../db/client");
+const client = require("./db/index");
+const { fetchAllGames, fetchGameById } = require("./db/seed");
 client.connect();
 
-app.use("api", require("/api"));
+async function getAllGames(req, res, next) {
+  try {
+    const allGamesData = await fetchAllGames();
+    if (allGamesData.length) {
+      res.send(allGamesData);
+    } else {
+      res.send("No Game Available...");
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+app.get("/games", getAllGames);
+
+async function getGameById(res, req, next) {
+  try {
+    console.log(req.params.id);
+    const mySpecificGame = await fetchGameById(Number(req.params.id));
+
+    res.send(mySpecificGame);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+app.get("/games/:id", getGameById);
 
 app.listen(PORT, () => {
   console.log(`The server is up and running on port: ${PORT}`);
