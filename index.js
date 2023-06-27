@@ -29,9 +29,11 @@ async function getAllGames(req, res, next) {
 }
 app.get("/games", getAllGames);
 
-async function getGameById(res, req, next) {
+async function getGameById(req, res, next) {
   try {
+    console.log("Testing getGameById");
     console.log(req.params.id);
+
     const mySpecificGame = await fetchGameById(Number(req.params.id));
 
     res.send(mySpecificGame);
