@@ -115,15 +115,62 @@ async function fetchGameById(idValue) {
   }
 }
 
-// async function fetchGameByTitle(titleValue) {
+async function fetchGameByGenre(genreValue) {
+  try {
+    const { rows } = await client.query(`
+        SELECT * FROM games
+        WHERE "genre" = ${genreValue};
+        `);
 
-// }
+    return rows[0];
+  } catch (error) {
+    console.log(error);
+  }
+}
 
-// async function fetchGameByPlatform(platformValue) {
+async function fetchGameByPlatform(platformValue) {
+  try {
+    const { rows } = await client.query(`
+        SELECT * FROM games
+        WHERE "platform" = ${platformValue};
+        `);
 
-// ETC.....
+    return rows[0];
+  } catch (error) {
+    console.log(error);
+  }
+}
 
-// }
+
+async function fetchGameByOurscore(ourscoreValue) {
+  try {
+    const { rows } = await client.query(`
+        SELECT * FROM games
+        WHERE "ourscore" = ${ourscoreValue};
+        `);
+
+    return rows[0];
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+
+async function fetchGameByStudio(studioValue) {
+  try {
+    const { rows } = await client.query(`
+        SELECT * FROM games
+        WHERE "studio" = ${studioValue};
+        `);
+
+    return rows[0];
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+
+
 
 async function buildDatabase() {
   try {
@@ -405,6 +452,10 @@ async function buildDatabase() {
 module.exports = {
   fetchAllGames,
   fetchGameById,
+  fetchGameByGenre,
+  fetchGameByPlatform,
+  fetchGameByOurscore,
+  fetchGameByStudio,
   createNewGame,
   buildDatabase,
 };
