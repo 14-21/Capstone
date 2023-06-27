@@ -1,7 +1,12 @@
-const pg = require("pg");
+const {Client} = require('pg')
 
-// DB2: 
-const client = new pg.Client("postgres://localhost:5432/videogames");
 
-// DB3: 
-module.exports = client; 
+
+const connectionString = process.env.DATABASE_URL || 'postgres://localhost:5432/games';
+
+const client = new Client({
+  connectionString,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : undefined,
+});
+
+module.exports = client;
