@@ -12,13 +12,13 @@ app.use(cors());
 app.use(express.json());
 
 const client = require("./db/index");
-const { fetchAllGames, fetchGameById } = require("./db/seed");
+const { fetchAllGames, fetchGameById } = require("./db/seedData");
 client.connect();
 
 async function getAllGames(req, res, next) {
   try {
     const allGamesData = await fetchAllGames();
-    if (allGamesData.length) {
+    if (allGamesData && allGamesData.length) {
       res.send(allGamesData);
     } else {
       res.send("No Game Available...");
