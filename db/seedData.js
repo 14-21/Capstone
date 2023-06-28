@@ -462,9 +462,9 @@ async function buildDatabase() {
 module.exports = {
   fetchAllGames,
   fetchGameById,
-  fetchGameByGenre,
-  fetchGameByPlatform,
-  fetchGameByOurscore,
+  // fetchGameByGenre,
+  // fetchGameByPlatform,
+  // fetchGameByOurscore,
   fetchGameByStudio,
   createNewGame,
   buildDatabase,
