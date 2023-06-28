@@ -37,15 +37,16 @@ async function createTables() {
                 picture TEXT NOT NULL
             );
         `);
-    // await client.query(`
-    //     CREATE TABLE users (
-    //       "userId" SERIAL PRIMARY KEY,
-    //       name VARCHAR(255) NOT NULL,
-    //       password VARCHAR(255) NOT NULL,
-    //       email VARCHAR(255) UNIQUE NOT NULL,
-    //       is_admin BOOLEAN DEFAULT false
-    //     );
-    //     `);
+
+    await client.query(`
+        CREATE TABLE users (
+          "userId" SERIAL PRIMARY KEY,
+          name VARCHAR(255) NOT NULL,
+          password VARCHAR(255) NOT NULL,
+          email VARCHAR(255) UNIQUE NOT NULL,
+          is_admin BOOLEAN DEFAULT false
+        );
+        `);
 
     // await client.query(`
     //     CREATE TABLE reviews (
@@ -63,7 +64,7 @@ async function createTables() {
     throw error;
   }
 }
-
+//Game table section lines 68 - 169
 async function createNewGame(newGameObj) {
   try {
     const { rows } = await client.query(
@@ -115,50 +116,50 @@ async function fetchGameById(idValue) {
   }
 }
 
-async function fetchGameByGenre(genreValue) {
-  try {
-    const { rows } = await client.query(`
-        SELECT * FROM games
-        WHERE "genre" = ${genreValue};
-        `);
+// async function fetchGameByGenre(genreValue) {
+//   try {
+//     const { rows } = await client.query(`
+//         SELECT * FROM games
+//         WHERE "genre" = '${genreValue}';
+//         `);
 
-    return rows[0];
-  } catch (error) {
-    console.log(error);
-  }
-}
+//     return rows[0];
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
 
-async function fetchGameByPlatform(platformValue) {
-  try {
-    const { rows } = await client.query(`
-        SELECT * FROM games
-        WHERE "platform" = ${platformValue};
-        `);
+// async function fetchGameByPlatform(platformValue) {
+//   try {
+//     const { rows } = await client.query(`
+//         SELECT * FROM games
+//         WHERE "platform" = ${platformValue};
+//         `);
 
-    return rows[0];
-  } catch (error) {
-    console.log(error);
-  }
-}
+//     return rows[0];
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
 
-async function fetchGameByOurscore(ourscoreValue) {
-  try {
-    const { rows } = await client.query(`
-        SELECT * FROM games
-        WHERE "ourscore" = ${ourscoreValue};
-        `);
+// async function fetchGameByOurscore(ourscoreValue) {
+//   try {
+//     const { rows } = await client.query(`
+//         SELECT * FROM games
+//         WHERE "ourscore" = ${ourscoreValue};
+//         `);
 
-    return rows[0];
-  } catch (error) {
-    console.log(error);
-  }
-}
+//     return rows[0];
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
 
 async function fetchGameByStudio(studioValue) {
   try {
     const { rows } = await client.query(`
         SELECT * FROM games
-        WHERE "studio" = ${studioValue};
+        WHERE "studio" = '${studioValue}';
         `);
 
     return rows[0];
@@ -166,6 +167,20 @@ async function fetchGameByStudio(studioValue) {
     console.log(error);
   }
 }
+
+//Start of Users table section lines 171 through XXXX
+
+// async function createInitialUsers
+
+
+
+
+
+//Start of Reviews table section lines xxxxx through XXXX
+
+// async function createInitialReviews
+
+
 
 async function buildDatabase() {
   try {
