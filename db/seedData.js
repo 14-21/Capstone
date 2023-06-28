@@ -41,9 +41,12 @@ async function createTables() {
     await client.query(`
         CREATE TABLE users (
           "userId" SERIAL PRIMARY KEY,
-          name VARCHAR(255) NOT NULL,
+          username VARCHAR(255) NOT NULL,
+          fname VARCHAR(255) NOT NULL,
+          lname VARCHAR(255) NOT NULL,
           password VARCHAR(255) NOT NULL,
           email VARCHAR(255) UNIQUE NOT NULL,
+          profilepic VARCHAR(255) UNIQUE NOT NULL,
           is_admin BOOLEAN DEFAULT false
         );
         `);
@@ -162,7 +165,9 @@ async function fetchGameByStudio(studioValue) {
         WHERE "studio" = '${studioValue}';
         `);
 
-    return rows[0];
+        console.log(rows);
+        console.log("This is the fetchgameby studio function")
+        return rows[0];
   } catch (error) {
     console.log(error);
   }
@@ -448,8 +453,14 @@ async function buildDatabase() {
 
     const allGames = await fetchAllGames();
     const findSpecificGame = await fetchGameById(1);
-
     console.log(findSpecificGame);
+
+    //Health check for the fetch studio function
+    // const allStudios = await fetchGameByStudio('');
+    // console.log("All studios");
+    // console.log(allStudios);
+
+    
 
     client.end();
   } catch (error) {
