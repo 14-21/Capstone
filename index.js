@@ -44,6 +44,20 @@ async function getGameById(req, res, next) {
 
 app.get("/games/:id", getGameById);
 
+async function getGamesByGenre(req, res, next) {
+  try {
+    console.log(req.params.genre);
+
+    const myGenreGame = await fetchGameByGenre(req.params.genre);
+
+    res.send(myGenreGame);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+app.get("/games/genre", getGamesByGenre);
+
 app.listen(PORT, () => {
   console.log(`The server is up and running on port: ${PORT}`);
 });
