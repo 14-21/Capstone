@@ -726,7 +726,7 @@ async function buildDatabase() {
       username: "KTLarkin",
       fname: "Kody",
       lname: "Tern Larkin",
-      password: "HLDqN5vCF",
+      password: "HLDqN59vCF",
       email: "xisherwoodr@ask.com",
       profilepic: "url/href for KTLarkin",
       is_admin: false,
