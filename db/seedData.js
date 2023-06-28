@@ -41,12 +41,10 @@ async function createTables() {
     await client.query(`
         CREATE TABLE users (
           "userId" SERIAL PRIMARY KEY,
-          username VARCHAR(255) NOT NULL,
-          fname VARCHAR(255) NOT NULL,
-          lname VARCHAR(255) NOT NULL,
+          name VARCHAR(255) NOT NULL,
           password VARCHAR(255) NOT NULL,
           email VARCHAR(255) UNIQUE NOT NULL,
-          profilepic VARCHAR(255) UNIQUE NOT NULL,
+          profilepic VARCHAR(255) NOT NULL,
           is_admin BOOLEAN DEFAULT false
         );
         `);
@@ -173,20 +171,47 @@ async function fetchGameByStudio(studioValue) {
   }
 }
 
-//Start of Users table section lines 171 through XXXX
+//Start of Users table section lines 174 through 209
+async function createInitialUsers(seedUser) {
+  try {
+    const { rows } = await client.query(
+      `
+        INSERT INTO users(username, fname, lname, password, email, profilepic, is_admin)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
+        RETURNING *;
+        `,
+      [
+        seedUser.username,
+        seedUser.fname,
+        seedUser.lname,
+        seedUser.password,
+        seedUser.email,
+        seedUser.profilepic,
+        seedUser.is_admin,
+      ]
+    );
+    return rows[0];
+  } catch (error) {
+    console.log(error);
+  }
+}
 
-// async function createInitialUsers
+async function fetchAllUsers() {
+  try {
+    const { rows } = await client.query(`
+        SELECT * FROM users;
+        `);
 
-
-
-
+    return rows;
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 //Start of Reviews table section lines xxxxx through XXXX
-
 // async function createInitialReviews
 
-
-
+//Build the master DB
 async function buildDatabase() {
   try {
     client.connect();
@@ -194,6 +219,7 @@ async function buildDatabase() {
     await dropTables();
     await createTables();
 
+    //Start of games seed data
     const gameDiablo4 = await createNewGame({
       title: "Diablo 4",
       platform: "PC, XBox, PlayStation",
@@ -429,8 +455,8 @@ async function buildDatabase() {
 
     const gameDisneyDreamlightValley = await createNewGame({
       title: "Disney Dreamlight Valley",
-      platform: "Simulation, Relaxing",
-      genre: "PC, XBOX ONE, PS5",
+      platform: "PC, XBOX ONE, PS5",
+      genre: "Simulation, Relaxing",
       msrp: "$29.99",
       score: "5",
       ourreview: "SO MUCH FUUUUUUUUUUUN!",
@@ -441,8 +467,8 @@ async function buildDatabase() {
 
     const gameCrusaderKings = await createNewGame({
       title: "Crusader Kings III",
-      platform: "Strategy, RPG",
-      genre: "PC, PS5",
+      platform: "PC, PS5",
+      genre: "Strategy, RPG",
       msrp: "$49.99",
       score: "3",
       ourreview: "Pretty good with excellent story lines!",
@@ -455,20 +481,12 @@ async function buildDatabase() {
     const findSpecificGame = await fetchGameById(1);
     console.log(findSpecificGame);
 
-    //Health check for the fetch studio function
-    // const allStudios = await fetchGameByStudio('');
-    // console.log("All studios");
-    // console.log(allStudios);
-
-    
-
     client.end();
   } catch (error) {
     console.log(error);
   }
 }
 
-// buildDatabase();
 
 module.exports = {
   fetchAllGames,
@@ -478,5 +496,7 @@ module.exports = {
   // fetchGameByOurscore,
   fetchGameByStudio,
   createNewGame,
+  createInitialUsers,
+  fetchAllUsers,
   buildDatabase,
 };
