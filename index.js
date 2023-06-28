@@ -12,7 +12,11 @@ app.use(cors());
 app.use(express.json());
 
 const client = require("./db/index");
-const { fetchAllGames, fetchGameById } = require("./db/seedData");
+const {
+  fetchAllGames,
+  fetchGameById,
+  fetchGameByStudio,
+} = require("./db/seedData");
 client.connect();
 
 async function getAllGames(req, res, next) {
@@ -44,19 +48,34 @@ async function getGameById(req, res, next) {
 
 app.get("/games/:id", getGameById);
 
-async function getGamesByGenre(req, res, next) {
+async function getGamesByStudio(req, res, next) {
   try {
-    console.log(req.params.genre);
+    console.log(req.params.studio);
 
-    const myGenreGame = await fetchGameByGenre(req.params.genre);
+    const myStudioGame = await fetchGameByStudio(req.params.studio);
+    console.log("Finished Fetching my Studio Game");
 
-    res.send(myGenreGame);
+    res.send(myStudioGame);
   } catch (error) {
     console.log(error);
   }
 }
 
-app.get("/games/genre", getGamesByGenre);
+app.get("/games/studio/:studio", getGamesByStudio);
+
+// async function getGamesByGenre(req, res, next) {
+//   try {
+//     console.log(req.params.genre);
+
+//     const myGenreGame = await fetchGameByGenre(req.params.genre);
+
+//     res.send(myGenreGame);
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
+
+// app.get("/games/genre", getGamesByGenre);
 
 app.listen(PORT, () => {
   console.log(`The server is up and running on port: ${PORT}`);

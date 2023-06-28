@@ -165,9 +165,9 @@ async function fetchGameByStudio(studioValue) {
         WHERE "studio" = '${studioValue}';
         `);
 
-        console.log(rows);
-        console.log("This is the fetchgameby studio function")
-        return rows[0];
+    console.log(rows);
+    console.log("This is the fetchgameby studio function");
+    return rows[0];
   } catch (error) {
     console.log(error);
   }
@@ -177,15 +177,9 @@ async function fetchGameByStudio(studioValue) {
 
 // async function createInitialUsers
 
-
-
-
-
 //Start of Reviews table section lines xxxxx through XXXX
 
 // async function createInitialReviews
-
-
 
 async function buildDatabase() {
   try {
@@ -459,8 +453,6 @@ async function buildDatabase() {
     // const allStudios = await fetchGameByStudio('');
     // console.log("All studios");
     // console.log(allStudios);
-
-    
 
     client.end();
   } catch (error) {
