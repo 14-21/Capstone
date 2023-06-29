@@ -185,7 +185,7 @@ async function fetchGameByStudio(studioValue) {
 }
 
 //Start of Users table section lines 174 through 209
-async function createInitialUsers(userObj) {
+async function createUsers(userObj) {
   try {
     const { rows } = await client.query(
       `
@@ -201,22 +201,25 @@ async function createInitialUsers(userObj) {
         userObj.email,
         userObj.profilepic,
         userObj.is_admin,
-      ]
-    );
-    return rows[0];
+      ])
+      if (rows.length) {
+        return rows[0];
+      }
   } catch (error) {
     console.log(error);
   }
 }
 
-async function fetchAllUsers() {
+async function fetchUsersbyUsername(username){
   try {
-    const { rows } = await client.query(`
-        SELECT * FROM users;
-        WHERE username = $1;
-        `, [username]);
-
-    return rows;
+      const { rows } = await client.query(`
+      SELECT * FROM users
+      WHERE username = $1;
+      
+      `, [username])
+      if (rows.length) {
+        return rows[0];
+      }
   } catch (error) {
     console.log(error);
   }
@@ -814,7 +817,7 @@ async function buildDatabase() {
     console.log(findSpecificGame);
 
     //Start of user seed data
-    const seedUser1 = await createInitialUsers({
+    const seedUser1 = await createUsers({
       username: "sarahadmin",
       fname: "sarah",
       lname: "admin",
@@ -824,7 +827,7 @@ async function buildDatabase() {
       is_admin: true,
     });
 
-    const seedUser2 = await createInitialUsers({
+    const seedUser2 = await createUsers({
       username: "coltonadmin",
       fname: "colton",
       lname: "admin",
@@ -834,7 +837,7 @@ async function buildDatabase() {
       is_admin: true,
     });
 
-    const seedUser3 = await createInitialUsers({
+    const seedUser3 = await createUsers({
       username: "kelseyadmin",
       fname: "kelsey",
       lname: "admin",
@@ -844,7 +847,7 @@ async function buildDatabase() {
       is_admin: true,
     });
 
-    const seedUser4 = await createInitialUsers({
+    const seedUser4 = await createUsers({
       username: "jessieadmin",
       fname: "jessie",
       lname: "admin",
@@ -854,7 +857,7 @@ async function buildDatabase() {
       is_admin: true,
     });
 
-    const seedUser5 = await createInitialUsers({
+    const seedUser5 = await createUsers({
       username: "tmedhurst",
       fname: "Ted",
       lname: "Medhurst",
@@ -864,7 +867,7 @@ async function buildDatabase() {
       is_admin: false,
     });
 
-    const seedUser6 = await createInitialUsers({
+    const seedUser6 = await createUsers({
       username: "SlaBing ",
       fname: "Slater",
       lname: "Bingly",
@@ -874,7 +877,7 @@ async function buildDatabase() {
       is_admin: false,
     });
 
-    const seedUser7 = await createInitialUsers({
+    const seedUser7 = await createUsers({
       username: "CarlyButtonedUp ",
       fname: "Carly",
       lname: "Button",
@@ -884,7 +887,7 @@ async function buildDatabase() {
       is_admin: false,
     });
 
-    const seedUser8 = await createInitialUsers({
+    const seedUser8 = await createUsers({
       username: "RashadW",
       fname: "Rashad",
       lname: "Weeks",
@@ -894,7 +897,7 @@ async function buildDatabase() {
       is_admin: false,
     });
 
-    const seedUser9 = await createInitialUsers({
+    const seedUser9 = await createUsers({
       username: "DemCork",
       fname: "Demetrius",
       lname: "Corkery",
@@ -904,7 +907,7 @@ async function buildDatabase() {
       is_admin: false,
     });
 
-    const seedUser10 = await createInitialUsers({
+    const seedUser10 = await createUsers({
       username: "ThermanU",
       fname: "Umma",
       lname: "Therman",
@@ -914,7 +917,7 @@ async function buildDatabase() {
       is_admin: false,
     });
 
-    const seedUser11 = await createInitialUsers({
+    const seedUser11 = await createUsers({
       username: "RathAssunta",
       fname: "Assunta",
       lname: "Rath",
@@ -924,7 +927,7 @@ async function buildDatabase() {
       is_admin: false,
     });
 
-    const seedUser12 = await createInitialUsers({
+    const seedUser12 = await createUsers({
       username: "SkilesG",
       fname: "Skiles",
       lname: "Goodwin",
@@ -934,7 +937,7 @@ async function buildDatabase() {
       is_admin: false,
     });
 
-    const seedUser13 = await createInitialUsers({
+    const seedUser13 = await createUsers({
       username: "MikeT123",
       fname: "MikeT",
       lname: "Turley",
@@ -944,7 +947,7 @@ async function buildDatabase() {
       is_admin: false,
     });
 
-    const seedUser14 = await createInitialUsers({
+    const seedUser14 = await createUsers({
       username: "MichKimi",
       fname: "Michelle",
       lname: "Kimichi",
@@ -954,7 +957,7 @@ async function buildDatabase() {
       is_admin: false,
     });
 
-    const seedUser15 = await createInitialUsers({
+    const seedUser15 = await createUsers({
       username: "ACardigan",
       fname: "Aubrey",
       lname: "Cardigan",
@@ -964,7 +967,7 @@ async function buildDatabase() {
       is_admin: false,
     });
 
-    const seedUser16 = await createInitialUsers({
+    const seedUser16 = await createUsers({
       username: "BarryF1",
       fname: "Barry",
       lname: "Faye",
@@ -974,7 +977,7 @@ async function buildDatabase() {
       is_admin: false,
     });
 
-    const seedUser17 = await createInitialUsers({
+    const seedUser17 = await createUsers({
       username: "RennerL22",
       fname: "Lenna",
       lname: "Renner",
@@ -984,7 +987,7 @@ async function buildDatabase() {
       is_admin: false,
     });
 
-    const seedUser18 = await createInitialUsers({
+    const seedUser18 = await createUsers({
       username: "ErnserDoylful31",
       fname: "Doyle",
       lname: "Ernser",
@@ -994,7 +997,7 @@ async function buildDatabase() {
       is_admin: false,
     });
 
-    const seedUser19 = await createInitialUsers({
+    const seedUser19 = await createUsers({
       username: "TWeber25",
       fname: "Teresa Weber",
       lname: "Teresa Weber",
@@ -1004,7 +1007,7 @@ async function buildDatabase() {
       is_admin: false,
     });
 
-    const seedUser20 = await createInitialUsers({
+    const seedUser20 = await createUsers({
       username: "C_KensleyStar",
       fname: "Chelsea",
       lname: "Kensleyk",
@@ -1014,7 +1017,7 @@ async function buildDatabase() {
       is_admin: false,
     });
 
-    const seedUser21 = await createInitialUsers({
+    const seedUser21 = await createUsers({
       username: "FRosenbaum",
       fname: "Felicity Rosenbaum",
       lname: "Felicity Rosenbaum",
@@ -1024,7 +1027,7 @@ async function buildDatabase() {
       is_admin: false,
     });
 
-    const seedUser22 = await createInitialUsers({
+    const seedUser22 = await createUsers({
       username: "KeardRk",
       fname: "Richard",
       lname: "Keard",
@@ -1034,7 +1037,7 @@ async function buildDatabase() {
       is_admin: false,
     });
 
-    const seedUser23 = await createInitialUsers({
+    const seedUser23 = await createUsers({
       username: "GronaverL",
       fname: "Laura",
       lname: "Gronaver",
@@ -1044,7 +1047,7 @@ async function buildDatabase() {
       is_admin: false,
     });
 
-    const seedUser24 = await createInitialUsers({
+    const seedUser24 = await createUsers({
       username: "SchowalterP",
       fname: "Piper",
       lname: "Schowalter",
@@ -1054,7 +1057,7 @@ async function buildDatabase() {
       is_admin: false,
     });
 
-    const seedUser25 = await createInitialUsers({
+    const seedUser25 = await createUsers({
       username: "KTLarkin",
       fname: "Kody",
       lname: "Tern Larkin",
@@ -1064,7 +1067,7 @@ async function buildDatabase() {
       is_admin: false,
     });
 
-    const seedUser26 = await createInitialUsers({
+    const seedUser26 = await createUsers({
       username: "MacyGreen8",
       fname: "Macy",
       lname: "Greenfelder",
@@ -1074,7 +1077,7 @@ async function buildDatabase() {
       is_admin: false,
     });
 
-    const seedUser27 = await createInitialUsers({
+    const seedUser27 = await createUsers({
       username: "MStracke",
       fname: "Maurine",
       lname: "Stracke",
@@ -1084,7 +1087,7 @@ async function buildDatabase() {
       is_admin: false,
     });
 
-    const seedUser28 = await createInitialUsers({
+    const seedUser28 = await createUsers({
       username: "J_ohNbabyJ",
       fname: "John",
       lname: "Mulaney",
@@ -1094,7 +1097,7 @@ async function buildDatabase() {
       is_admin: false,
     });
 
-    const seedUser29 = await createInitialUsers({
+    const seedUser29 = await createUsers({
       username: "UngangweP",
       fname: "Phinn",
       lname: "Ungangwe",
@@ -1104,7 +1107,7 @@ async function buildDatabase() {
       is_admin: false,
     });
 
-    const seedUser30 = await createInitialUsers({
+    const seedUser30 = await createUsers({
       username: "GaleJaxJax2222",
       fname: "Jaxon",
       lname: "Gale",
@@ -1115,7 +1118,7 @@ async function buildDatabase() {
     });
 
     const allUsers = await fetchAllUsers();
-    // console.log(fetchAllUsers);
+    console.log(fetchAllUsers);
 
     client.end();
   } catch (error) {
@@ -1132,11 +1135,11 @@ module.exports = {
   // fetchGameByOurscore,
   fetchGameByStudio,
   createNewGame,
-  createInitialUsers,
+  createUsers, // <-- updated the name of this function from createInitialUsers
   //postNewUser -- try to get done this June 29 thursday
   //postNewGame -- try to get done this weekend June 30
   //postNewComment
   //postNewReview
-  fetchAllUsers,
+  fetchUsersbyUsername, //<-- added June 29th
   buildDatabase,
 };
