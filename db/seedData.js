@@ -41,7 +41,9 @@ async function createTables() {
     await client.query(`
         CREATE TABLE users (
           "userId" SERIAL PRIMARY KEY,
-          name VARCHAR(255) NOT NULL,
+          username VARCHAR(255) UNIQUE NOT NULL,
+          fname VARCHAR(255) NOT NULL,
+          lname VARCHAR(255) NOT NULL,
           password VARCHAR(255) NOT NULL,
           email VARCHAR(255) UNIQUE NOT NULL,
           profilepic VARCHAR(255) NOT NULL,
@@ -163,31 +165,29 @@ async function fetchGameByStudio(studioValue) {
         WHERE "studio" = '${studioValue}';
         `);
 
-        console.log(rows);
-        console.log("This is the fetchgameby studio function")
-        return rows[0];
+    return rows[0];
   } catch (error) {
     console.log(error);
   }
 }
 
 //Start of Users table section lines 174 through 209
-async function createInitialUsers(seedUser) {
+async function createInitialUsers(userObj) {
   try {
     const { rows } = await client.query(
       `
         INSERT INTO users(username, fname, lname, password, email, profilepic, is_admin)
         VALUES ($1, $2, $3, $4, $5, $6, $7)
-        RETURNING *;
+        RETURNING username;
         `,
       [
-        seedUser.username,
-        seedUser.fname,
-        seedUser.lname,
-        seedUser.password,
-        seedUser.email,
-        seedUser.profilepic,
-        seedUser.is_admin,
+        userObj.username,
+        userObj.fname,
+        userObj.lname,
+        userObj.password,
+        userObj.email,
+        userObj.profilepic,
+        userObj.is_admin,
       ]
     );
     return rows[0];
@@ -477,9 +477,397 @@ async function buildDatabase() {
       picture: "url for Crusader Kings III eventually",
     });
 
+    const gameNioh2 = await createNewGame({
+      title: "Nioh 2",
+      platform: "PC, PS5, XBOX",
+      genre: "Action, RPG",
+      msrp: "$29.99",
+      score: "3",
+      ourreview: "Almost more fructrating than the first. Yokai infest the land and our protagonist defends it!!",
+      studio: "KOEI TECMO Games Co Ltd",
+      ourscore: "3",
+      picture: "url for Nioh 2 eventually",
+    });
+
+    const gameF123 = await createNewGame({
+      title: "F123",
+      platform: "PC, PS5, XBOX",
+      genre: "Sports, Racing",
+      msrp: "$69.99",
+      score: "5",
+      ourreview: "Formula 1 racing sim at its best!",
+      studio: "Electronic Arts",
+      ourscore: "5",
+      picture: "url for F123 eventually",
+    });
+
+    const gameMadden24 = await createNewGame({
+      title: "Madden NFL 24",
+      platform: "PC, PS5, XBOX",
+      genre: "Action, Sports",
+      msrp: "$69.99",
+      score: "5",
+      ourreview: "WOW, another football game that accounts for such a large percentage of EA's annual revenue",
+      studio: "Electronic Arts",
+      ourscore: "4",
+      picture: "url for Madden NFL 24 eventually",
+    });
+
+    const gameGreenHell = await createNewGame({
+      title: "Green Hell",
+      platform: "PC, PS5, XBOX",
+      genre: "Horror, Survival",
+      msrp: "$24.99",
+      score: "4",
+      ourreview: "Being stalked by a jaguar and building a shelter, all whilst avoiding malaria. Cool horror sim, first person view.",
+      studio: "Creepy Jar",
+      ourscore: "5",
+      picture: "url for Green Hell eventually",
+    });
+
+    const gameMarioKart8 = await createNewGame({
+      title: "Mario Kart 8 Deluxe",
+      platform: "Nintendo Switch",
+      genre: "Adventure, Racing",
+      msrp: "$59.99",
+      score: "5",
+      ourreview: "Classic Mario Kart with modern graphics!",
+      studio: "Nintendo",
+      ourscore: "5",
+      picture: "url for Mario Kart 8 Deluxe eventually",
+    });
+
+    const gamePikmin4 = await createNewGame({
+      title: "Pikmin 4",
+      platform: "Nintendo Switch",
+      genre: "Action, RPG",
+      msrp: "$59.99",
+      score: "4",
+      ourreview: "Long awaited sequel!",
+      studio: "Nintendo",
+      ourscore: "4",
+      picture: "url for Pikmin 4 eventually",
+    });
+
+    const gameLegendOfZeldaTOK = await createNewGame({
+      title: "The Legend of Zelda: Tears of the Kingdom",
+      platform: "Nintendo Switch",
+      genre: "Action, RPG",
+      msrp: "$59.99",
+      score: "4",
+      ourreview: "Really cool graphics and really fun to play!",
+      studio: "Nintendo",
+      ourscore: "5",
+      picture: "url for The Legend of Zelda: Tears of the Kingdom eventually",
+    });
+
     const allGames = await fetchAllGames();
     const findSpecificGame = await fetchGameById(1);
     console.log(findSpecificGame);
+
+    //Start of user seed data
+    const seedUser1 = await createInitialUsers({
+      username: "sarahadmin",
+      fname: "sarah",
+      lname: "admin",
+      password: "adminPass1",
+      email: "sadmin1@gmail.com",
+      profilepic: "url/href for sarahadmin",
+      is_admin: true,
+    });
+
+    const seedUser2 = await createInitialUsers({
+      username: "coltonadmin",
+      fname: "colton",
+      lname: "admin",
+      password: "adminPass2",
+      email: "sadmin2@gmail.com",
+      profilepic: "url/href for coltonadmin",
+      is_admin: true,
+    });
+
+    const seedUser3 = await createInitialUsers({
+      username: "kelseyadmin",
+      fname: "kelsey",
+      lname: "admin",
+      password: "adminPass3",
+      email: "sadmin3@gmail.com",
+      profilepic: "url/href for kelseyadmin",
+      is_admin: true,
+    });
+
+    const seedUser4 = await createInitialUsers({
+      username: "jessieadmin",
+      fname: "jessie",
+      lname: "admin",
+      password: "adminPass4",
+      email: "sadmin4@gmail.com",
+      profilepic: "url/href for jessieadmin",
+      is_admin: true,
+    });
+
+    const seedUser5 = await createInitialUsers({
+      username: "tmedhurst",
+      fname: "Ted",
+      lname: "Medhurst",
+      password: "somethingDumb123",
+      email: "atuny0@sohu.com",
+      profilepic: "url/href for tmedhurst",
+      is_admin: false,
+    });
+
+    const seedUser6 = await createInitialUsers({
+      username: "SlaBing ",
+      fname: "Slater",
+      lname: "Bingly",
+      password: "slaterhater234",
+      email: "hbingley1@gmail.com",
+      profilepic: "url/href for seedUser1url/href for tmedhurst",
+      is_admin: false,
+    });
+
+    const seedUser7 = await createInitialUsers({
+      username: "CarlyButtonedUp ",
+      fname: "Carly",
+      lname: "Button",
+      password: "ljfkej24",
+      email: "button12349590x@sohu.com",
+      profilepic: "url/href for CarlyButtonedUp",
+      is_admin: false,
+    });
+
+    const seedUser8 = await createInitialUsers({
+      username: "RashadW",
+      fname: "Rashad",
+      lname: "Weeks",
+      password: "hienig89",
+      email: "rshawe2@eharmony.com",
+      profilepic: "url/href for Rashad Weeks",
+      is_admin: false,
+    });
+
+    const seedUser9 = await createInitialUsers({
+      username: "DemCork",
+      fname: "Demetrius",
+      lname: "Corkery",
+      password: "L89Nbbje3",
+      email: "nloiterton8@aol.com",
+      profilepic: "url/href for seedUser1",
+      is_admin: false,
+    });
+
+    const seedUser10 = await createInitialUsers({
+      username: "ThermanU",
+      fname: "Umma",
+      lname: "Therman",
+      password: "hionwlHHIPN950",
+      email: "umcgourty9@jalbum.net",
+      profilepic: "url/href for ThermanU",
+      is_admin: false,
+    });
+
+    const seedUser11 = await createInitialUsers({
+      username: "RathAssunta",
+      fname: "Assunta",
+      lname: "Rath",
+      password: "Kinw&^045tG",
+      email: "rhallawellb@dropbox.com",
+      profilepic: "url/href for RathAssunta",
+      is_admin: false,
+    });
+
+    const seedUser12 = await createInitialUsers({
+      username: "SkilesG",
+      fname: "Skiles",
+      lname: "Goodwin",
+      password: "post235jKKl2h",
+      email: "lgribbinc@posterous.com",
+      profilepic: "url/href for SkilesG",
+      is_admin: false,
+    });
+
+    const seedUser13 = await createInitialUsers({
+      username: "MikeT123",
+      fname: "MikeT",
+      lname: "Turley",
+      password: "jIowne82JlwJJI",
+      email: "mturleyd@tumblr.com",
+      profilepic: "url/href for MikeT123",
+      is_admin: false,
+    });
+
+    const seedUser14 = await createInitialUsers({
+      username: "MichKimi",
+      fname: "Michelle",
+      lname: "Kimichi",
+      password: "LnwkOhspwh928!!",
+      email: "kminchelle@qicktrip.com",
+      profilepic: "url/href for MichKimi",
+      is_admin: false,
+    });
+
+    const seedUser15 = await createInitialUsers({
+      username: "ACardigan",
+      fname: "Aubrey",
+      lname: "Cardigan",
+      password: "KlwhII928K",
+      email: "acc@robohash.org",
+      profilepic: "url/href for ACardigan",
+      is_admin: false,
+    });
+
+    const seedUser16 = await createInitialUsers({
+      username: "BarryF1",
+      fname: "Barry",
+      lname: "Faye",
+      password: "lng-86.58",
+      email: "bleveragei@xinjianguni.edu",
+      profilepic: "url/href for BarryF1",
+      is_admin: false,
+    });
+
+    const seedUser17 = await createInitialUsers({
+      username: "RennerL22",
+      fname: "Lenna",
+      lname: "Renner",
+      password: "szWAG6hc",
+      email: "aeatockj@psu.edu",
+      profilepic: "url/href for RennerL22",
+      is_admin: false,
+    });
+
+    const seedUser18 = await createInitialUsers({
+      username: "ErnserDoylful31",
+      fname: "Doyle",
+      lname: "Ernser",
+      password: "tq920JJI7kPXyf",
+      email: "ckeernser@pen.io",
+      profilepic: "url/href for ErnserDoylful31",
+      is_admin: false,
+    });
+
+    const seedUser19 = await createInitialUsers({
+      username: "TWeber25",
+      fname: "Teresa Weber",
+      lname: "Teresa Weber",
+      password: "928arecusandaeest020",
+      email: "froachel@howstuffworks.com",
+      profilepic: "url/href for TWeber25",
+      is_admin: false,
+    });
+
+    const seedUser20 = await createInitialUsers({
+      username: "C_KensleyStar",
+      fname: "Chelsea",
+      lname: "Kensleyk",
+      password: "ipsumut&GGEof28",
+      email: "ckensleyk@pen.io",
+      profilepic: "url/href for C_KensleyStar",
+      is_admin: false,
+    });
+
+    const seedUser21 = await createInitialUsers({
+      username: "FRosenbaum",
+      fname: "Felicity Rosenbaum",
+      lname: "Felicity Rosenbaum",
+      password: "zQwaHTHbuZyr",
+      email: "beykelhofm@wikispaces.com",
+      profilepic: "url/href for FRosenbaum",
+      is_admin: false,
+    });
+
+    const seedUser22 = await createInitialUsers({
+      username: "KeardRk",
+      fname: "Richard",
+      lname: "Keard",
+      password: "bMQnPttV",
+      email: "brickeardn@fema.gov",
+      profilepic: "url/href for KeardRk",
+      is_admin: false,
+    });
+
+    const seedUser23 = await createInitialUsers({
+      username: "GronaverL",
+      fname: "Laura",
+      lname: "Gronaver",
+      password: "4a1dAKDv9KB9",
+      email: "lgronaverp@cornell.edu",
+      profilepic: "url/href for GronaverL",
+      is_admin: false,
+    });
+
+    const seedUser24 = await createInitialUsers({
+      username: "SchowalterP",
+      fname: "Piper",
+      lname: "Schowalter",
+      password: "xZnWSWnqH",
+      email: "fokillq@amazon.co",
+      profilepic: "url/href for SchowalterP",
+      is_admin: false,
+    });
+
+    const seedUser25 = await createInitialUsers({
+      username: "KTLarkin",
+      fname: "Kody",
+      lname: "Tern Larkin",
+      password: "HLDqN59vCF",
+      email: "xisherwoodr@ask.com",
+      profilepic: "url/href for KTLarkin",
+      is_admin: false,
+    });
+
+    const seedUser26 = await createInitialUsers({
+      username: "MacyGreen8",
+      fname: "Macy",
+      lname: "Greenfelder",
+      password: "ePawWgrnZR8L",
+      email: "jissetts@hostgator.com",
+      profilepic: "url/href for MacyGreen8",
+      is_admin: false,
+    });
+
+    const seedUser27 = await createInitialUsers({
+      username: "MStracke",
+      fname: "Maurine",
+      lname: "Stracke",
+      password: "5t6q4KC7O",
+      email: "kdulyt@umich.edu",
+      profilepic: "url/href for MStracke",
+      is_admin: false,
+    });
+
+    const seedUser28 = await createInitialUsers({
+      username: "J_ohNbabyJ",
+      fname: "John",
+      lname: "Mulaney",
+      password: "llkjd$392j",
+      email: "jmulaney@notsnl.com",
+      profilepic: "url/href for J_ohNbabyJ",
+      is_admin: false,
+    });
+
+    const seedUser29 = await createInitialUsers({
+      username: "UngangweP",
+      fname: "Phinn",
+      lname: "Ungangwe",
+      password: "L*hwU2H",
+      email: "ungangugn@nsu.edu",
+      profilepic: "url/href for UngangweP",
+      is_admin: false,
+    });
+
+    const seedUser30 = await createInitialUsers({
+      username: "GaleJaxJax2222",
+      fname: "Jaxon",
+      lname: "Gale",
+      password: "Heni288&lwj",
+      email: "glaej@gmail.com",
+      profilepic: "url/href for GaleJaxJax2222",
+      is_admin: false,
+    });
+
+    const allUsers = await fetchAllUsers();
+    console.log(fetchAllUsers);
 
     client.end();
   } catch (error) {
