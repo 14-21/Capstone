@@ -165,11 +165,21 @@ async function fetchGameByStudio(studioValue) {
         WHERE "studio" = '${studioValue}';
         `);
 
+
+    console.log(rows);
+    console.log("This is the fetchgameby studio function");
+
+
     return rows[0];
   } catch (error) {
     console.log(error);
   }
 }
+
+
+//Start of Users table section lines 171 through XXXX
+
+// async function createInitialUsers
 
 //Start of Users table section lines 174 through 209
 async function createInitialUsers(userObj) {
@@ -208,10 +218,14 @@ async function fetchAllUsers() {
   }
 }
 
+
 //Start of Reviews table section lines xxxxx through XXXX
 // async function createInitialReviews
 
+
+
 //Build the master DB
+
 async function buildDatabase() {
   try {
     client.connect();
@@ -866,8 +880,11 @@ async function buildDatabase() {
       is_admin: false,
     });
 
+
+
     const allUsers = await fetchAllUsers();
     console.log(fetchAllUsers);
+
 
     client.end();
   } catch (error) {
