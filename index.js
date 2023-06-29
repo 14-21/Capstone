@@ -2,6 +2,7 @@
 const express = require("express");
 const app = express();
 const PORT = 8080;
+const path = require("path");
 
 const morgan = require("morgan");
 app.use(morgan("dev"));
@@ -10,6 +11,10 @@ const cors = require("cors");
 app.use(cors());
 
 app.use(express.json());
+
+app.get("/", function (req, res) {
+  res.sendFile(path.join(__dirname, "/index.html"));
+});
 
 const client = require("./db/index");
 const {
@@ -35,7 +40,7 @@ app.get("/games", getAllGames);
 
 async function getGameById(req, res, next) {
   try {
-    console.log("Testing getGameById");
+    // console.log("Testing getGameById");
     console.log(req.params.id);
 
     const mySpecificGame = await fetchGameById(Number(req.params.id));
@@ -53,7 +58,7 @@ async function getGamesByStudio(req, res, next) {
     console.log(req.params.studio);
 
     const myStudioGame = await fetchGameByStudio(req.params.studio);
-    console.log("Finished Fetching my Studio Game");
+    // console.log("Finished Fetching my Studio Game");
 
     res.send(myStudioGame);
   } catch (error) {
