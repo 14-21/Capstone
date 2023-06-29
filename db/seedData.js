@@ -200,7 +200,8 @@ async function fetchAllUsers() {
   try {
     const { rows } = await client.query(`
         SELECT * FROM users;
-        `);
+        WHERE username = $1;
+        `, [username]);
 
     return rows;
   } catch (error) {
@@ -561,6 +562,30 @@ async function buildDatabase() {
       picture: "url for The Legend of Zelda: Tears of the Kingdom eventually",
     });
 
+    const gameDontStarveTogether2 = await createNewGame({
+      title: "Don't Starve Together 2",
+      platform: "Nintendo Switch, PC, PS5, XBOX",
+      genre: "RPG, Survival",
+      msrp: "$14.99",
+      score: "4",
+      ourreview: "Really cool graphics and really fun to play!",
+      studio: "Klei Entertainment",
+      ourscore: "4",
+      picture: "url for Don't Starve Together 2 eventually",
+    });
+
+    const gameEldenRing = await createNewGame({
+      title: "Eleden Ring",
+      platform: "PC, PS5, XBOX",
+      genre: "Action, RPG",
+      msrp: "$59.99",
+      score: "5",
+      ourreview: "One of the GOATS!",
+      studio: "PC, PS5, XBOX",
+      ourscore: "5",
+      picture: "url for Eleden Ring eventually",
+    });
+
     const allGames = await fetchAllGames();
     const findSpecificGame = await fetchGameById(1);
     console.log(findSpecificGame);
@@ -867,7 +892,7 @@ async function buildDatabase() {
     });
 
     const allUsers = await fetchAllUsers();
-    console.log(fetchAllUsers);
+    // console.log(fetchAllUsers);
 
     client.end();
   } catch (error) {
