@@ -33,7 +33,14 @@ async function createTables() {
                 ourreview TEXT DEFAULT 'no reviews',
                 studio VARCHAR (255) NOT NULL,
                 ourscore VARCHAR (255) NOT NULL,
-                picture TEXT NOT NULL
+                picturecard TEXT DEFAULT 'no description',
+                pictureheader TEXT DEFAULT 'no description',
+                picturebody TEXT DEFAULT 'no description',
+                picturefooter TEXT DEFAULT 'no description',
+                synopsis TEXT DEFAULT 'no description',
+                about TEXT DEFAULT 'no description',
+                for TEXT DEFAULT 'no description',
+                notfor TEXT DEFAULT 'no description',
             );
         `);
 
