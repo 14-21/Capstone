@@ -41,9 +41,7 @@ async function createTables() {
     await client.query(`
         CREATE TABLE users (
           "userId" SERIAL PRIMARY KEY,
-          username VARCHAR(255) UNIQUE NOT NULL,
-          fname VARCHAR(255) NOT NULL,
-          lname VARCHAR(255) NOT NULL,
+          name VARCHAR(255) NOT NULL,
           password VARCHAR(255) NOT NULL,
           email VARCHAR(255) UNIQUE NOT NULL,
           profilepic VARCHAR(255) NOT NULL,
@@ -165,7 +163,9 @@ async function fetchGameByStudio(studioValue) {
         WHERE "studio" = '${studioValue}';
         `);
 
-    return rows[0];
+        console.log(rows);
+        console.log("This is the fetchgameby studio function")
+        return rows[0];
   } catch (error) {
     console.log(error);
   }
@@ -726,7 +726,7 @@ async function buildDatabase() {
       username: "KTLarkin",
       fname: "Kody",
       lname: "Tern Larkin",
-      password: "HLDqN59vCF",
+      password: "HLDqN5vCF",
       email: "xisherwoodr@ask.com",
       profilepic: "url/href for KTLarkin",
       is_admin: false,
