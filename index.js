@@ -1,9 +1,10 @@
 //Express server code goes here, routes, and middleware etc.
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const PORT = 8080;
 const path = require("path");
-require("dotenv").config();
+const jwt = require("jsonwebtoken");
 
 const morgan = require("morgan");
 app.use(morgan("dev"));
@@ -18,14 +19,17 @@ app.get("/", function (req, res) {
 });
 
 const client = require("./db/index");
+client.connect();
+
 const {
   fetchAllGames,
   fetchGameById,
   fetchGameByStudio,
   fetchAllUsers,
   createNewGame,
+  fetchUsersbyUsername,
+  createUsers,
 } = require("./db/seedData");
-client.connect();
 
 async function getAllGames(req, res, next) {
   try {
@@ -40,6 +44,21 @@ async function getAllGames(req, res, next) {
   }
 }
 app.get("/games", getAllGames);
+
+async function getAllUsers(req, res) {
+  try {
+    const allUsersData = await fetchUsersbyUsername();
+    if (allUsersData && allUsersData.length) {
+      res.send(allGamesData);
+    } else {
+      res.send("No User Data Available...");
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+app.get("games/users", getAllUsers);
 
 async function getGameById(req, res, next) {
   try {
@@ -82,7 +101,7 @@ async function registerNewUser(req, res) {
     });
 
     if (newJWTToken) {
-      const newUserForDB = await createNewUser(req.body);
+      const newUserForDb = await createUsers(req.body);
 
       if (newUserForDb) {
         res.send({ userData: newUserForDb, token: newJWTToken }).status(200);
@@ -99,20 +118,20 @@ async function registerNewUser(req, res) {
   }
 }
 
-app.post("/games/register", createUsers);
+app.post("/games/users/register", registerNewUser);
 
 async function postNewGame(req, res) {
   try {
     const myAuthToken = req.headers.authorization.slice(7);
     console.log("My Actual Token", myAuthToken);
+    console.log(process.env.JWT_SECRET, " !!!!!!!!!!!!!!!!!!!!!!!");
 
     const isThisAGoodToken = jwt.verify(myAuthToken, process.env.JWT_SECRET);
-    console.log("This is my decrypted token:");
-    console.log(isThisAGoodToken);
+    console.log("This is my decrypted token:", isThisAGoodToken);
 
     if (isThisAGoodToken) {
       const userFromDb = await fetchUsersbyUsername(isThisAGoodToken.username);
-
+      console.log(req.body, " ?????????");
       if (userFromDb) {
         const newGamePost = await createNewGame(req.body);
 
