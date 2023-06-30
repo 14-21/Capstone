@@ -3,6 +3,7 @@ const express = require("express");
 const app = express();
 const PORT = 8080;
 const path = require("path");
+require("dotenv").config();
 
 const morgan = require("morgan");
 app.use(morgan("dev"));
@@ -21,6 +22,8 @@ const {
   fetchAllGames,
   fetchGameById,
   fetchGameByStudio,
+  fetchAllUsers,
+  createNewGame,
 } = require("./db/seedData");
 client.connect();
 
@@ -67,6 +70,69 @@ async function getGamesByStudio(req, res, next) {
 }
 
 app.get("/games/studio/:studio", getGamesByStudio);
+
+async function registerNewUser(req, res) {
+  try {
+    const newUserData = req.body;
+    const mySecret = process.env.JWT_SECRET;
+    console.log(req.body);
+
+    const newJWTToken = await jwt.sign(req.body, process.env.JWT_SECRET, {
+      expiresIn: "1w",
+    });
+
+    if (newJWTToken) {
+      const newUserForDB = await createNewUser(req.body);
+
+      if (newUserForDb) {
+        res.send({ userData: newUserForDb, token: newJWTToken }).status(200);
+      } else {
+        res.send({ error: true, message: "Failed to create user" }).status(403);
+      }
+    } else {
+      res
+        .send({ error: true, message: "Failed to create valid auth token" })
+        .status(403);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+app.post("/games/register", createUsers);
+
+async function postNewGame(req, res) {
+  try {
+    const myAuthToken = req.headers.authorization.slice(7);
+    console.log("My Actual Token", myAuthToken);
+
+    const isThisAGoodToken = jwt.verify(myAuthToken, process.env.JWT_SECRET);
+    console.log("This is my decrypted token:");
+    console.log(isThisAGoodToken);
+
+    if (isThisAGoodToken) {
+      const userFromDb = await fetchUsersbyUsername(isThisAGoodToken.username);
+
+      if (userFromDb) {
+        const newGamePost = await createNewGame(req.body);
+
+        res.send(newGamePost);
+      } else {
+        res.send({
+          error: true,
+          message:
+            "User does not exist in database. Please register for a new account and try again.",
+        });
+      }
+    } else {
+      res.send({ error: true, mesage: "Failed to decrypt token." });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+app.post("/games/create/game", postNewGame);
 
 // async function getGamesByGenre(req, res, next) {
 //   try {
