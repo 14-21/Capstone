@@ -6,9 +6,10 @@ async function dropTables() {
   console.log("Dropping Tables");
   try {
     await client.query(`
+    DROP TABLE IF EXISTS reviews;
+    DROP TABLE IF EXISTS platforms;
     DROP TABLE IF EXISTS games;
     DROP TABLE IF EXISTS users;
-    DROP TABLE IF EXISTS reviews;
     `);
 
     console.log("Finished dropping tables...");
@@ -22,6 +23,14 @@ async function dropTables() {
 async function createTables() {
   try {
     console.log("Starting to create tables");
+    
+    await client.query(`
+        CREATE TABLE platforms (
+          "platformId" SERIAL PRIMARY KEY,
+          content VARCHAR(255) NOT NULL
+    );
+    `);
+
     await client.query(`
             CREATE TABLE games(        
                 "gameId" SERIAL PRIMARY KEY,
@@ -57,16 +66,17 @@ async function createTables() {
         );
         `);
 
-    // await client.query(`
-    //     CREATE TABLE reviews (
-    //       "reviewId" SERIAL PRIMARY KEY,
-    //       content VARCHAR(255) NOT NULL,
-    //       score INTEGER NOT NULL,
-    //       ourscore INTEGER NOT NULL,
-    //       user_id INTEGER REFERENCES users(id),
-    //       game_name INTEGER REFERENCES games(id)
-    // );
-    // `);
+
+    await client.query(`
+        CREATE TABLE reviews (
+          "reviewId" SERIAL PRIMARY KEY,
+          content VARCHAR(255) NOT NULL,
+          score INTEGER NOT NULL,
+          ourscore INTEGER NOT NULL,
+          game_id INTEGER REFERENCES games("gameId"),
+          user_id INTEGER REFERENCES users("userId")
+    );
+    `);
 
     console.log("Finished creating tables");
   } catch (error) {
@@ -78,6 +88,7 @@ async function createNewGame(newGameObj) {
   try {
     const { rows } = await client.query(
       `
+        INSERT INTO games(title, platform, genre, msrp, score, ourreview, studio, ourscore, picturecard, pictureheader, picturebody, picturefooter, synopsis, about, forgamer, notfor)
         INSERT INTO games(title, platform, genre, msrp, score, ourreview, studio, ourscore, picturecard, pictureheader, picturebody, picturefooter, synopsis, about, forgamer, notfor)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
         RETURNING *;
@@ -187,6 +198,7 @@ async function fetchGameByStudio(studioValue) {
   }
 }
 
+
 //Start of Users table section lines 171 through XXXX
 
 // async function createInitialUsers
@@ -253,7 +265,19 @@ async function fetchAllUsers() {
   }
 }
 //Start of Reviews table section lines xxxxx through XXXX
-// async function createInitialReviews
+async function createReviews(reviewObj) {
+  try {
+    const { rows } = await client.query(`
+    SELECT * FROM reviews
+    WHERE
+    
+    
+    
+    `)
+  } catch (error) {
+    
+  }
+}
 
 //Build the master DB
 
@@ -1386,6 +1410,7 @@ async function buildDatabase() {
 
     const allUsers = await fetchAllUsers();
     console.log(allUsers);
+
 
     client.end();
   } catch (error) {
