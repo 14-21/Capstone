@@ -7,6 +7,7 @@ async function dropTables() {
   try {
     await client.query(`
     DROP TABLE IF EXISTS reviews;
+    DROP TABLE IF EXISTS platforms;
     DROP TABLE IF EXISTS games;
     DROP TABLE IF EXISTS users;
     `);
@@ -26,7 +27,7 @@ async function createTables() {
     await client.query(`
         CREATE TABLE platforms (
           "platformId" SERIAL PRIMARY KEY,
-          content VARCHAR(255) NOT NULL,
+          content VARCHAR(255) NOT NULL
     );
     `);
 
@@ -72,8 +73,8 @@ async function createTables() {
           content VARCHAR(255) NOT NULL,
           score INTEGER NOT NULL,
           ourscore INTEGER NOT NULL,
-          game_name INTEGER REFERENCES games(gamesId),
-          user_id INTEGER REFERENCES users(userId)
+          game_id INTEGER REFERENCES games("gameId"),
+          user_id INTEGER REFERENCES users("userId")
     );
     `);
 
@@ -107,7 +108,6 @@ async function createNewGame(newGameObj) {
         newGameObj.picturefooter,
         newGameObj.synopsis,
         newGameObj.about,
-        newGameObj.forgamer,
         newGameObj.forgamer,
         newGameObj.notfor,
       ]
