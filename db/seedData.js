@@ -23,7 +23,7 @@ async function dropTables() {
 async function createTables() {
   try {
     console.log("Starting to create tables");
-    
+
     await client.query(`
         CREATE TABLE platforms (
           "platformId" SERIAL PRIMARY KEY,
@@ -66,12 +66,11 @@ async function createTables() {
         );
         `);
 
-
     await client.query(`
         CREATE TABLE reviews (
           "reviewId" SERIAL PRIMARY KEY,
           content VARCHAR(255) NOT NULL,
-          score INTEGER NOT NULL,
+          userscore INTEGER NOT NULL,
           ourscore INTEGER NOT NULL,
           game_id INTEGER REFERENCES games("gameId"),
           user_id INTEGER REFERENCES users("userId")
@@ -83,7 +82,7 @@ async function createTables() {
     throw error;
   }
 }
-//Game table section lines 68 - 169
+//Game table section lines 86 - 200
 async function createNewGame(newGameObj) {
   try {
     const { rows } = await client.query(
@@ -198,12 +197,7 @@ async function fetchGameByStudio(studioValue) {
   }
 }
 
-
-//Start of Users table section lines 171 through XXXX
-
-// async function createInitialUsers
-
-//Start of Users table section lines 174 through 209
+//Start of Users table section lines 201 through xxx
 async function createUsers(userObj) {
   try {
     const { rows } = await client.query(
@@ -254,7 +248,6 @@ async function fetchAllUsers() {
       `
       SELECT * FROM users
       
-      
       `
     );
     if (rows.length) {
@@ -267,16 +260,21 @@ async function fetchAllUsers() {
 //Start of Reviews table section lines xxxxx through XXXX
 async function createReviews(reviewObj) {
   try {
-    const { rows } = await client.query(`
-    SELECT * FROM reviews
-    WHERE
-    
-    
-    
-    `)
-  } catch (error) {
-    
-  }
+    const { rows } = await client.query(
+      `
+      INSERT INTO reviews(reviewbody, userscore, ourscore, userId, gameId)
+      VALUES ($1, $2, $3, $4, $5)
+      RETURNING username;
+      `,
+      [
+        reviewObj.reviewbody,
+        reviewObj.userscore,
+        reviewObj.ourscore,
+        reviewObj.userId,
+        reviewObj.gameId,
+      ]
+    );
+  } catch (error) {}
 }
 
 //Build the master DB
@@ -1105,7 +1103,7 @@ async function buildDatabase() {
 
     const allGames = await fetchAllGames();
     const findSpecificGame = await fetchGameById(1);
-    console.log(findSpecificGame);
+    // console.log(findSpecificGame);
 
     //Start of user seed data
     const seedUser1 = await createUsers({
@@ -1411,7 +1409,6 @@ async function buildDatabase() {
     const allUsers = await fetchAllUsers();
     console.log(allUsers);
 
-
     client.end();
   } catch (error) {
     console.log(error);
@@ -1431,6 +1428,7 @@ module.exports = {
   //postNewGame -- try to get done this weekend June 30
   //postNewComment
   //postNewReview
+  fetchAllUsers,
   fetchUsersbyUsername, //<-- added June 29th
   buildDatabase,
 };
