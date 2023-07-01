@@ -47,7 +47,7 @@ app.get("/games", getAllGames);
 
 async function getAllUsers(req, res) {
   try {
-    const allUsersData = await fetchUsersbyUsername();
+    const allUsersData = await fetchAllUsers();
     if (allUsersData && allUsersData.length) {
       res.send(allGamesData);
     } else {
