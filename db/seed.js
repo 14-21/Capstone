@@ -1,4 +1,3 @@
-
 const client = require("./");
 const { buildDatabase } = require("./seedData");
 
