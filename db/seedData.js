@@ -4,10 +4,12 @@ const client = require("./index");
 
 async function dropTables() {
   console.log("Dropping Tables");
+  
   try {
     await client.query(`
     DROP TABLE IF EXISTS games;
     DROP TABLE IF EXISTS users;
+    DROP TABLE IF EXISTS reviews;
     `);
 
     console.log("Finished dropping tables...");
@@ -31,7 +33,7 @@ async function createTables() {
                 score VARCHAR (255) NOT NULL,
                 ourreview TEXT DEFAULT 'no reviews',
                 studio VARCHAR (255) NOT NULL,
-                ourscore VARCHAR (255) NOT NULL,
+                ourscore INTEGER NOT NULL,
                 picturecard TEXT DEFAULT 'no description',
                 pictureheader TEXT DEFAULT 'no description',
                 picturebody TEXT DEFAULT 'no description',
@@ -51,8 +53,18 @@ async function createTables() {
           lname VARCHAR(255) NOT NULL,
           password VARCHAR(255) NOT NULL,
           email VARCHAR(255) UNIQUE NOT NULL,
-          profilepic VARCHAR(255) NOT NULL,
+          profilepic TEXT DEFAULT "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png",
           is_admin BOOLEAN DEFAULT false
+        );
+        `);
+
+    await client.query(`
+        CREATE TABLE reviews (
+          "reviewId" SERIAL PRIMARY KEY,			
+          reviewbody TEXT DEFAULT "Your Review Here",
+          userscore INTEGER NOT NULL,
+          "reviewUserId" INTEGER REFERENCES users("userId),
+          "reviewGameId" INTEGER REFERENCES games("gameId)
         );
         `);
 
@@ -199,6 +211,44 @@ async function fetchAllUsers() {
     const { rows } = await client.query(
       `
       SELECT * FROM users
+      `
+    );
+    if (rows.length) {
+      return rows;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function createReviews(reviewObj) {
+  try {
+    const { rows } = await client.query(
+      `
+        INSERT INTO reviews(reviewbody, userscore, "reviewUserId","reviewGameId")
+        VALUES ($1, $2, $3, $4)
+        RETURNING reviewbody;
+        `,
+      [
+        reviewObj.reviewbody,
+        reviewObj.userscore,
+        reviewObj.reviewUserId,
+        reviewObj.reviewGameId,
+      ]
+    );
+    if (rows.length) {
+      return rows[0];
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function fetchAllReviews() {
+  try {
+    const { rows } = await client.query(
+      `
+      SELECT * FROM reviews
       
       `
     );
@@ -209,6 +259,8 @@ async function fetchAllUsers() {
     console.log(error);
   }
 }
+
+
 //Build the master DB
 
 async function buildDatabase() {
@@ -218,7 +270,7 @@ async function buildDatabase() {
     await dropTables();
     await createTables();
 
-    //Start of games seed data
+//Start of games seed data
     const gameDiablo4 = await createNewGame({
       title: "Diablo 4",
       platform: "PC, XBox, PlayStation",
@@ -1342,6 +1394,35 @@ async function buildDatabase() {
     const allUsers = await fetchAllUsers();
     console.log(allUsers);
 
+//Start of reviews seed data
+    const seedReview1 = await createReviews({
+      reviewbody: "With stunning graphics and immersive gameplay, this video game transports players to a breathtaking world filled with endless possibilities.",
+      userscore: 3,
+      reviewUserId: 2,
+      reviewGameId: 1,
+    });
+    const seedReview2 = await createReviews({
+      reviewbody: "From its gripping storyline to its intense combat mechanics, this game keeps players on the edge of their seats, craving for more.",
+      userscore: 4,
+      reviewUserId: 16,
+      reviewGameId: 15,
+    });
+    const seedReview3 = await createReviews({
+      reviewbody: "With a vast open world to explore and countless quests to embark on, this game offers an unparalleled sense of adventure.",
+      userscore: 4,
+      reviewUserId: 14,
+      reviewGameId: 6,
+    });
+    const seedReview4 = await createReviews({
+      reviewbody: "The game's innovative multiplayer mode allows players to team up with friends and engage in exhilarating battles, creating unforgettable gaming moments.",
+      userscore: 3,
+      reviewUserId: 27,
+      reviewGameId: 22,
+    });
+
+    const allReviews = await fetchAllReviews();
+    console.log(allReviews);
+
     client.end();
   } catch (error) {
     console.log(error);
@@ -1357,6 +1438,9 @@ module.exports = {
   createUsers,
   fetchAllUsers,
   fetchUsersbyUsername,
+
+  createReviews,
+  fetchAllReviews,
 
   buildDatabase,
 };
