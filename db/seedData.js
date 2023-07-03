@@ -6,8 +6,6 @@ async function dropTables() {
   console.log("Dropping Tables");
   try {
     await client.query(`
-    DROP TABLE IF EXISTS reviews;
-    DROP TABLE IF EXISTS platforms;
     DROP TABLE IF EXISTS games;
     DROP TABLE IF EXISTS users;
     `);
@@ -19,17 +17,9 @@ async function dropTables() {
 }
 
 //what do you look like, what data are you going to be filled with
-
 async function createTables() {
   try {
     console.log("Starting to create tables");
-
-    await client.query(`
-        CREATE TABLE platforms (
-          "platformId" SERIAL PRIMARY KEY,
-          content VARCHAR(255) NOT NULL
-    );
-    `);
 
     await client.query(`
             CREATE TABLE games(        
@@ -66,31 +56,20 @@ async function createTables() {
         );
         `);
 
-    await client.query(`
-        CREATE TABLE reviews (
-          "reviewId" SERIAL PRIMARY KEY,
-          content VARCHAR(255) NOT NULL,
-          userscore INTEGER NOT NULL,
-          ourscore INTEGER NOT NULL,
-          game_id INTEGER REFERENCES games("gameId"),
-          user_id INTEGER REFERENCES users("userId")
-    );
-    `);
-
     console.log("Finished creating tables");
   } catch (error) {
     throw error;
   }
 }
-//Game table section lines 86 - 200
+
 async function createNewGame(newGameObj) {
   try {
     const { rows } = await client.query(
       `
-        INSERT INTO games(title, platform, genre, msrp, score, ourreview, studio, ourscore, picturecard, pictureheader, picturebody, picturefooter, synopsis, about, forgamer, notfor)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
-        RETURNING *;
-        `,
+          INSERT INTO games(title, platform, genre, msrp, score, ourreview, studio, ourscore, picturecard, pictureheader, picturebody, picturefooter, synopsis, about, forgamer, notfor)
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
+          RETURNING *;
+      `,
       [
         newGameObj.title,
         newGameObj.platform,
@@ -140,32 +119,6 @@ async function fetchGameById(idValue) {
     console.log(error);
   }
 }
-
-// async function fetchGameByGenre(genreValue) {
-//   try {
-//     const { rows } = await client.query(`
-//         SELECT * FROM games
-//         WHERE "genre" = '${genreValue}';
-//         `);
-
-//     return rows[0];
-//   } catch (error) {
-//     console.log(error);
-//   }
-// }
-
-// async function fetchGameByPlatform(platformValue) {
-//   try {
-//     const { rows } = await client.query(`
-//         SELECT * FROM games
-//         WHERE "platform" = ${platformValue};
-//         `);
-
-//     return rows[0];
-//   } catch (error) {
-//     console.log(error);
-//   }
-// }
 
 // async function fetchGameByOurscore(ourscoreValue) {
 //   try {
@@ -256,26 +209,6 @@ async function fetchAllUsers() {
     console.log(error);
   }
 }
-//Start of Reviews table section lines xxxxx through XXXX
-async function createReviews(reviewObj) {
-  try {
-    const { rows } = await client.query(
-      `
-      INSERT INTO reviews(reviewbody, userscore, ourscore, userId, gameId)
-      VALUES ($1, $2, $3, $4, $5)
-      RETURNING username;
-      `,
-      [
-        reviewObj.reviewbody,
-        reviewObj.userscore,
-        reviewObj.ourscore,
-        reviewObj.userId,
-        reviewObj.gameId,
-      ]
-    );
-  } catch (error) {}
-}
-
 //Build the master DB
 
 async function buildDatabase() {
@@ -299,16 +232,17 @@ async function buildDatabase() {
       picturecard:
         "https://upload.wikimedia.org/wikipedia/en/1/1c/Diablo_IV_cover_art.png",
       pictureheader:
-        "https://rare-gallery.com/mocahbig/473373-digital-art-artwork-video-games-Diablo-diablo-iv.jpg",
-      picturebody:
         "https://storage.oyungezer.com.tr/ogz-public/public/content/2023/05/30/content_647601975e823_78396.jpg",
+      picturebody:
+        "https://rare-gallery.com/mocahbig/473373-digital-art-artwork-video-games-Diablo-diablo-iv.jpg",
       picturefooter:
         "https://images.blz-contentstack.com/v3/assets/bltf408a0557f4e4998/blt24fbc5431943b197/636d81343debb436bf972c0d/TreasureBeast_Blizzard.png?width=&format=webply&dpr=2&disable=upscale&quality=80",
       synopsis:
         "In Diablo IV, players find themselves in a world ravaged by demonic forces, following the events of Diablo III. The story revolves around the emergence of Lilith, the daughter of Mephisto and Queen of the Succubi, who seeks to wreak havoc and claim dominion over Sanctuary. Players must navigate a dark and treacherous journey, battling against the hordes of Hell and uncovering the mysteries behind Lilith's return, all while discovering their own hidden powers and destiny in a desperate struggle for the fate of humanity.",
       about:
         "Diablo IV is the highly anticipated sequel to the iconic Diablo franchise developed by Blizzard Entertainment. Set in a dark and gothic world, players will embark on a thrilling and brutal journey as they face off against the forces of Hell. With an emphasis on immersive storytelling, Diablo IV promises to deliver a rich and intricate narrative that explores the deep lore of the Diablo universe. Players can look forward to a vast and dynamic open world, engaging multiplayer features, and an enhanced loot system that will keep them hooked for hours on end.",
-      for: "Fans of the Diablo franchise. Open-world exploration fans, loot, and character customization enthusiasts, and players interested in dark fantasy and deep lore. Action and Hack-and-Slash enthusiasts. Action and Hack-and-Slash enthusiasts.",
+      forgamer:
+        "Fans of the Diablo franchise. Open-world exploration fans, loot, and character customization enthusiasts, and players interested in dark fantasy and deep lore. Action and Hack-and-Slash enthusiasts. Action and Hack-and-Slash enthusiasts.",
       notfor:
         "Those who prefer lighthearted or family-friendly content . Individuals who dislike action-oriented gameplay. Players seeking linear narratives or with low tolerance for violence or horror.",
     });
@@ -378,7 +312,7 @@ async function buildDatabase() {
       picturecard:
         "https://upload.wikimedia.org/wikipedia/en/c/c0/Dying_Light_cover.jpg",
       pictureheader:
-        "https://static.wikia.nocookie.net/dyinglight/images/8/8e/Dying-Light-cover.jpg/revision/latest?cb=20200206150358",
+        "https://cdn.akamai.steamstatic.com/steam/apps/239140/capsule_616x353.jpg?t=1674129492",
       picturebody:
         "https://assetsio.reedpopcdn.com/dying-light-1s-next-gen-update-grade-patch-is-now-available-on-xbox-series-x-s-1647901402978.jpg?width=1600&height=900&fit=crop&quality=100&format=png&enable=upscale&auto=webp",
       picturefooter:
@@ -681,7 +615,7 @@ async function buildDatabase() {
       picturebody:
         " https://cdn.akamai.steamstatic.com/steam/apps/431240/ss_af779fcd049a35140f47ff8781eec8d0e5d7d7bd.1920x1080.jpg?t=1684404184",
       picturefooter:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZ1fHjd31UmOMWjUWUYp_6F1dsEpT50R0-dA&usqp=CAU",
+        "https://cdn.cloudflare.steamstatic.com/steam/apps/431240/ss_91d45c28c463c2fc5d4d28f15f900e2456ccf73c.1920x1080.jpg?t=1684404184",
       synopsis:
         "Golf with Friends is a multiplayer mini-golf game where players compete with friends or other online players in various whimsical and challenging courses. The objective is to navigate through the courses, avoiding obstacles and completing each hole in as few strokes as possible. The game offers a fun and lighthearted golfing experience with a focus on multiplayer competition and social interaction.",
       about:
@@ -746,8 +680,8 @@ async function buildDatabase() {
         "Final Fantasy XIV Online may not be suitable for gamers who prefer fast-paced, action-oriented gameplay or who are not interested in investing significant time into an ongoing, evolving online world. It may not appeal to players who do not enjoy the MMORPG genre or who prefer solo gameplay experiences. Additionally, individuals who are not fond of complex game mechanics, extensive lore, or subscription-based payment models may not find Final Fantasy XIV Online appealing.",
     });
 
-    const gamePhantasyStarOnline2 = await createNewGame({
-      title: "Phantasy Star Online 2",
+    const gameSMITE = await createNewGame({
+      title: "SMITE",
       platform: "PC, PS5",
       genre: "MMO, RPG",
       msrp: "Free",
@@ -757,7 +691,7 @@ async function buildDatabase() {
       studio: "Hi-Rez Studios",
       ourscore: "2",
       picturecard:
-        "https://www.gameinformer.com/sites/default/files/styles/product_box_art/public/2022/01/26/ca9ef9c6/smite.jpg",
+        "https://image.api.playstation.com/vulcan/ap/rnd/202212/1417/gRameAdNU1JSRfRxhFCpw4Vs.jpg",
       pictureheader:
         "https://www.evdodepotusa.com/wp-content/uploads/2019/07/How-much-data-does-Smite-use-1200x675.jpg",
       picturebody:
@@ -774,8 +708,8 @@ async function buildDatabase() {
         "SMITE may not be suitable for gamers who do not enjoy team-based multiplayer games or the MOBA genre. It may not appeal to players who prefer solo gameplay experiences or those who are not interested in the mythology-inspired setting. Additionally, individuals who are not fond of ongoing updates and patches, or who are not willing to invest time in learning and mastering the abilities and strategies of multiple characters, may not find SMITE engaging.",
     });
 
-    const gameSMITE = await createNewGame({
-      title: "SMITE",
+    const gamePhantasyStarOnline2 = await createNewGame({
+      title: "Phantasy Star Online 2",
       platform: "Action, MOBA",
       genre: "MMO, RPG",
       msrp: "Free",
@@ -784,7 +718,7 @@ async function buildDatabase() {
       studio: "Hi-Rez Studios",
       ourscore: "2",
       picturecard:
-        "https://static.wikia.nocookie.net/phantasystar/images/8/81/Pso2_ngs_key_visual.jpg/revision/latest?cb=20201221173722",
+        "https://image.api.playstation.com/vulcan/ap/rnd/202108/1607/cWFhlMdzAFCcosz8L1paaKF6.jpg",
       pictureheader:
         "https://mmoculture.com/wp-content/uploads/2021/04/PSO2-NG-image.png",
       picturebody:
@@ -899,7 +833,7 @@ async function buildDatabase() {
       picturebody:
         "https://cdn.racinggames.gg/images/ncavvykf/racinggames/8c8b40cd7eb4a7b89b1647f338d924300ce940dd-1280x720.jpg?rect=0,0,1279,720&w=700&h=394&dpr=2",
       picturefooter:
-        "uhttps://www.somosxbox.com/wp-content/uploads/2022/04/f1-2022-somosxbox-1.jpg",
+        "https://media.contentapi.ea.com/content/dam/ea/f1/f1-23/common/features-page/f123-featurespage-feature-05-16x9.jpg.adapt.crop16x9.652w.jpg",
       synopsis:
         "Be the last to brake in EA SPORTS™ F1® 23, the official videogame of the 2023 FIA Formula One World Championship™, featuring all the updated 2023 cars with the official F1® lineup of your favorite 20 drivers and 10 teams.",
       about:
@@ -953,7 +887,7 @@ async function buildDatabase() {
       pictureheader:
         "https://m.media-amazon.com/images/M/MV5BMzUyNjA0MzktMjAzYi00NjY0LTllMzEtYzUzMGVlOWFmZjQ1XkEyXkFqcGdeQXVyNzQwMzAwNTI@._V1_.jpg",
       picturebody:
-        "https://static.wikia.nocookie.net/greenhell_gamepedia_en/images/f/f7/AbandonedCamp_46W_26S.jpg/revision/latest/scale-to-width-down/1200?cb=20190507223221",
+        "https://image.winudf.com/v2/image1/Y29tLmdyZWVuLmhlbGxzdXJ2aXZhbGdhbWVndWlfc2NyZWVuXzJfMTU5NDM1NTA1MV8wMTk/screen-2.webp?fakeurl=1&type=.webp",
       picturefooter:
         "https://www.uploadvr.com/content/images/2021/05/Jaguar-attack-GHVR.png",
       synopsis:
@@ -982,7 +916,7 @@ async function buildDatabase() {
       picturebody:
         "https://www.lifewire.com/thmb/xSyhH4taw10JBkcF-fghBCWBfNQ=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/2LW4154603MarioKartDeluxe_hero-182b68c9551043908e7d54400202730d.jpg",
       picturefooter:
-        "https://media.gamestop.com/i/gamestop/10141928_SCR12/Mario-Kart-8-Deluxe---Nintendo-Switch?$screen$",
+        "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/5723/5723304cv13d.jpg",
       synopsis:
         "Mario Kart 8 Deluxe is a racing game featuring characters from the Mario franchise. The game follows Mario and his friends as they compete in kart races across various colorful and whimsical tracks. Players can utilize power-ups, perform stunts, and employ strategic racing tactics to secure victory in both single-player and multiplayer modes.",
       about:
@@ -1419,17 +1353,12 @@ async function buildDatabase() {
 module.exports = {
   fetchAllGames,
   fetchGameById,
-  // fetchGameByGenre,
-  // fetchGameByPlatform,
-  // fetchGameByOurscore,
   fetchGameByStudio,
   createNewGame,
-  createUsers, // <-- updated the name of this function from createInitialUsers
-  //postNewUser -- try to get done this June 29 thursday
-  //postNewGame -- try to get done this weekend June 30
-  //postNewComment
-  //postNewReview
+
+  createUsers,
   fetchAllUsers,
-  fetchUsersbyUsername, //<-- added June 29th
+  fetchUsersbyUsername,
+
   buildDatabase,
 };
