@@ -88,7 +88,6 @@ async function createNewGame(newGameObj) {
     const { rows } = await client.query(
       `
         INSERT INTO games(title, platform, genre, msrp, score, ourreview, studio, ourscore, picturecard, pictureheader, picturebody, picturefooter, synopsis, about, forgamer, notfor)
-        INSERT INTO games(title, platform, genre, msrp, score, ourreview, studio, ourscore, picturecard, pictureheader, picturebody, picturefooter, synopsis, about, forgamer, notfor)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
         RETURNING *;
         `,
@@ -1403,6 +1402,306 @@ async function buildDatabase() {
       password: "Heni288&lwj",
       email: "glaej@gmail.com",
       profilepic: "url/href for GaleJaxJax2222",
+      is_admin: false,
+    });
+
+    const seedUser31 = await createUsers({
+      username: "JumboJohn",
+      fname: "John",
+      lname: "Smith",
+      password: "xY3bP@w&8Zs!",
+      email: "Jj@gmail.com",
+      profilepic: "url/href for GaleJaxJax2222",
+      is_admin: false,
+    });
+
+    const seedUser32 = await createUsers({
+      username: "DayPants92",
+      fname: "Oliver",
+      lname: "Harris",
+      password: "9$L*j6E#zFv2",
+      email: "DanceDreamer92@gmail.com",
+      profilepic: "url/href for GaleJaxJax2222",
+      is_admin: false,
+    });
+
+    const seedUser33 = await createUsers({
+      username: "RhythmJunkie92",
+      fname: "Ava",
+      lname: "Mitchell",
+      password: "Q7dG@k1S!5cP",
+      email: "TheDangel92@gmail.com",
+      profilepic: "url/href for GaleJaxJax2222",
+      is_admin: false,
+    });
+
+    const seedUser34 = await createUsers({
+      username: "WhimsicalJumper",
+      fname: "Emma",
+      lname: "Sullivan",
+      password: "X3@#gBp!29",
+      email: "sunnyblue12@example.com",
+      profilepic: "url/href for GaleJaxJax2222",
+      is_admin: false,
+    });
+
+    const seedUser35 = await createUsers({
+      username: "ElectricShadow",
+      fname: "Ava",
+      lname: "Carter",
+      password: "Qw2@9#nL4!",
+      email: "wanderlust87@example.com",
+      profilepic: "url/href for ElectricShadow",
+      is_admin: false,
+    });
+
+    const seedUser36 = await createUsers({
+      username: "SapphireWanderer",
+      fname: "Noah",
+      lname: "Thompson",
+      password: "7^f$1Mz@8!",
+      email: "radiantflower45@example.com",
+      profilepic: "url/href for SapphireWanderer",
+      is_admin: false,
+    });
+
+    const seedUser37 = await createUsers({
+      username: "CosmicDreamer",
+      fname: "Olivia",
+      lname: "Foster",
+      password: "H@6g#9yT3!",
+      email: "techgeek21@example.com",
+      profilepic: "url/href for CosmicDreamer",
+      is_admin: false,
+    });
+
+    const seedUser38 = await createUsers({
+      username: "VelvetRaven",
+      fname: "Liam",
+      lname: "Mitchell",
+      password: "D5@*x!2oY7",
+      email: "whimsicaldreamer98@example.com",
+      profilepic: "url/href for VelvetRaven",
+      is_admin: false,
+    });
+
+    const seedUser39 = await createUsers({
+      username: "EnigmaticWhisper",
+      fname: "Sophia",
+      lname: "Gray",
+      password: "J6%v#1tA@4",
+      email: "adventureseeker55@example.com",
+      profilepic: "url/href for EnigmaticWhisper",
+      is_admin: false,
+    });
+
+    const seedUser40 = await createUsers({
+      username: "RadiantGlimmer",
+      fname: "Benjamin",
+      lname: "Richardson",
+      password: "R3#s@5vP*9",
+      email: "creativeartist77@example.com",
+      profilepic: "url/href for RadiantGlimmer",
+      is_admin: false,
+    });
+
+    const seedUser41 = await createUsers({
+      username: "MidnightProwler",
+      fname: "Isabella",
+      lname: "Cooper",
+      password: "2@L4c9Y$1%",
+      email: "sportsfanatic23@example.com",
+      profilepic: "url/href for MidnightProwler",
+      is_admin: false,
+    });
+
+    const seedUser42 = await createUsers({
+      username: "QuirkyDoodle",
+      fname: "James",
+      lname: "Murphy",
+      password: "K@9&b6Tq#8",
+      email: "bookworm89@example.com",
+      profilepic: "url/href for QuirkyDoodle",
+      is_admin: false,
+    });
+
+    const seedUser43 = await createUsers({
+      username: "NebulaSparkle",
+      fname: "Mia",
+      lname: "Brookes",
+      password: "F@2g7I$4%",
+      email: "musiclover42@example.com",
+      profilepic: "url/href for NebulaSparkle",
+      is_admin: false,
+    });
+
+    const seedUser44 = await createUsers({
+      username: "SereneBreeze",
+      fname: "Ethan",
+      lname: "Adams",
+      password: "6J@4p!8K#2",
+      email: "fitnessenthusiast61@example.com",
+      profilepic: "url/href for SereneBreeze",
+      is_admin: false,
+    });
+
+    const seedUser45 = await createUsers({
+      username: "MysticalSphinx",
+      fname: "Charolette",
+      lname: "Peterson",
+      password: "B#5&v4Rm!9",
+      email: "foodiechef36@example.com",
+      profilepic: "url/href for MysticalSphinx",
+      is_admin: false,
+    });
+
+    const seedUser46 = await createUsers({
+      username: "SilverLuna",
+      fname: "Alexander",
+      lname: "Morgan",
+      password: "T@7s#2qF3%",
+      email: "natureexplorer79@example.com",
+      profilepic: "url/href for SilverLuna",
+      is_admin: false,
+    });
+
+    const seedUser47 = await createUsers({
+      username: "WhisperingWillow",
+      fname: "Amelia",
+      lname: "Bennett",
+      password: "M4!j#5vK@9",
+      email: "animallover14@example.com",
+      profilepic: "url/href for WhisperingWillow",
+      is_admin: false,
+    });
+
+    const seedUser48 = await createUsers({
+      username: "InfiniteJourney",
+      fname: "Jacob",
+      lname: "Campbell",
+      password: "8N@9p!7B#3",
+      email: "thrillseeker27@example.com",
+      profilepic: "url/href for InfiniteJourney",
+      is_admin: false,
+    });
+
+    const seedUser49 = await createUsers({
+      username: "EmberGazer",
+      fname: "Harper",
+      lname: "Reed",
+      password: "G@3d5Rq*7%",
+      email: "fashionista88@example.com",
+      profilepic: "url/href for EmberGazer",
+      is_admin: false,
+    });
+
+    const seedUser50 = await createUsers({
+      username: "DreamyGlimpse",
+      fname: "William",
+      lname: "Phillips",
+      password: "V$2!g5N@9#",
+      email: "techsavvy73@example.com",
+      profilepic: "url/href for DreamyGlimpse",
+      is_admin: false,
+    });
+
+    const seedUser51 = await createUsers({
+      username: "BrightStar22",
+      fname: "Emily",
+      lname: "Anderson",
+      password: "P@ssw0rd123",
+      email: " emily.anderson@example.com",
+      profilepic: "url/href for BrightStar22",
+      is_admin: false,
+    });
+
+    const seedUser52 = await createUsers({
+      username: "AquaWave16",
+      fname: "Liam",
+      lname: "Roberts",
+      password: "Secret@987",
+      email: "liam.roberts@example.com",
+      profilepic: "url/href for AquaWave16",
+      is_admin: false,
+    });
+
+    const seedUser53 = await createUsers({
+      username: "SilverArrow99",
+      fname: "Juan",
+      lname: "Nunez",
+      password: "StrongPass#1",
+      email: "Crusher6X@example.com",
+      profilepic: "url/href for SilverArrow99",
+      is_admin: false,
+    });
+
+    const seedUser54 = await createUsers({
+      username: "SwiftTiger11",
+      fname: "Ethan",
+      lname: "Davis",
+      password: "TigerEyes@3",
+      email: "TangyWinger15@example.com",
+      profilepic: "url/href for SwiftTiger11",
+      is_admin: false,
+    });
+
+    const seedUser55 = await createUsers({
+      username: "MidnightRose44",
+      fname: "Dialgo",
+      lname: "Luna",
+      password: "RoseBloom$8",
+      email: "Jester15@example.com",
+      profilepic: "url/href for MidnightRose44",
+      is_admin: false,
+    });
+
+    const seedUser56 = await createUsers({
+      username: "StellarGazer88",
+      fname: "Phila",
+      lname: "Dentonic",
+      password: "GazeStars@12",
+      email: "Phickle324@#@example.com",
+      profilepic: "url/href for StellarGazer88",
+      is_admin: false,
+    });
+
+    const seedUser57 = await createUsers({
+      username: "WildSerenade77",
+      fname: "Kino",
+      lname: "Grapp",
+      password: "Melody$321",
+      email: "Sunodo23@example.com",
+      profilepic: "url/href for WildSerenade77",
+      is_admin: false,
+    });
+
+    const seedUser58 = await createUsers({
+      username: "ElectricDreams55",
+      fname: "Lucy",
+      lname: "Wong",
+      password: "Lightning@789",
+      email: "rippalla@example.com",
+      profilepic: "url/href for ElectricDreams55",
+      is_admin: false,
+    });
+
+    const seedUser59 = await createUsers({
+      username: "LunaWhisper66",
+      fname: "Tullua",
+      lname: "Bistro",
+      password: "Moonlight*567",
+      email: "XYZ321@example.com",
+      profilepic: "url/href for LunaWhisper66",
+      is_admin: false,
+    });
+
+    const seedUser60 = await createUsers({
+      username: "CosmicJourney33",
+      fname: "Gerny",
+      lname: "George",
+      password: "GalaxyQuest!9",
+      email: "GernySkywalker@example.com",
+      profilepic: "url/href for CosmicJourney33",
       is_admin: false,
     });
 
