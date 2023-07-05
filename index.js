@@ -132,7 +132,7 @@ async function postNewGame(req, res) {
     console.log("This is my decrypted token:", isThisAGoodToken);
 
     if (isThisAGoodToken) {
-      const userFromDb = await fetchUsersbyUsername(isThisAGoodToken.username);
+      const userFromDb = await fetchUsersByUsername(isThisAGoodToken.username);
       console.log(req.body, " ?????????");
       if (userFromDb) {
         const newGamePost = await createNewGame(req.body);

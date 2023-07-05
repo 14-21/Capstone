@@ -7,11 +7,12 @@ async function dropTables() {
 
   try {
     await client.query(`
+    DROP TABLE IF EXISTS comments;
     DROP TABLE IF EXISTS reviews;
     DROP TABLE IF EXISTS games;
     DROP TABLE IF EXISTS users;
     `);
-
+    
     console.log("Finished dropping tables...");
   } catch (error) {
     throw error;
@@ -67,6 +68,14 @@ async function createTables() {
           "reviewGameId" INTEGER REFERENCES games("gameId")
         );
         `);
+
+    // await client.query(`
+    //     CREATE TABLE comments (
+    //       "commentId" SERIAL PRIMARY KEY,			
+    //       commentbody TEXT DEFAULT 'Your Comment Here',
+    //       "origReviewId" INTEGER REFERENCES reviews("reviewId")
+    //     );
+    //     `);
 
     console.log("Finished creating tables");
   } catch (error) {
@@ -180,6 +189,7 @@ async function createUsers(userObj) {
         userObj.is_admin,
       ]
     );
+    console.log("This is the create users function for seed")
     if (rows.length) {
       return rows[0];
     }
@@ -188,7 +198,7 @@ async function createUsers(userObj) {
   }
 }
 
-async function fetchUsersbyUsername(username) {
+async function fetchUsersByUsername(username) {
   try {
     const { rows } = await client.query(
       `
@@ -244,6 +254,25 @@ async function createReviews(reviewObj) {
   }
 }
 
+async function fetchUsersById(id) {
+  try {
+    const { rows:[user] } = await client.query(
+      `
+      SELECT * FROM users
+      WHERE "userId"=$1
+      `,
+      [id]
+    );
+
+    delete user.password;
+
+    return user;
+    
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 async function fetchAllReviews() {
   try {
     const { rows } = await client.query(
@@ -260,8 +289,46 @@ async function fetchAllReviews() {
   }
 }
 
-//Build the master DB
+// async function createComments(commentObj) {
+//   try {
+//     const { rows } = await client.query(
+//       `
+//       INSERT INTO comments (commentbody, "origReviewId")
+//       VALUES ($1, $2)
+//       RETURNING commentbody;
+//       `, 
+//       [
+//         commentObj.commentbody,
+//         commentObj.origReviewId,
+//       ]
+//       );
+//       if (rows.length) {
+//         return rows[0];
+//       }
+//     } catch (error) {
+//       console.log(error)
+//     }
+//   }
 
+  // async function fetchAllComments() {
+  //   try {
+  //     const { rows } = await client.query(
+  //       `
+  //       SELECT * FROM comments
+  //       INNER JOIN comments ON reviews.reviewId = comments.id
+        
+  //       `
+  //     );
+  //     if (rows.length) {
+  //       return rows;
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }
+
+
+//Build the master DB
 async function buildDatabase() {
   try {
     client.connect();
@@ -1085,6 +1152,7 @@ async function buildDatabase() {
         "Throughout the game, players encounter non-player characters (NPCs) and enemies, including demigods who rule each main area and serve as the game's main bosses. Elden Ring also includes hidden dungeons, catacombs, tunnels, and caves where players can fight bosses and gather helpful items.",
     });
 
+    console.log("Finished seed games.")
     const allGames = await fetchAllGames();
     const findSpecificGame = await fetchGameById(1);
     // console.log(findSpecificGame);
@@ -1690,6 +1758,8 @@ async function buildDatabase() {
       is_admin: false,
     });
 
+    console.log("Finished seed users")
+
     const allUsers = await fetchAllUsers();
     console.log(allUsers);
 
@@ -1722,11 +1792,114 @@ async function buildDatabase() {
       reviewUserId: 27,
       reviewGameId: 22,
     });
+    const seedReview5 = await createReviews({
+      reviewbody: "Featuring a rich character customization system and deep skill trees, this game offers a truly personalized gaming experience.",
+      userscore: 3,
+      reviewUserId: 18,
+      reviewGameId: 29,
+    });
+    const seedReview6 = await createReviews({
+      reviewbody: "With its intuitive controls and smooth gameplay mechanics, this game is a joy to play, appealing to both casual and hardcore gamers.",
+      userscore: 4,
+      reviewUserId: 30,
+      reviewGameId: 18,
+    });
+    const seedReview7 = await createReviews({
+      reviewbody: "The game's breathtaking soundtrack and immersive sound effects enhance the overall gaming experience, bringing the virtual world to life.",
+      userscore: 4,
+      reviewUserId: 24,
+      reviewGameId: 7,
+    });
+    const seedReview8 = await createReviews({
+      reviewbody: "The strategic gameplay mechanics and tactical decision-making required in this game make it a must-play for fans of the genre.",
+      userscore: 3,
+      reviewUserId: 6,
+      reviewGameId: 12,
+    });
+    const seedReview9 = await createReviews({
+      reviewbody: "This game's unique art style and vibrant visuals create a visually stunning and captivating gaming experience.",
+      userscore: 4,
+      reviewUserId: 22,
+      reviewGameId: 28,
+    });
+    const seedReview10 = await createReviews({
+      reviewbody: "From its emotionally charged cutscenes to its well-developed characters, this game immerses players in a compelling narrative.",
+      userscore: 4,
+      reviewUserId: 3,
+      reviewGameId: 4,
+    });
+    const seedReview11 = await createReviews({
+      reviewbody: "With its challenging puzzles and brain-teasing obstacles, this game keeps players engaged and entertained for hours.",
+      userscore: 4,
+      reviewUserId: 12,
+      reviewGameId: 19,
+    });
+    const seedReview12 = await createReviews({
+      reviewbody: "With its challenging puzzles and brain-teasing obstacles, this game keeps players engaged and entertained for hours.",
+      userscore: 3,
+      reviewUserId: 9,
+      reviewGameId: 10,
+    });
+    const seedReview13 = await createReviews({
+      reviewbody: "Featuring an array of memorable boss battles and epic showdowns, this game delivers adrenaline-pumping excitement.",
+      userscore: 4,
+      reviewUserId: 20,
+      reviewGameId: 30,
+    });
+    const seedReview14 = await createReviews({
+      reviewbody: "The game's realistic physics engine and lifelike animations make every action and movement feel satisfyingly authentic.",
+      userscore: 2,
+      reviewUserId: 26,
+      reviewGameId: 25,
+    });
+    const seedReview15 = await createReviews({
+      reviewbody: "This game's seamless integration of virtual reality technology creates an unparalleled level of immersion for players.",
+      userscore: 1,
+      reviewUserId: 5,
+      reviewGameId: 2,
+    });
 
     const allReviews = await fetchAllReviews();
     console.log(allReviews);
+    console.log("Finished seed reviews")
+
+//Begin seed comment data
+    // const seedComment1 = await createComments({
+    //   commentbody: "Graphics are out of this world!",
+    //   origReviewId: 2,
+    //   origReviewUserId: 19,
+    // });
+    // const seedComment2 = await createComments({
+    //   commentbody: "I couldn't put the controller down!" ,
+    //   origReviewId: 16,
+    //   origReviewUserId: 10,
+    // });
+    // const seedComment3 = await createComments({
+    //   commentbody:"I got lost in its vastness." ,
+    //   origReviewId: 14,
+    //   origReviewUserId: 7,
+    // });
+    // const seedComment4 = await createComments({
+    //   commentbody: "Multiplayer battles were pure adrenaline." ,
+    //   origReviewId: 27,
+    //   origReviewUserId: 28,
+    // });
+    // const seedComment5 = await createComments({
+    //   commentbody: "I felt like the ultimate hero!" ,
+    //   origReviewId: 18,
+    //   origReviewUserId: 15,
+    // });
+    // const seedComment6 = await createComments({
+    //   commentbody:"Gameplay was smooth as butter." ,
+    //   origReviewId: 30,
+    //   origReviewUserId: 21,
+    // });
+
+    // console.log("Finished seed comments.")
+
 
     client.end();
+    console.log("Finished seed.")
   } catch (error) {
     console.log(error);
   }
@@ -1740,10 +1913,14 @@ module.exports = {
 
   createUsers,
   fetchAllUsers,
-  fetchUsersbyUsername,
+  fetchUsersByUsername,
+  fetchUsersById,
 
   createReviews,
   fetchAllReviews,
+
+  // createComments,
+  // fetchAllComments,
 
   buildDatabase,
 };
