@@ -169,19 +169,20 @@ async function getAllReviews(req, res, next) {
 }
 app.get("/reviews", getAllReviews);
 
+// async function getAllComments(req,res,next){
+//   try {
+//     const allComments = await fetchAllComments():
+//     if (allComments && allGamesData.length){
+//       res.send(allComments);
+//     }else{
+//       res.send("No Comments Available...");
+//     }
+//   } catch (error) {
+//     console.log(error)
+//   }
+// }
 
-async function getAllUsers(req, res) {
-  try {
-    const allUsersData = await fetchAllUsers();
-    if (allUsersData && allUsersData.length) {
-      res.send(allGamesData);
-    } else {
-      res.send("No User Data Available...");
-    }
-  } catch (error) {
-    console.log(error);
-  }
-}
+// app.get("/comments", getAllComments)
 
 // async function getGamesByGenre(req, res, next) {
 //   try {
