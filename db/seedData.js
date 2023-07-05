@@ -162,7 +162,7 @@ async function fetchGameByStudio(studioValue) {
         `);
 
     console.log(rows);
-    console.log("This is the fetchgameby studio function");
+    console.log("This is the fetchGameByStudio function");
 
     return rows[0];
   } catch (error) {
@@ -273,6 +273,24 @@ async function fetchUsersById(id) {
   }
 }
 
+async function updateUserByUserId(userId, {username, fname, lname, password, email, profilepic, is_admin}) {
+try {
+  const { rows } = await client.query(
+    `
+    UPDATE users
+    SET username = $1, fname = $2, lname = $3, password = $4, email = $5, profilepic = $6, is_admin = $7
+    WHERE "userId" = $8
+    RETURNING username;
+    `,
+    [username, fname, lname, password, email, profilepic, is_admin])
+    if (rows.lentgh){
+      return rows[0];
+    }
+} catch (error) {
+  console.log(error)
+}
+}
+
 async function fetchAllReviews() {
   try {
     const { rows } = await client.query(
@@ -288,6 +306,30 @@ async function fetchAllReviews() {
     console.log(error);
   }
 }
+
+
+async function deleteReview(reviewId){
+  try {
+    const { rows } = await client.query(
+      `
+      DELETE FROM reviews
+      WHERE "reviewId" = $1
+      RETURNING *;
+      `, [reviewId]
+    )
+    if (rows.length){
+      return rows[0]
+    }else {
+      return "Failed to delete review"
+    }
+
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+
+
 
 // async function createComments(commentObj) {
 //   try {
@@ -1915,9 +1957,11 @@ module.exports = {
   fetchAllUsers,
   fetchUsersByUsername,
   fetchUsersById,
+  updateUserByUserId,
 
   createReviews,
   fetchAllReviews,
+  deleteReview,
 
   // createComments,
   // fetchAllComments,
