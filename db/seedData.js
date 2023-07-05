@@ -4,7 +4,7 @@ const client = require("./index");
 
 async function dropTables() {
   console.log("Dropping Tables");
-  
+
   try {
     await client.query(`
     DROP TABLE IF EXISTS reviews;
@@ -57,7 +57,7 @@ async function createTables() {
           is_admin BOOLEAN DEFAULT false
           );
           `);
-          
+
     await client.query(`
         CREATE TABLE reviews (
           "reviewId" SERIAL PRIMARY KEY,			
@@ -78,7 +78,6 @@ async function createNewGame(newGameObj) {
   try {
     const { rows } = await client.query(
       `
-        INSERT INTO games(title, platform, genre, msrp, score, ourreview, studio, ourscore, picturecard, pictureheader, picturebody, picturefooter, synopsis, about, forgamer, notfor)
         INSERT INTO games(title, platform, genre, msrp, score, ourreview, studio, ourscore, picturecard, pictureheader, picturebody, picturefooter, synopsis, about, forgamer, notfor)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
         RETURNING *;
@@ -261,7 +260,6 @@ async function fetchAllReviews() {
   }
 }
 
-
 //Build the master DB
 
 async function buildDatabase() {
@@ -271,7 +269,7 @@ async function buildDatabase() {
     await dropTables();
     await createTables();
 
-//Start of games seed data
+    //Start of games seed data
     const gameDiablo4 = await createNewGame({
       title: "Diablo 4",
       platform: "PC, XBox, PlayStation",
@@ -1695,27 +1693,31 @@ async function buildDatabase() {
     const allUsers = await fetchAllUsers();
     console.log(allUsers);
 
-//Start of reviews seed data
+    //Start of reviews seed data
     const seedReview1 = await createReviews({
-      reviewbody: "With stunning graphics and immersive gameplay, this video game transports players to a breathtaking world filled with endless possibilities.",
+      reviewbody:
+        "With stunning graphics and immersive gameplay, this video game transports players to a breathtaking world filled with endless possibilities.",
       userscore: 3,
       reviewUserId: 2,
       reviewGameId: 1,
     });
     const seedReview2 = await createReviews({
-      reviewbody: "From its gripping storyline to its intense combat mechanics, this game keeps players on the edge of their seats, craving for more.",
+      reviewbody:
+        "From its gripping storyline to its intense combat mechanics, this game keeps players on the edge of their seats, craving for more.",
       userscore: 4,
       reviewUserId: 16,
       reviewGameId: 15,
     });
     const seedReview3 = await createReviews({
-      reviewbody: "With a vast open world to explore and countless quests to embark on, this game offers an unparalleled sense of adventure.",
+      reviewbody:
+        "With a vast open world to explore and countless quests to embark on, this game offers an unparalleled sense of adventure.",
       userscore: 4,
       reviewUserId: 14,
       reviewGameId: 6,
     });
     const seedReview4 = await createReviews({
-      reviewbody: "The game's innovative multiplayer mode allows players to team up with friends and engage in exhilarating battles, creating unforgettable gaming moments.",
+      reviewbody:
+        "The game's innovative multiplayer mode allows players to team up with friends and engage in exhilarating battles, creating unforgettable gaming moments.",
       userscore: 3,
       reviewUserId: 27,
       reviewGameId: 22,
