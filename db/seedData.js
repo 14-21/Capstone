@@ -188,7 +188,7 @@ async function createUsers(userObj) {
   }
 }
 
-async function fetchUsersbyUsername(username) {
+async function fetchUsersByUsername(username) {
   try {
     const { rows } = await client.query(
       `
