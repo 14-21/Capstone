@@ -7,9 +7,9 @@ async function dropTables() {
   
   try {
     await client.query(`
+    DROP TABLE IF EXISTS reviews;
     DROP TABLE IF EXISTS games;
     DROP TABLE IF EXISTS users;
-    DROP TABLE IF EXISTS reviews;
     `);
 
     console.log("Finished dropping tables...");
@@ -53,18 +53,18 @@ async function createTables() {
           lname VARCHAR(255) NOT NULL,
           password VARCHAR(255) NOT NULL,
           email VARCHAR(255) UNIQUE NOT NULL,
-          profilepic TEXT DEFAULT "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png",
+          profilepic TEXT DEFAULT 'https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png',
           is_admin BOOLEAN DEFAULT false
-        );
-        `);
-
+          );
+          `);
+          
     await client.query(`
         CREATE TABLE reviews (
           "reviewId" SERIAL PRIMARY KEY,			
-          reviewbody TEXT DEFAULT "Your Review Here",
+          reviewbody TEXT DEFAULT 'Your Review Here',
           userscore INTEGER NOT NULL,
-          "reviewUserId" INTEGER REFERENCES users("userId),
-          "reviewGameId" INTEGER REFERENCES games("gameId)
+          "reviewUserId" INTEGER REFERENCES users("userId"),
+          "reviewGameId" INTEGER REFERENCES games("gameId")
         );
         `);
 
@@ -1439,8 +1439,8 @@ module.exports = {
   fetchAllUsers,
   fetchUsersbyUsername,
 
-  createReviews,
-  fetchAllReviews,
+  // createReviews,
+  // fetchAllReviews,
 
   buildDatabase,
 };
