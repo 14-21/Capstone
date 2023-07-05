@@ -1740,8 +1740,8 @@ module.exports = {
   fetchAllUsers,
   fetchUsersbyUsername,
 
-  // createReviews,
-  // fetchAllReviews,
+  createReviews,
+  fetchAllReviews,
 
   buildDatabase,
 };

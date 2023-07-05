@@ -29,6 +29,8 @@ const {
   createNewGame,
   fetchUsersbyUsername,
   createUsers,
+  createReviews,
+  fetchAllReviews,
 } = require("./db/seedData");
 
 async function getAllGames(req, res, next) {
@@ -152,6 +154,34 @@ async function postNewGame(req, res) {
 }
 
 app.post("/games/create/game", postNewGame);
+
+async function getAllReviews(req, res, next) {
+  try {
+    const allGamesData = await fetchAllReviews();
+    if (allGamesData && allGamesData.length) {
+      res.send(allGamesData);
+    } else {
+      res.send("No Reviews Available...");
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+app.get("/reviews", getAllReviews);
+
+
+async function getAllUsers(req, res) {
+  try {
+    const allUsersData = await fetchAllUsers();
+    if (allUsersData && allUsersData.length) {
+      res.send(allGamesData);
+    } else {
+      res.send("No User Data Available...");
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 // async function getGamesByGenre(req, res, next) {
 //   try {
