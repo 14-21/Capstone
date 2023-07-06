@@ -27,7 +27,7 @@ const {
   fetchGameByStudio,
   fetchAllUsers,
   createNewGame,
-  fetchUsersbyUsername,
+  fetchUsersByUsername,
   createUsers,
   createReviews,
   fetchAllReviews,
