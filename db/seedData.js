@@ -464,7 +464,7 @@ async function buildDatabase() {
       genre: "Horror Survival",
       msrp: "$9.99",
       score: "5",
-      ourreview: "The Last of Us is awesome! Sorry about her dad.",
+      ourreview: "Excellent horror game where you play undercover agent Kyle Crane who is sent to infiltrate a quarantine zone in the Middle-east.",
       studio: "Techland",
       ourscore: "4",
       picturecard:
@@ -491,7 +491,7 @@ async function buildDatabase() {
       genre: "Horror Survival",
       msrp: "$29.99",
       score: "4",
-      ourreview: "The Last of Us is awesome! Sorry about her dad.",
+      ourreview: "Sequel to the virus campaign but this time it took over 6 years for it to come out, leaving fans breathless for more.",
       studio: "Techland",
       ourscore: "4",
       picturecard:
@@ -841,7 +841,7 @@ async function buildDatabase() {
     const gameSMITE = await createNewGame({
       title: "SMITE",
       platform: "PC, PS5",
-      genre: "MMO, RPG",
+      genre: "MMO RPG",
       msrp: "Free",
       score: "3",
       ourreview:
