@@ -177,7 +177,7 @@ async function createUsers(userObj) {
       `
         INSERT INTO users(username, fname, lname, password, email, profilepic, is_admin)
         VALUES ($1, $2, $3, $4, $5, $6, $7)
-        RETURNING username;
+        RETURNING "userId", username, email;
         `,
       [
         userObj.username,
@@ -231,6 +231,44 @@ async function fetchAllUsers() {
   }
 }
 
+async function fetchUsersById(id) {
+  try {
+    const { rows:[user] } = await client.query(
+      `
+      SELECT * FROM users
+      WHERE "userId"=$1
+      `,
+      [id]
+    );
+
+    delete user.password;
+
+    return user;
+    
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+// async function updateUserByUserId(userId, {username, fname, lname, password, email, profilepic,}) {
+// try {
+//   const { rows } = await client.query(
+//     `
+//     UPDATE users
+//     SET username = $1, fname = $2, lname = $3, password = $4, email = $5, profilepic = $6,
+//     WHERE "userId" = $7
+//     RETURNING username;
+//     `,
+//     [username, fname, lname, password, email, profilepic, is_admin])
+//     if (rows.lentgh){
+//       return rows[0];
+//     }
+// } catch (error) {
+//   console.log(error)
+// }
+// }
+
+//Start of review functions
 async function createReviews(reviewObj) {
   try {
     const { rows } = await client.query(
@@ -254,43 +292,6 @@ async function createReviews(reviewObj) {
   }
 }
 
-async function fetchUsersById(id) {
-  try {
-    const { rows:[user] } = await client.query(
-      `
-      SELECT * FROM users
-      WHERE "userId"=$1
-      `,
-      [id]
-    );
-
-    delete user.password;
-
-    return user;
-    
-  } catch (error) {
-    console.log(error)
-  }
-}
-
-async function updateUserByUserId(userId, {username, fname, lname, password, email, profilepic, is_admin}) {
-try {
-  const { rows } = await client.query(
-    `
-    UPDATE users
-    SET username = $1, fname = $2, lname = $3, password = $4, email = $5, profilepic = $6, is_admin = $7
-    WHERE "userId" = $8
-    RETURNING username;
-    `,
-    [username, fname, lname, password, email, profilepic, is_admin])
-    if (rows.lentgh){
-      return rows[0];
-    }
-} catch (error) {
-  console.log(error)
-}
-}
-
 async function fetchAllReviews() {
   try {
     const { rows } = await client.query(
@@ -306,6 +307,35 @@ async function fetchAllReviews() {
     console.log(error);
   }
 }
+
+// async function editReview() {
+//   try {
+//     console.log(id, fields, 'i am in the edit review')
+//     const arrayOfKeys - Object.keys(fields)
+//     console.log(arrayOfKeys, 'array of keys')
+//     const mapOfSetStringNames = arrayOfKeys.map((key, index) => {
+//       return `"${key}"= $$(index +1}`
+      
+//     })
+//     const setString = mapOfSetStringNames.join(`,`)
+//     if(setString.length === 0) {
+//       return
+//     }
+//     try {
+//       const { rows } = await client.query(`
+//       UPDATE reviews
+//       SET ${setString}
+//       WHERE id=${id}
+//       RETURNING *;
+//       `, Object.values(fields))
+//       console.log(rows[0], "object .values fields")
+//       return reviews
+//     }
+//   } catch (error) {
+//     console.log(error);
+//     throw error;
+//   }
+// }
 
 
 async function deleteReview(reviewId){
@@ -1955,10 +1985,11 @@ module.exports = {
   fetchAllUsers,
   fetchUsersByUsername,
   fetchUsersById,
-  updateUserByUserId,
+  // updateUserByUserId,
 
   createReviews,
   fetchAllReviews,
+  // editReview,
   deleteReview,
 
   // createComments,
