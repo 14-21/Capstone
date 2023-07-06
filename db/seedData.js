@@ -329,8 +329,6 @@ async function deleteReview(reviewId){
 }
 
 
-
-
 // async function createComments(commentObj) {
 //   try {
 //     const { rows } = await client.query(
