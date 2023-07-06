@@ -7,11 +7,12 @@ async function dropTables() {
 
   try {
     await client.query(`
+    DROP TABLE IF EXISTS comments;
     DROP TABLE IF EXISTS reviews;
     DROP TABLE IF EXISTS games;
     DROP TABLE IF EXISTS users;
     `);
-
+    
     console.log("Finished dropping tables...");
   } catch (error) {
     throw error;
@@ -67,6 +68,14 @@ async function createTables() {
           "reviewGameId" INTEGER REFERENCES games("gameId")
         );
         `);
+
+    // await client.query(`
+    //     CREATE TABLE comments (
+    //       "commentId" SERIAL PRIMARY KEY,			
+    //       commentbody TEXT DEFAULT 'Your Comment Here',
+    //       "origReviewId" INTEGER REFERENCES reviews("reviewId")
+    //     );
+    //     `);
 
     console.log("Finished creating tables");
   } catch (error) {
@@ -153,7 +162,7 @@ async function fetchGameByStudio(studioValue) {
         `);
 
     console.log(rows);
-    console.log("This is the fetchgameby studio function");
+    console.log("This is the fetchGameByStudio function");
 
     return rows[0];
   } catch (error) {
@@ -180,6 +189,7 @@ async function createUsers(userObj) {
         userObj.is_admin,
       ]
     );
+    console.log("This is the create users function for seed")
     if (rows.length) {
       return rows[0];
     }
@@ -188,7 +198,7 @@ async function createUsers(userObj) {
   }
 }
 
-async function fetchUsersbyUsername(username) {
+async function fetchUsersByUsername(username) {
   try {
     const { rows } = await client.query(
       `
@@ -244,6 +254,43 @@ async function createReviews(reviewObj) {
   }
 }
 
+async function fetchUsersById(id) {
+  try {
+    const { rows:[user] } = await client.query(
+      `
+      SELECT * FROM users
+      WHERE "userId"=$1
+      `,
+      [id]
+    );
+
+    delete user.password;
+
+    return user;
+    
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+async function updateUserByUserId(userId, {username, fname, lname, password, email, profilepic, is_admin}) {
+try {
+  const { rows } = await client.query(
+    `
+    UPDATE users
+    SET username = $1, fname = $2, lname = $3, password = $4, email = $5, profilepic = $6, is_admin = $7
+    WHERE "userId" = $8
+    RETURNING username;
+    `,
+    [username, fname, lname, password, email, profilepic, is_admin])
+    if (rows.lentgh){
+      return rows[0];
+    }
+} catch (error) {
+  console.log(error)
+}
+}
+
 async function fetchAllReviews() {
   try {
     const { rows } = await client.query(
@@ -260,8 +307,68 @@ async function fetchAllReviews() {
   }
 }
 
-//Build the master DB
 
+async function deleteReview(reviewId){
+  try {
+    const { rows } = await client.query(
+      `
+      DELETE FROM reviews
+      WHERE "reviewId" = $1
+      RETURNING *;
+      `, [reviewId]
+    )
+    if (rows.length){
+      return rows[0]
+    }else {
+      return "Failed to delete review"
+    }
+
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+
+// async function createComments(commentObj) {
+//   try {
+//     const { rows } = await client.query(
+//       `
+//       INSERT INTO comments (commentbody, "origReviewId")
+//       VALUES ($1, $2)
+//       RETURNING commentbody;
+//       `, 
+//       [
+//         commentObj.commentbody,
+//         commentObj.origReviewId,
+//       ]
+//       );
+//       if (rows.length) {
+//         return rows[0];
+//       }
+//     } catch (error) {
+//       console.log(error)
+//     }
+//   }
+
+  // async function fetchAllComments() {
+  //   try {
+  //     const { rows } = await client.query(
+  //       `
+  //       SELECT * FROM comments
+  //       INNER JOIN comments ON reviews.reviewId = comments.id
+        
+  //       `
+  //     );
+  //     if (rows.length) {
+  //       return rows;
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }
+
+
+//Build the master DB
 async function buildDatabase() {
   try {
     client.connect();
@@ -354,7 +461,7 @@ async function buildDatabase() {
     const gameDyingLight = await createNewGame({
       title: "Dying Light",
       platform: "PlayStation 5",
-      genre: "Survival",
+      genre: "Horror Survival",
       msrp: "$9.99",
       score: "5",
       ourreview: "The Last of Us is awesome! Sorry about her dad.",
@@ -381,7 +488,7 @@ async function buildDatabase() {
     const gameDyingLight2 = await createNewGame({
       title: "Dying Light 2: Stay Human",
       platform: "PC, PlayStation 5",
-      genre: "Survival",
+      genre: "Horror Survival",
       msrp: "$29.99",
       score: "4",
       ourreview: "The Last of Us is awesome! Sorry about her dad.",
@@ -436,7 +543,7 @@ async function buildDatabase() {
     const gameDeadIsland2 = await createNewGame({
       title: "Dead Island 2",
       platform: "PC, PlayStation 5",
-      genre: "Survival",
+      genre: "Action Survival",
       msrp: "$29.99",
       score: "4",
       ourreview:
@@ -545,7 +652,7 @@ async function buildDatabase() {
     const gameDeadByDaylight = await createNewGame({
       title: "Dead by Daylight",
       platform: "PC, PlayStation 5",
-      genre: "Adventure RPG, Horror",
+      genre: "RPG Horror",
       msrp: "$19.99",
       score: "4",
       ourreview: "This is one of the most fun to watch RP streams to.",
@@ -572,7 +679,7 @@ async function buildDatabase() {
     const gameCSGO = await createNewGame({
       title: "Counter-Strike: Global Offensive",
       platform: "PC, PlayStation 5",
-      genre: "FPS",
+      genre: "Action FPS",
       msrp: "$19.99",
       score: "4",
       ourreview: "Classic. Don't gamble lol.",
@@ -599,7 +706,7 @@ async function buildDatabase() {
     const gameStardewValley = await createNewGame({
       title: "Stardew Valley",
       platform: "PC, PlayStation 5",
-      genre: "Simulation",
+      genre: "RPG Simulation",
       msrp: "$14.99",
       score: "4",
       ourreview: "Basically a goat of sim games and farming sims.",
@@ -626,7 +733,7 @@ async function buildDatabase() {
     const gameCitiesSkylines = await createNewGame({
       title: "Cities: Skylines",
       platform: "PC, PlayStation 5",
-      genre: "Simulation",
+      genre: "RPG Simulation",
       msrp: "$14.99",
       score: "4",
       ourreview:
@@ -653,7 +760,7 @@ async function buildDatabase() {
     const gameGolfWithYourFriends = await createNewGame({
       title: "Golf with Your Friends",
       platform: "PC, PlayStation 5",
-      genre: "Sports",
+      genre: "Adventure Sports",
       msrp: "$4.94",
       score: "3",
       ourreview: "So fun to play in an altered state with YOUR friends!",
@@ -680,7 +787,7 @@ async function buildDatabase() {
     const gameShadowOfTheTombRaider = await createNewGame({
       title: "Shadow of the Tomb Raider",
       platform: "PS4",
-      genre: "Adventure",
+      genre: "Adventure RPG",
       msrp: "$9.99",
       score: "4",
       ourreview: "Pretty good for a later sequenced game!",
@@ -707,7 +814,7 @@ async function buildDatabase() {
     const gameFinalFantasy = await createNewGame({
       title: "Final Fantasy XIV Online",
       platform: "PC",
-      genre: "MMO, RPG",
+      genre: "MMO RPG",
       msrp: "$19.99",
       score: "5",
       ourreview: "BEAUTIFUL JRPG and MMO with many expansions!",
@@ -762,7 +869,7 @@ async function buildDatabase() {
     const gamePhantasyStarOnline2 = await createNewGame({
       title: "Phantasy Star Online 2",
       platform: "Action, MOBA",
-      genre: "MMO, RPG",
+      genre: "MMO RPG",
       msrp: "Free",
       score: "3",
       ourreview: "BEAUTIFUL JRPG and MMO with many expansions!",
@@ -789,7 +896,7 @@ async function buildDatabase() {
     const gameDisneyDreamlightValley = await createNewGame({
       title: "Disney Dreamlight Valley",
       platform: "PC, XBOX ONE, PS5",
-      genre: "Simulation, Relaxing",
+      genre: "Adventure Simulation",
       msrp: "$29.99",
       score: "5",
       ourreview: "SO MUCH FUUUUUUUUUUUN!",
@@ -816,7 +923,7 @@ async function buildDatabase() {
     const gameCrusaderKings = await createNewGame({
       title: "Crusader Kings III",
       platform: "PC, PS5",
-      genre: "Strategy, RPG",
+      genre: "Strategy RPG",
       msrp: "$49.99",
       score: "3",
       ourreview: "Pretty good with excellent story lines!",
@@ -843,7 +950,7 @@ async function buildDatabase() {
     const gameNioh2 = await createNewGame({
       title: "Nioh 2",
       platform: "PC, PS5, XBOX",
-      genre: "Action, RPG",
+      genre: "Action RPG",
       msrp: "$29.99",
       score: "3",
       ourreview:
@@ -871,7 +978,7 @@ async function buildDatabase() {
     const gameF123 = await createNewGame({
       title: "F123",
       platform: "PC, PS5, XBOX",
-      genre: "Sports, Racing",
+      genre: "Sports Racing",
       msrp: "$69.99",
       score: "5",
       ourreview: "Formula 1 racing sim at its best!",
@@ -898,7 +1005,7 @@ async function buildDatabase() {
     const gameMadden24 = await createNewGame({
       title: "Madden NFL 24",
       platform: "PC, PS5, XBOX",
-      genre: "Action, Sports",
+      genre: "Action Sports",
       msrp: "$69.99",
       score: "5",
       ourreview:
@@ -926,7 +1033,7 @@ async function buildDatabase() {
     const gameGreenHell = await createNewGame({
       title: "Green Hell",
       platform: "PC, PS5, XBOX",
-      genre: "Horror, Survival",
+      genre: "Horror Survival",
       msrp: "$24.99",
       score: "4",
       ourreview:
@@ -954,7 +1061,7 @@ async function buildDatabase() {
     const gameMarioKart8 = await createNewGame({
       title: "Mario Kart 8 Deluxe",
       platform: "Nintendo Switch",
-      genre: "Adventure, Racing",
+      genre: "Adventure Racing",
       msrp: "$59.99",
       score: "5",
       ourreview: "Classic Mario Kart with modern graphics!",
@@ -981,7 +1088,7 @@ async function buildDatabase() {
     const gamePikmin4 = await createNewGame({
       title: "Pikmin 4",
       platform: "Nintendo Switch",
-      genre: "Action, RPG",
+      genre: "Action RPG",
       msrp: "$59.99",
       score: "4",
       ourreview: "Long awaited sequel!",
@@ -1008,7 +1115,7 @@ async function buildDatabase() {
     const gameLegendOfZeldaTOK = await createNewGame({
       title: "The Legend of Zelda: Tears of the Kingdom",
       platform: "Nintendo Switch",
-      genre: "Action, RPG",
+      genre: "Action RPG",
       msrp: "$59.99",
       score: "4",
       ourreview: "Really cool graphics and really fun to play!",
@@ -1035,7 +1142,7 @@ async function buildDatabase() {
     const gameDontStarveTogether2 = await createNewGame({
       title: "Don't Starve Together 2",
       platform: "Nintendo Switch, PC, PS5, XBOX",
-      genre: "RPG, Survival",
+      genre: "RPG Survival",
       msrp: "$14.99",
       score: "4",
       ourreview: "Really cool graphics and really fun to play!",
@@ -1062,7 +1169,7 @@ async function buildDatabase() {
     const gameEldenRing = await createNewGame({
       title: "Eleden Ring",
       platform: "PC, PS5, XBOX",
-      genre: "Action, RPG",
+      genre: "Action RPG",
       msrp: "$59.99",
       score: "5",
       ourreview: "One of the GOATS!",
@@ -1085,8 +1192,7 @@ async function buildDatabase() {
         "Throughout the game, players encounter non-player characters (NPCs) and enemies, including demigods who rule each main area and serve as the game's main bosses. Elden Ring also includes hidden dungeons, catacombs, tunnels, and caves where players can fight bosses and gather helpful items.",
     });
 
-    
-
+    console.log("Finished seed games.")
     const allGames = await fetchAllGames();
     const findSpecificGame = await fetchGameById(1);
     // console.log(findSpecificGame);
@@ -1692,6 +1798,8 @@ async function buildDatabase() {
       is_admin: false,
     });
 
+    console.log("Finished seed users")
+
     const allUsers = await fetchAllUsers();
     console.log(allUsers);
 
@@ -1724,11 +1832,114 @@ async function buildDatabase() {
       reviewUserId: 27,
       reviewGameId: 22,
     });
+    const seedReview5 = await createReviews({
+      reviewbody: "Featuring a rich character customization system and deep skill trees, this game offers a truly personalized gaming experience.",
+      userscore: 3,
+      reviewUserId: 18,
+      reviewGameId: 29,
+    });
+    const seedReview6 = await createReviews({
+      reviewbody: "With its intuitive controls and smooth gameplay mechanics, this game is a joy to play, appealing to both casual and hardcore gamers.",
+      userscore: 4,
+      reviewUserId: 30,
+      reviewGameId: 18,
+    });
+    const seedReview7 = await createReviews({
+      reviewbody: "The game's breathtaking soundtrack and immersive sound effects enhance the overall gaming experience, bringing the virtual world to life.",
+      userscore: 4,
+      reviewUserId: 24,
+      reviewGameId: 7,
+    });
+    const seedReview8 = await createReviews({
+      reviewbody: "The strategic gameplay mechanics and tactical decision-making required in this game make it a must-play for fans of the genre.",
+      userscore: 3,
+      reviewUserId: 6,
+      reviewGameId: 12,
+    });
+    const seedReview9 = await createReviews({
+      reviewbody: "This game's unique art style and vibrant visuals create a visually stunning and captivating gaming experience.",
+      userscore: 4,
+      reviewUserId: 22,
+      reviewGameId: 28,
+    });
+    const seedReview10 = await createReviews({
+      reviewbody: "From its emotionally charged cutscenes to its well-developed characters, this game immerses players in a compelling narrative.",
+      userscore: 4,
+      reviewUserId: 3,
+      reviewGameId: 4,
+    });
+    const seedReview11 = await createReviews({
+      reviewbody: "With its challenging puzzles and brain-teasing obstacles, this game keeps players engaged and entertained for hours.",
+      userscore: 4,
+      reviewUserId: 12,
+      reviewGameId: 19,
+    });
+    const seedReview12 = await createReviews({
+      reviewbody: "With its challenging puzzles and brain-teasing obstacles, this game keeps players engaged and entertained for hours.",
+      userscore: 3,
+      reviewUserId: 9,
+      reviewGameId: 10,
+    });
+    const seedReview13 = await createReviews({
+      reviewbody: "Featuring an array of memorable boss battles and epic showdowns, this game delivers adrenaline-pumping excitement.",
+      userscore: 4,
+      reviewUserId: 20,
+      reviewGameId: 30,
+    });
+    const seedReview14 = await createReviews({
+      reviewbody: "The game's realistic physics engine and lifelike animations make every action and movement feel satisfyingly authentic.",
+      userscore: 2,
+      reviewUserId: 26,
+      reviewGameId: 25,
+    });
+    const seedReview15 = await createReviews({
+      reviewbody: "This game's seamless integration of virtual reality technology creates an unparalleled level of immersion for players.",
+      userscore: 1,
+      reviewUserId: 5,
+      reviewGameId: 2,
+    });
 
     const allReviews = await fetchAllReviews();
     console.log(allReviews);
+    console.log("Finished seed reviews")
+
+//Begin seed comment data
+    // const seedComment1 = await createComments({
+    //   commentbody: "Graphics are out of this world!",
+    //   origReviewId: 2,
+    //   origReviewUserId: 19,
+    // });
+    // const seedComment2 = await createComments({
+    //   commentbody: "I couldn't put the controller down!" ,
+    //   origReviewId: 16,
+    //   origReviewUserId: 10,
+    // });
+    // const seedComment3 = await createComments({
+    //   commentbody:"I got lost in its vastness." ,
+    //   origReviewId: 14,
+    //   origReviewUserId: 7,
+    // });
+    // const seedComment4 = await createComments({
+    //   commentbody: "Multiplayer battles were pure adrenaline." ,
+    //   origReviewId: 27,
+    //   origReviewUserId: 28,
+    // });
+    // const seedComment5 = await createComments({
+    //   commentbody: "I felt like the ultimate hero!" ,
+    //   origReviewId: 18,
+    //   origReviewUserId: 15,
+    // });
+    // const seedComment6 = await createComments({
+    //   commentbody:"Gameplay was smooth as butter." ,
+    //   origReviewId: 30,
+    //   origReviewUserId: 21,
+    // });
+
+    // console.log("Finished seed comments.")
+
 
     client.end();
+    console.log("Finished seed.")
   } catch (error) {
     console.log(error);
   }
@@ -1742,10 +1953,16 @@ module.exports = {
 
   createUsers,
   fetchAllUsers,
-  fetchUsersbyUsername,
+  fetchUsersByUsername,
+  fetchUsersById,
+  updateUserByUserId,
 
   createReviews,
   fetchAllReviews,
+  deleteReview,
+
+  // createComments,
+  // fetchAllComments,
 
   buildDatabase,
 };
