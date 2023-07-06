@@ -329,8 +329,6 @@ async function deleteReview(reviewId){
 }
 
 
-
-
 // async function createComments(commentObj) {
 //   try {
 //     const { rows } = await client.query(
@@ -463,7 +461,7 @@ async function buildDatabase() {
     const gameDyingLight = await createNewGame({
       title: "Dying Light",
       platform: "PlayStation 5",
-      genre: "Survival",
+      genre: "Horror Survival",
       msrp: "$9.99",
       score: "5",
       ourreview: "The Last of Us is awesome! Sorry about her dad.",
@@ -490,7 +488,7 @@ async function buildDatabase() {
     const gameDyingLight2 = await createNewGame({
       title: "Dying Light 2: Stay Human",
       platform: "PC, PlayStation 5",
-      genre: "Survival",
+      genre: "Horror Survival",
       msrp: "$29.99",
       score: "4",
       ourreview: "The Last of Us is awesome! Sorry about her dad.",
@@ -545,7 +543,7 @@ async function buildDatabase() {
     const gameDeadIsland2 = await createNewGame({
       title: "Dead Island 2",
       platform: "PC, PlayStation 5",
-      genre: "Survival",
+      genre: "Action Survival",
       msrp: "$29.99",
       score: "4",
       ourreview:
@@ -654,7 +652,7 @@ async function buildDatabase() {
     const gameDeadByDaylight = await createNewGame({
       title: "Dead by Daylight",
       platform: "PC, PlayStation 5",
-      genre: "Adventure RPG, Horror",
+      genre: "RPG Horror",
       msrp: "$19.99",
       score: "4",
       ourreview: "This is one of the most fun to watch RP streams to.",
@@ -681,7 +679,7 @@ async function buildDatabase() {
     const gameCSGO = await createNewGame({
       title: "Counter-Strike: Global Offensive",
       platform: "PC, PlayStation 5",
-      genre: "FPS",
+      genre: "Action FPS",
       msrp: "$19.99",
       score: "4",
       ourreview: "Classic. Don't gamble lol.",
@@ -708,7 +706,7 @@ async function buildDatabase() {
     const gameStardewValley = await createNewGame({
       title: "Stardew Valley",
       platform: "PC, PlayStation 5",
-      genre: "Simulation",
+      genre: "RPG Simulation",
       msrp: "$14.99",
       score: "4",
       ourreview: "Basically a goat of sim games and farming sims.",
@@ -735,7 +733,7 @@ async function buildDatabase() {
     const gameCitiesSkylines = await createNewGame({
       title: "Cities: Skylines",
       platform: "PC, PlayStation 5",
-      genre: "Simulation",
+      genre: "RPG Simulation",
       msrp: "$14.99",
       score: "4",
       ourreview:
@@ -762,7 +760,7 @@ async function buildDatabase() {
     const gameGolfWithYourFriends = await createNewGame({
       title: "Golf with Your Friends",
       platform: "PC, PlayStation 5",
-      genre: "Sports",
+      genre: "Adventure Sports",
       msrp: "$4.94",
       score: "3",
       ourreview: "So fun to play in an altered state with YOUR friends!",
@@ -789,7 +787,7 @@ async function buildDatabase() {
     const gameShadowOfTheTombRaider = await createNewGame({
       title: "Shadow of the Tomb Raider",
       platform: "PS4",
-      genre: "Adventure",
+      genre: "Adventure RPG",
       msrp: "$9.99",
       score: "4",
       ourreview: "Pretty good for a later sequenced game!",
@@ -816,7 +814,7 @@ async function buildDatabase() {
     const gameFinalFantasy = await createNewGame({
       title: "Final Fantasy XIV Online",
       platform: "PC",
-      genre: "MMO, RPG",
+      genre: "MMO RPG",
       msrp: "$19.99",
       score: "5",
       ourreview: "BEAUTIFUL JRPG and MMO with many expansions!",
@@ -871,7 +869,7 @@ async function buildDatabase() {
     const gamePhantasyStarOnline2 = await createNewGame({
       title: "Phantasy Star Online 2",
       platform: "Action, MOBA",
-      genre: "MMO, RPG",
+      genre: "MMO RPG",
       msrp: "Free",
       score: "3",
       ourreview: "BEAUTIFUL JRPG and MMO with many expansions!",
@@ -898,7 +896,7 @@ async function buildDatabase() {
     const gameDisneyDreamlightValley = await createNewGame({
       title: "Disney Dreamlight Valley",
       platform: "PC, XBOX ONE, PS5",
-      genre: "Simulation, Relaxing",
+      genre: "Adventure Simulation",
       msrp: "$29.99",
       score: "5",
       ourreview: "SO MUCH FUUUUUUUUUUUN!",
@@ -925,7 +923,7 @@ async function buildDatabase() {
     const gameCrusaderKings = await createNewGame({
       title: "Crusader Kings III",
       platform: "PC, PS5",
-      genre: "Strategy, RPG",
+      genre: "Strategy RPG",
       msrp: "$49.99",
       score: "3",
       ourreview: "Pretty good with excellent story lines!",
@@ -952,7 +950,7 @@ async function buildDatabase() {
     const gameNioh2 = await createNewGame({
       title: "Nioh 2",
       platform: "PC, PS5, XBOX",
-      genre: "Action, RPG",
+      genre: "Action RPG",
       msrp: "$29.99",
       score: "3",
       ourreview:
@@ -980,7 +978,7 @@ async function buildDatabase() {
     const gameF123 = await createNewGame({
       title: "F123",
       platform: "PC, PS5, XBOX",
-      genre: "Sports, Racing",
+      genre: "Sports Racing",
       msrp: "$69.99",
       score: "5",
       ourreview: "Formula 1 racing sim at its best!",
@@ -1007,7 +1005,7 @@ async function buildDatabase() {
     const gameMadden24 = await createNewGame({
       title: "Madden NFL 24",
       platform: "PC, PS5, XBOX",
-      genre: "Action, Sports",
+      genre: "Action Sports",
       msrp: "$69.99",
       score: "5",
       ourreview:
@@ -1035,7 +1033,7 @@ async function buildDatabase() {
     const gameGreenHell = await createNewGame({
       title: "Green Hell",
       platform: "PC, PS5, XBOX",
-      genre: "Horror, Survival",
+      genre: "Horror Survival",
       msrp: "$24.99",
       score: "4",
       ourreview:
@@ -1063,7 +1061,7 @@ async function buildDatabase() {
     const gameMarioKart8 = await createNewGame({
       title: "Mario Kart 8 Deluxe",
       platform: "Nintendo Switch",
-      genre: "Adventure, Racing",
+      genre: "Adventure Racing",
       msrp: "$59.99",
       score: "5",
       ourreview: "Classic Mario Kart with modern graphics!",
@@ -1090,7 +1088,7 @@ async function buildDatabase() {
     const gamePikmin4 = await createNewGame({
       title: "Pikmin 4",
       platform: "Nintendo Switch",
-      genre: "Action, RPG",
+      genre: "Action RPG",
       msrp: "$59.99",
       score: "4",
       ourreview: "Long awaited sequel!",
@@ -1117,7 +1115,7 @@ async function buildDatabase() {
     const gameLegendOfZeldaTOK = await createNewGame({
       title: "The Legend of Zelda: Tears of the Kingdom",
       platform: "Nintendo Switch",
-      genre: "Action, RPG",
+      genre: "Action RPG",
       msrp: "$59.99",
       score: "4",
       ourreview: "Really cool graphics and really fun to play!",
@@ -1144,7 +1142,7 @@ async function buildDatabase() {
     const gameDontStarveTogether2 = await createNewGame({
       title: "Don't Starve Together 2",
       platform: "Nintendo Switch, PC, PS5, XBOX",
-      genre: "RPG, Survival",
+      genre: "RPG Survival",
       msrp: "$14.99",
       score: "4",
       ourreview: "Really cool graphics and really fun to play!",
@@ -1171,7 +1169,7 @@ async function buildDatabase() {
     const gameEldenRing = await createNewGame({
       title: "Eleden Ring",
       platform: "PC, PS5, XBOX",
-      genre: "Action, RPG",
+      genre: "Action RPG",
       msrp: "$59.99",
       score: "5",
       ourreview: "One of the GOATS!",

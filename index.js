@@ -60,7 +60,7 @@ async function getAllUsers(req, res) {
   }
 }
 
-app.get("/games/users", getAllUsers);
+app.get("games/users", getAllUsers);
 
 async function getGameById(req, res, next) {
   try {
@@ -76,20 +76,6 @@ async function getGameById(req, res, next) {
 }
 
 app.get("/games/:id", getGameById);
-
-// async function getUserById(req, res, next){
-//   try {
-//     console.log(req.params.id):
-
-//     const specificUser = await fetchUsersById
-
-//     res.send(specificUser):
-//   } catch (error) {
-//     console.log(error)
-//   }
-// }
-
-// app.get("/games/get/user", getUserById)
 
 async function getGamesByStudio(req, res, next) {
   try {
@@ -160,7 +146,7 @@ async function postNewGame(req, res) {
         });
       }
     } else {
-      res.send({ error: true, message: "Failed to decrypt token." });
+      res.send({ error: true, mesage: "Failed to decrypt token." });
     }
   } catch (error) {
     console.log(error);
