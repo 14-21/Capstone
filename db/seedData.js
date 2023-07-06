@@ -231,28 +231,6 @@ async function fetchAllUsers() {
   }
 }
 
-async function createReviews(reviewObj) {
-  try {
-    const { rows } = await client.query(
-      `
-        INSERT INTO reviews(reviewbody, userscore, "reviewUserId","reviewGameId")
-        VALUES ($1, $2, $3, $4)
-        RETURNING reviewbody;
-        `,
-      [
-        reviewObj.reviewbody,
-        reviewObj.userscore,
-        reviewObj.reviewUserId,
-        reviewObj.reviewGameId,
-      ]
-    );
-    if (rows.length) {
-      return rows[0];
-    }
-  } catch (error) {
-    console.log(error);
-  }
-}
 
 async function fetchUsersById(id) {
   try {
@@ -291,6 +269,30 @@ try {
 }
 }
 
+//Start of Reviews functions
+async function createReviews(reviewObj) {
+  try {
+    const { rows } = await client.query(
+      `
+        INSERT INTO reviews(reviewbody, userscore, "reviewUserId","reviewGameId")
+        VALUES ($1, $2, $3, $4)
+        RETURNING reviewbody;
+        `,
+      [
+        reviewObj.reviewbody,
+        reviewObj.userscore,
+        reviewObj.reviewUserId,
+        reviewObj.reviewGameId,
+      ]
+    );
+    if (rows.length) {
+      return rows[0];
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 async function fetchAllReviews() {
   try {
     const { rows } = await client.query(
@@ -306,7 +308,6 @@ async function fetchAllReviews() {
     console.log(error);
   }
 }
-
 
 async function deleteReview(reviewId){
   try {
@@ -328,8 +329,10 @@ async function deleteReview(reviewId){
   }
 }
 
+//need updateReviewbody function then route
 
 
+//need updateUserscore funtion then route
 
 // async function createComments(commentObj) {
 //   try {
@@ -440,7 +443,7 @@ async function buildDatabase() {
       genre: "Action RPG",
       msrp: "$59.99",
       score: "5",
-      ourreview: "The Last of Us 2 is better than the first.",
+      ourreview: "The Last of Us 2 is better than the first and pretty darn good for a sequel.",
       studio: "Naughty Dog",
       ourscore: "5",
       picturecard:
@@ -466,7 +469,7 @@ async function buildDatabase() {
       genre: "Survival",
       msrp: "$9.99",
       score: "5",
-      ourreview: "The Last of Us is awesome! Sorry about her dad.",
+      ourreview: "Horror at its best! Infiltrate a quarantine zone in a Middle-eastern city called Harran and survive.",
       studio: "Techland",
       ourscore: "4",
       picturecard:
@@ -493,7 +496,7 @@ async function buildDatabase() {
       genre: "Survival",
       msrp: "$29.99",
       score: "4",
-      ourreview: "The Last of Us is awesome! Sorry about her dad.",
+      ourreview: "Released last year 2022 where fans waited almost 6 years! Fight a losing battle against a virus - sorry no vaccines!",
       studio: "Techland",
       ourscore: "4",
       picturecard:
@@ -507,7 +510,7 @@ async function buildDatabase() {
       synopsis:
         "Dying Light 2 is a highly anticipated sequel that takes place in a post-apocalyptic open world overrun by infected creatures. Set 15 years after the events of the first game, players assume the role of Aiden Caldwell, a survivor with exceptional parkour skills navigating the decaying city of Villedor. As Aiden, players must make choices that shape the fate of the city, forming alliances and facing the consequences of their actions in a dynamic and branching narrative where the choices have far-reaching impact on the world and its inhabitants.",
       about:
-        "Dying Light 2 is being developed by Techland, the same studio responsible for the first Dying Light game. The game was initially announced during E3 2018 and was scheduled for release in Spring 2020. However, the release was postponed to allow for further development and improvement. As of my knowledge cutoff in September 2021, a new release date for Dying Light II has not been officially announced, but Techland continues to work on the game and provide updates to fans eagerly awaiting its release.",
+        "Dying Light 2 is being developed by Techland, the same studio responsible for the first Dying Light game. The game was initially announced during E3 2018 and was scheduled for release in Spring 2020. However, the release was postponed to allow for further development and improvement. As of my knowledge cutoff in September 2021, a new release date for Dying Light II was February 4, 2022, but Techland continues to work on the game and provide updates to fans.",
       forgamer:
         "Dying Light 2 is primarily targeted towards gamers who enjoy immersive open-world experiences, intense action gameplay, and narrative-driven storytelling. It appeals to those who relish the challenge of surviving in a post-apocalyptic setting filled with infected creatures and hostile factions, while also making impactful choices that shape the world around them. Fans of the original Dying Light, as well as those who appreciate parkour mechanics, exploration, and deep player agency, will find Dying Light 2 particularly engaging.",
       notfor:
@@ -843,7 +846,7 @@ async function buildDatabase() {
     const gameSMITE = await createNewGame({
       title: "SMITE",
       platform: "PC, PS5",
-      genre: "MMO, RPG",
+      genre: "MMO RPG",
       msrp: "Free",
       score: "3",
       ourreview:
