@@ -80,7 +80,7 @@ async function getAllUsers(req, res) {
   try {
     const allUsersData = await fetchAllUsers();
     if (allUsersData && allUsersData.length) {
-      res.send(allGamesData);
+      res.send(allUsersData);
     } else {
       res.send("No User Data Available...");
     }
@@ -279,10 +279,12 @@ async function postNewGame(req, res, next) {
 app.post("/games/create/game", postNewGame);
 
 async function getAllReviews(req, res, next) {
+  console.log("before get all reviews")
   try {
-    const allGamesData = await fetchAllReviews();
-    if (allGamesData && allGamesData.length) {
-      res.send(allGamesData);
+    const allReviewsData = await fetchAllReviews();
+    console.log("all reviews fetched");
+    if (allReviewsData && allReviewsData.length) {
+      res.send(allReviewsData);
     } else {
       res.send("No Reviews Available...");
     }
@@ -290,7 +292,7 @@ async function getAllReviews(req, res, next) {
     console.log(error);
   }
 }
-app.get("/games/reviews", getAllReviews);
+app.get("/api/games/reviews", getAllReviews);
 
 // async function getAllComments(req,res,next){
 //   try {
