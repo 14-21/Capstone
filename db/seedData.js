@@ -203,7 +203,7 @@ async function fetchUsersByUsername(username) {
     const { rows } = await client.query(
       `
       SELECT * FROM users
-      WHERE username = $1
+      WHERE username = $1;
       
       `,
       [username]
@@ -220,7 +220,7 @@ async function fetchAllUsers() {
   try {
     const { rows } = await client.query(
       `
-      SELECT * FROM users
+      SELECT * FROM users;
       `
     );
     if (rows.length) {
@@ -236,7 +236,7 @@ async function fetchUsersById(id) {
     const { rows:[user] } = await client.query(
       `
       SELECT * FROM users
-      WHERE "userId"=$1
+      WHERE "userId"=$1;
       `,
       [id]
     );
@@ -270,6 +270,7 @@ async function fetchUsersById(id) {
 
 //Start of review functions
 async function createReviews(reviewObj) {
+  console.log("Start of createReviews")
   try {
     const { rows } = await client.query(
       `
@@ -293,13 +294,15 @@ async function createReviews(reviewObj) {
 }
 
 async function fetchAllReviews() {
+  console.log("Starting fetchAllReviews")
   try {
     const { rows } = await client.query(
       `
-      SELECT * FROM reviews
-      
+      SELECT * FROM reviews;
+
       `
     );
+    console.log("end of select from reviews")
     if (rows.length) {
       return rows;
     }
@@ -740,7 +743,7 @@ async function buildDatabase() {
       msrp: "$14.99",
       score: "4",
       ourreview: "Basically a goat of sim games and farming sims.",
-      studio: "Behaviour Interactive Inc",
+      studio: "Concerned Ape",
       ourscore: "5",
       picturecard:
         "https://upload.wikimedia.org/wikipedia/en/f/fd/Logo_of_Stardew_Valley.png",
