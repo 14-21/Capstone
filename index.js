@@ -4,6 +4,8 @@ const {
   fetchGameByStudio,
   fetchAllUsers,
   createNewGame,
+  fetchGameByOurscore,
+  fetchAllGamesByTitle,
   fetchUsersByUsername,
   createUsers,
   createReviews,
@@ -125,7 +127,7 @@ async function getGamesByStudio(req, res, next) {
     console.log(req.params.studio);
 
     const myStudioGame = await fetchGameByStudio(req.params.studio);
-    // console.log("Finished Fetching my Studio Game");
+    console.log("Finished Fetching my Studio Game");
 
     res.send(myStudioGame);
   } catch (error) {
@@ -134,6 +136,37 @@ async function getGamesByStudio(req, res, next) {
 }
 
 app.get("/games/studio/:studio", getGamesByStudio);
+
+async function getGamesByOurscore(req, res, next) {
+  try {
+    console.log(req.params.ourscore);
+
+    const ourscoreRating = await fetchGameByOurscore (Number(req.params.ourscore));
+    console.log("Finished Fetching my get games by ourscore");
+
+    res.send(ourscoreRating);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+app.get("/games/ourscore/orderedrating", getGamesByOurscore);
+
+async function getGamesByTitle(req, res, next) {
+    try {
+      const allGamesTitles = await fetchAllGamesByTitle();
+      if (allGamesTitles && allGamesTitles.length) {
+        res.send(allGamesTitles);
+      } else {
+        res.send("No games to display");
+      }
+      console.log("Finished fetching get games by title");
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+app.get("/allgames/titles", getGamesByTitle);
 
 async function registerNewUser(req, res, next) {
   try {
@@ -235,11 +268,11 @@ async function loginUser(req, res, next) {
     } else {
       next({
         name: "Incorrect Username or Password.",
-        message: " Login information incorrect, please try again.",
+        message: "Login information incorrect, please try again.",
       });
     }
   } catch (error) {
-    next(error);
+    console.log(error);
   }
 }
 
