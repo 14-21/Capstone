@@ -145,11 +145,10 @@ async function fetchGameByOurscore(ourscoreValue) {
   try {
     const { rows } = await client.query(`
         SELECT * FROM games
-        WHERE "ourscore" > 0
-        ORDER BY "ourscore" DESC;
+        WHERE ourscore = '${ourscoreValue}';
         `);
 
-    return rows;
+    return rows[0];
   } catch (error) {
     console.log(error);
   }
@@ -213,24 +212,6 @@ async function createUsers(userObj) {
   }
 }
 
-async function fetchUsersByUsername(username) {
-  try {
-    const { rows } = await client.query(
-      `
-      SELECT * FROM users
-      WHERE username = $1;
-      
-      `,
-      [username]
-    );
-    if (rows.length) {
-      return rows[0];
-    }
-  } catch (error) {
-    console.log(error);
-  }
-}
-
 async function fetchAllUsers() {
   try {
     const { rows } = await client.query(
@@ -238,6 +219,26 @@ async function fetchAllUsers() {
       SELECT * FROM users;
       `
     );
+    if (rows.length) {
+      return rows;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function fetchUsersByUsername() {
+  try {
+    const { rows } = await client.query(
+      `
+      SELECT * FROM users
+      WHERE is_admin = FALSE
+      ORDER BY username;
+      `
+    );
+
+    // delete password;
+
     if (rows.length) {
       return rows;
     }
@@ -260,6 +261,23 @@ async function fetchUsersById(id) {
 
     return user;
     
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+async function fetchUsersByAdmin() {
+  try {
+    const { rows } = await client.query(
+      `
+      SELECT * FROM users
+      WHERE is_admin = true;
+      `
+    );
+
+    // delete adminuser.password;
+    return rows;
+  
   } catch (error) {
     console.log(error)
   }
@@ -314,7 +332,6 @@ async function fetchAllReviews() {
     const { rows } = await client.query(
       `
       SELECT * FROM reviews;
-
       `
     );
     console.log("end of select from reviews")
@@ -2569,12 +2586,14 @@ module.exports = {
   fetchAllUsers,
   fetchUsersByUsername,
   fetchUsersById,
+  fetchUsersByAdmin,
   // updateUserByUserId,
 
   createReviews,
   fetchAllReviews,
   // editReview,
   deleteReview,
+  fetchAllReviewsByGameId,
 
   // createComments,
   // fetchAllComments,
