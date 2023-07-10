@@ -132,7 +132,7 @@ async function fetchGameById(idValue) {
   try {
     const { rows } = await client.query(`
         SELECT * FROM games
-        WHERE "gameId" = ${idValue};
+        WHERE "gameId" = '${idValue}';
         `);
 
     return rows[0];
@@ -141,18 +141,18 @@ async function fetchGameById(idValue) {
   }
 }
 
-// async function fetchGameByOurscore(ourscoreValue) {
-//   try {
-//     const { rows } = await client.query(`
-//         SELECT * FROM games
-//         WHERE "ourscore" = ${ourscoreValue};
-//         `);
+async function fetchGameByOurscore(ourscoreValue) {
+  try {
+    const { rows } = await client.query(`
+        SELECT * FROM games
+        WHERE ourscore = '${ourscoreValue}';
+        `);
 
-//     return rows[0];
-//   } catch (error) {
-//     console.log(error);
-//   }
-// }
+    return rows[0];
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 async function fetchGameByStudio(studioValue) {
   try {
@@ -170,6 +170,20 @@ async function fetchGameByStudio(studioValue) {
   }
 }
 
+async function fetchAllGamesByTitle() {
+  try {
+    const { rows } = await client.query(`
+        SELECT * FROM games
+        WHERE "gameId" > 0
+        ORDER BY "title";
+        `);
+
+    return rows;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 //Start of Users table section lines 201 through xxx
 async function createUsers(userObj) {
   try {
@@ -177,7 +191,7 @@ async function createUsers(userObj) {
       `
         INSERT INTO users(username, fname, lname, password, email, profilepic, is_admin)
         VALUES ($1, $2, $3, $4, $5, $6, $7)
-        RETURNING username;
+        RETURNING "userId", username, email;
         `,
       [
         userObj.username,
@@ -198,31 +212,14 @@ async function createUsers(userObj) {
   }
 }
 
-async function fetchUsersByUsername(username) {
-  try {
-    const { rows } = await client.query(
-      `
-      SELECT * FROM users
-      WHERE username = $1;
-      
-      `,
-      [username]
-    );
-    if (rows.length) {
-      return rows[0];
-    }
-  } catch (error) {
-    console.log(error);
-  }
-}
-
 async function fetchAllUsers() {
   try {
     const { rows } = await client.query(
       `
-      SELECT * FROM users
+      SELECT * FROM users;
       `
     );
+        // delete password;
     if (rows.length) {
       return rows;
     }
@@ -231,13 +228,31 @@ async function fetchAllUsers() {
   }
 }
 
+async function fetchUsersByUsername() {
+  try {
+    const { rows } = await client.query(
+      `
+      SELECT * FROM users
+      WHERE username = $1
+      `
+    );
+
+    // delete password;
+
+    if (rows.length) {
+      return rows;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 async function fetchUsersById(id) {
   try {
     const { rows:[user] } = await client.query(
       `
       SELECT * FROM users
-      WHERE "userId"=$1
+      WHERE "userId"=$1;
       `,
       [id]
     );
@@ -251,26 +266,26 @@ async function fetchUsersById(id) {
   }
 }
 
-async function updateUserByUserId(userId, {username, fname, lname, password, email, profilepic, is_admin}) {
-try {
-  const { rows } = await client.query(
-    `
-    UPDATE users
-    SET username = $1, fname = $2, lname = $3, password = $4, email = $5, profilepic = $6, is_admin = $7
-    WHERE "userId" = $8
-    RETURNING username;
-    `,
-    [username, fname, lname, password, email, profilepic, is_admin])
-    if (rows.lentgh){
-      return rows[0];
-    }
-} catch (error) {
-  console.log(error)
-}
+async function fetchUsersByAdmin() {
+  try {
+    const { rows } = await client.query(
+      `
+      SELECT * FROM users
+      WHERE is_admin = true;
+      `
+    );
+
+    // delete adminuser.password;
+    return rows;
+  
+  } catch (error) {
+    console.log(error)
+  }
 }
 
-//Start of Reviews functions
+//Start of review functions
 async function createReviews(reviewObj) {
+  console.log("Start of createReviews")
   try {
     const { rows } = await client.query(
       `
@@ -294,13 +309,14 @@ async function createReviews(reviewObj) {
 }
 
 async function fetchAllReviews() {
+  console.log("Starting fetchAllReviews")
   try {
     const { rows } = await client.query(
       `
-      SELECT * FROM reviews
-      
+      SELECT * FROM reviews;
       `
     );
+    console.log("end of select from reviews")
     if (rows.length) {
       return rows;
     }
@@ -308,6 +324,23 @@ async function fetchAllReviews() {
     console.log(error);
   }
 }
+
+async function editReview() {
+try{
+const { rows } = await client.query(`
+UPDATE reviews
+SET reviewbody = $1, userscore = $2,"reviewUserId"=$3,"reviewGameId" = $4
+WHERE "reviewId" = $5
+`, [reviewbody, userscore, reviewUserId, reviewGameId])
+if (rows.length) {
+  return rows[0]
+}
+}catch (error) {
+  console.log(error)
+}
+}
+//we will need secured routes to make this available to both logged-in users and admins
+
 
 async function deleteReview(reviewId){
   try {
@@ -331,46 +364,43 @@ async function deleteReview(reviewId){
 
 //need updateReviewbody function then route
 
+async function createComments(commentObj) {
+  try {
+    const { rows } = await client.query(
+      `
+      INSERT INTO comments (commentbody, "origReviewId")
+      VALUES ($1, $2)
+      RETURNING commentbody;
+      `, 
+      [
+        commentObj.commentbody,
+        commentObj.origReviewId,
+      ]
+      );
+      if (rows.length) {
+        return rows[0];
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
-//need updateUserscore funtion then route
-
-// async function createComments(commentObj) {
-//   try {
-//     const { rows } = await client.query(
-//       `
-//       INSERT INTO comments (commentbody, "origReviewId")
-//       VALUES ($1, $2)
-//       RETURNING commentbody;
-//       `, 
-//       [
-//         commentObj.commentbody,
-//         commentObj.origReviewId,
-//       ]
-//       );
-//       if (rows.length) {
-//         return rows[0];
-//       }
-//     } catch (error) {
-//       console.log(error)
-//     }
-//   }
-
-  // async function fetchAllComments() {
-  //   try {
-  //     const { rows } = await client.query(
-  //       `
-  //       SELECT * FROM comments
-  //       INNER JOIN comments ON reviews.reviewId = comments.id
+  async function fetchAllComments() {
+    try {
+      const { rows } = await client.query(
+        `
+        SELECT * FROM comments
+        INNER JOIN comments ON reviews.reviewId = comments.id
         
-  //       `
-  //     );
-  //     if (rows.length) {
-  //       return rows;
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }
+        `
+      );
+      if (rows.length) {
+        return rows;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
 
 //Build the master DB
@@ -385,7 +415,7 @@ async function buildDatabase() {
     const gameDiablo4 = await createNewGame({
       title: "Diablo 4",
       platform: "PC, XBox, PlayStation",
-      genre: "Action RPG",
+      genre: "Action",
       msrp: "$69.99",
       score: "4",
       ourreview:
@@ -397,7 +427,7 @@ async function buildDatabase() {
       pictureheader:
         "https://storage.oyungezer.com.tr/ogz-public/public/content/2023/05/30/content_647601975e823_78396.jpg",
       picturebody:
-        "https://rare-gallery.com/mocahbig/473373-digital-art-artwork-video-games-Diablo-diablo-iv.jpg",
+        "https://www.nme.com/wp-content/uploads/2022/12/Diablo-4-inarius.jpg",
       picturefooter:
         "https://images.blz-contentstack.com/v3/assets/bltf408a0557f4e4998/blt24fbc5431943b197/636d81343debb436bf972c0d/TreasureBeast_Blizzard.png?width=&format=webply&dpr=2&disable=upscale&quality=80",
       synopsis:
@@ -413,14 +443,14 @@ async function buildDatabase() {
     const gameTheLastOfUs = await createNewGame({
       title: "The Last of Us",
       platform: "PC, PlayStation 5",
-      genre: "Action RPG",
+      genre: "RPG",
       msrp: "$19.99",
       score: "5",
       ourreview: "The Last of Us is awesome! Sorry about her dad.",
       studio: "Naughty Dog",
       ourscore: "5",
       picturecard:
-        "https://upload.wikimedia.org/wikipedia/en/4/46/Video_Game_Cover_-_The_Last_of_Us.jpg",
+        "https://m.media-amazon.com/images/M/MV5BMTkzMzk3MzYzMV5BMl5BanBnXkFtZTgwOTQzMDM2MTE@._V1_FMjpg_UX1000_.jpg",
       pictureheader:
         "https://www.gizchina.com/wp-content/uploads/images/2023/03/The-Last-of-Us-Part-1.jpg",
       picturebody:
@@ -440,7 +470,7 @@ async function buildDatabase() {
     const gameTheLastOfUs2 = await createNewGame({
       title: "The Last of Us 2",
       platform: "PC, PlayStation 5",
-      genre: "Action RPG",
+      genre: "FPS",
       msrp: "$59.99",
       score: "5",
       ourreview: "The Last of Us 2 is better than the first and pretty darn good for a sequel.",
@@ -469,7 +499,7 @@ async function buildDatabase() {
       genre: "Survival",
       msrp: "$9.99",
       score: "5",
-      ourreview: "Horror at its best! Infiltrate a quarantine zone in a Middle-eastern city called Harran and survive.",
+      ourreview: "Excellent horror game where you play undercover agent Kyle Crane who is sent to infiltrate a quarantine zone in the Middle-east.",
       studio: "Techland",
       ourscore: "4",
       picturecard:
@@ -496,7 +526,7 @@ async function buildDatabase() {
       genre: "Survival",
       msrp: "$29.99",
       score: "4",
-      ourreview: "Released last year 2022 where fans waited almost 6 years! Fight a losing battle against a virus - sorry no vaccines!",
+      ourreview: "Sequel to the virus campaign but this time it took over 6 years for it to come out, leaving fans breathless for more.",
       studio: "Techland",
       ourscore: "4",
       picturecard:
@@ -520,7 +550,7 @@ async function buildDatabase() {
     const gameHogwartsLegacy = await createNewGame({
       title: "Hogwarts Legacy",
       platform: "PC, PlayStation 5",
-      genre: "Adventure RPG",
+      genre: "Adventure",
       msrp: "$59.99",
       score: "5",
       ourreview:
@@ -576,7 +606,7 @@ async function buildDatabase() {
     const gameUncharted4 = await createNewGame({
       title: "Uncharted 4: A Thief's End",
       platform: "PlayStation 4, Xbox One",
-      genre: "Adventure RPG",
+      genre: "Action",
       msrp: "$24.99",
       score: "5",
       ourreview: "Uncharted 4, not Nathan Fillian.",
@@ -603,7 +633,7 @@ async function buildDatabase() {
     const gameUnchartedTheLostLegacy = await createNewGame({
       title: "Uncharted: The Lost Legacy",
       platform: "PlayStation 5",
-      genre: "Adventure RPG",
+      genre: "Action",
       msrp: "$39.99",
       score: "3",
       ourreview: "Was this the last of the uncharted series?.",
@@ -630,14 +660,14 @@ async function buildDatabase() {
     const gameRiseofTheTombRaider = await createNewGame({
       title: "Rise of the Tomb Raider",
       platform: "PC, PlayStation 5",
-      genre: "Adventure RPG",
+      genre: "Adventure",
       msrp: "$29.99",
       score: "4",
       ourreview: "Was this the last of the uncharted series?.",
       studio: "Techland",
       ourscore: "5",
       picturecard:
-        "https://upload.wikimedia.org/wikipedia/en/2/29/Rise_of_the_Tomb_Raider.jpg",
+        "https://m.media-amazon.com/images/M/MV5BMzc5OTU1N2ItNWUzNy00YWM2LWEwMTktZjIzZDNhMzBlNjJjXkEyXkFqcGdeQXVyNTM0MjE5NTc@._V1_FMjpg_UX1000_.jpg",
       pictureheader:
         "https://res.cloudinary.com/jerrick/image/upload/v1527533929/l1iv1xykyxrv79cdok60.jpg",
       picturebody:
@@ -657,10 +687,10 @@ async function buildDatabase() {
     const gameDeadByDaylight = await createNewGame({
       title: "Dead by Daylight",
       platform: "PC, PlayStation 5",
-      genre: "Adventure RPG, Horror",
+      genre: "Horror",
       msrp: "$19.99",
       score: "4",
-      ourreview: "This is one of the most fun to watch RP streams to.",
+      ourreview: "Not only is this is one of the most fun to watch RP streams to, it is incredibly fun to hunt and kill your friends as a famous/infamous killer.",
       studio: "Behaviour Interactive Inc",
       ourscore: "4",
       picturecard:
@@ -715,7 +745,7 @@ async function buildDatabase() {
       msrp: "$14.99",
       score: "4",
       ourreview: "Basically a goat of sim games and farming sims.",
-      studio: "Behaviour Interactive Inc",
+      studio: "Concerned Ape",
       ourscore: "5",
       picturecard:
         "https://upload.wikimedia.org/wikipedia/en/f/fd/Logo_of_Stardew_Valley.png",
@@ -768,7 +798,7 @@ async function buildDatabase() {
       genre: "Sports",
       msrp: "$4.94",
       score: "3",
-      ourreview: "So fun to play in an altered state with YOUR friends!",
+      ourreview: "So fun to play in an altered state with YOUR friends! Challenge each other for the most amazing fails for extra fun.",
       studio: "Paradox Interaction",
       ourscore: "3",
       picturecard:
@@ -819,7 +849,7 @@ async function buildDatabase() {
     const gameFinalFantasy = await createNewGame({
       title: "Final Fantasy XIV Online",
       platform: "PC",
-      genre: "MMO, RPG",
+      genre: "MMO",
       msrp: "$19.99",
       score: "5",
       ourreview: "BEAUTIFUL JRPG and MMO with many expansions!",
@@ -846,7 +876,7 @@ async function buildDatabase() {
     const gameSMITE = await createNewGame({
       title: "SMITE",
       platform: "PC, PS5",
-      genre: "MMO RPG",
+      genre: "MOBA",
       msrp: "Free",
       score: "3",
       ourreview:
@@ -874,14 +904,14 @@ async function buildDatabase() {
     const gamePhantasyStarOnline2 = await createNewGame({
       title: "Phantasy Star Online 2",
       platform: "Action, MOBA",
-      genre: "MMO, RPG",
+      genre: "MMO",
       msrp: "Free",
       score: "3",
       ourreview: "BEAUTIFUL JRPG and MMO with many expansions!",
       studio: "Hi-Rez Studios",
       ourscore: "2",
       picturecard:
-        "https://image.api.playstation.com/vulcan/ap/rnd/202108/1607/cWFhlMdzAFCcosz8L1paaKF6.jpg",
+        "https://static.wikia.nocookie.net/phantasystar/images/8/81/Pso2_ngs_key_visual.jpg/revision/latest?cb=20201221173722",
       pictureheader:
         "https://mmoculture.com/wp-content/uploads/2021/04/PSO2-NG-image.png",
       picturebody:
@@ -901,7 +931,7 @@ async function buildDatabase() {
     const gameDisneyDreamlightValley = await createNewGame({
       title: "Disney Dreamlight Valley",
       platform: "PC, XBOX ONE, PS5",
-      genre: "Simulation, Relaxing",
+      genre: "Adventure",
       msrp: "$29.99",
       score: "5",
       ourreview: "SO MUCH FUUUUUUUUUUUN!",
@@ -928,11 +958,11 @@ async function buildDatabase() {
     const gameCrusaderKings = await createNewGame({
       title: "Crusader Kings III",
       platform: "PC, PS5",
-      genre: "Strategy, RPG",
+      genre: "Strategy",
       msrp: "$49.99",
       score: "3",
       ourreview: "Pretty good with excellent story lines!",
-      studio: "Paradox Interaction",
+      studio: "Paradox Interactive",
       ourscore: "4",
       picturecard:
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2LiOlQ-rwdLBEc6h8tOfi7Y2EKhHlrdgb4AFwIQr6pxyokqYjr_CRSuim-wxqD24RVmA&usqp=CAU",
@@ -955,7 +985,7 @@ async function buildDatabase() {
     const gameNioh2 = await createNewGame({
       title: "Nioh 2",
       platform: "PC, PS5, XBOX",
-      genre: "Action, RPG",
+      genre: "RPG",
       msrp: "$29.99",
       score: "3",
       ourreview:
@@ -983,7 +1013,7 @@ async function buildDatabase() {
     const gameF123 = await createNewGame({
       title: "F123",
       platform: "PC, PS5, XBOX",
-      genre: "Sports, Racing",
+      genre: "Racing",
       msrp: "$69.99",
       score: "5",
       ourreview: "Formula 1 racing sim at its best!",
@@ -1010,7 +1040,7 @@ async function buildDatabase() {
     const gameMadden24 = await createNewGame({
       title: "Madden NFL 24",
       platform: "PC, PS5, XBOX",
-      genre: "Action, Sports",
+      genre: "Sports",
       msrp: "$69.99",
       score: "5",
       ourreview:
@@ -1038,7 +1068,7 @@ async function buildDatabase() {
     const gameGreenHell = await createNewGame({
       title: "Green Hell",
       platform: "PC, PS5, XBOX",
-      genre: "Horror, Survival",
+      genre: "Horror",
       msrp: "$24.99",
       score: "4",
       ourreview:
@@ -1066,7 +1096,7 @@ async function buildDatabase() {
     const gameMarioKart8 = await createNewGame({
       title: "Mario Kart 8 Deluxe",
       platform: "Nintendo Switch",
-      genre: "Adventure, Racing",
+      genre: "Racing",
       msrp: "$59.99",
       score: "5",
       ourreview: "Classic Mario Kart with modern graphics!",
@@ -1093,14 +1123,14 @@ async function buildDatabase() {
     const gamePikmin4 = await createNewGame({
       title: "Pikmin 4",
       platform: "Nintendo Switch",
-      genre: "Action, RPG",
+      genre: "RPG",
       msrp: "$59.99",
       score: "4",
       ourreview: "Long awaited sequel!",
       studio: "Nintendo",
       ourscore: "4",
       picturecard:
-        "https://i2-prod.dailystar.co.uk/incoming/article16666054.ece/ALTERNATES/s615b/0_1523755",
+        "https://m.media-amazon.com/images/M/MV5BMzY2NDI1OGQtZjVlOC00ODk4LTkzMDUtOGYxNjVhYjRlOWVlXkEyXkFqcGdeQXVyODgwNjY1NjY@._V1_.jpg",
       pictureheader:
         "https://staticc.sportskeeda.com/editor/2023/06/d79e8-16873678964394-1920.jpg?w=840",
       picturebody:
@@ -1120,14 +1150,14 @@ async function buildDatabase() {
     const gameLegendOfZeldaTOK = await createNewGame({
       title: "The Legend of Zelda: Tears of the Kingdom",
       platform: "Nintendo Switch",
-      genre: "Action, RPG",
+      genre: "RPG",
       msrp: "$59.99",
       score: "4",
       ourreview: "Really cool graphics and really fun to play!",
       studio: "Nintendo",
       ourscore: "5",
       picturecard:
-        "https://upload.wikimedia.org/wikipedia/en/thumb/f/fb/The_Legend_of_Zelda_Tears_of_the_Kingdom_cover.jpg/220px-The_Legend_of_Zelda_Tears_of_the_Kingdom_cover.jpg",
+        "https://cdn.wccftech.com/wp-content/uploads/2023/05/WCCFzeldatearsofthekingdom8.jpg",
       pictureheader:
         "https://zelda.com/tears-of-the-kingdom/images/share-fb.jpg",
       picturebody:
@@ -1147,7 +1177,7 @@ async function buildDatabase() {
     const gameDontStarveTogether2 = await createNewGame({
       title: "Don't Starve Together 2",
       platform: "Nintendo Switch, PC, PS5, XBOX",
-      genre: "RPG, Survival",
+      genre: "Survival",
       msrp: "$14.99",
       score: "4",
       ourreview: "Really cool graphics and really fun to play!",
@@ -1172,16 +1202,16 @@ async function buildDatabase() {
     });
 
     const gameEldenRing = await createNewGame({
-      title: "Eleden Ring",
+      title: "Elden Ring",
       platform: "PC, PS5, XBOX",
-      genre: "Action, RPG",
+      genre: "Action",
       msrp: "$59.99",
       score: "5",
       ourreview: "One of the GOATS!",
-      studio: "PC, PS5, XBOX",
+      studio: "FromSoftware Inc",
       ourscore: "5",
       picturecard:
-        "https://www.techspot.com/images2/news/bigimage/2022/03/2022-03-17-image-37.jpg",
+        "https://i.redd.it/sqozuuuqce781.jpg",
       pictureheader: "https://i.ytimg.com/vi/JldMvQMO_5U/maxresdefault.jpg",
       picturebody:
         "https://assets-prd.ignimgs.com/2021/12/20/elden-ring-1640039956608.png",
@@ -1195,6 +1225,420 @@ async function buildDatabase() {
         "Elden Ring received critical acclaim for its open-world, gameplay systems, and setting, with some criticism for its technical performance. It won multiple Game of the Year awards and sold over 20 million copies in a year. An expansion, Shadow of the Erdtree, was announced in February 2023.",
       notfor:
         "Throughout the game, players encounter non-player characters (NPCs) and enemies, including demigods who rule each main area and serve as the game's main bosses. Elden Ring also includes hidden dungeons, catacombs, tunnels, and caves where players can fight bosses and gather helpful items.",
+    });
+
+    const gameDestiny2 = await createNewGame({
+      title: "Destiny 2",
+      platform: "PC, XBOX",
+      genre: "FPS",
+      msrp: "$59.99",
+      score: "5",
+      ourreview: "Fans of Halo and Destiny will drool over the ever expanding, immersive world of Destiny 2.",
+      studio: "Bungie",
+      ourscore: "5",
+      picturecard:"https://static.wikia.nocookie.net/destinypedia/images/8/87/D2_BoxArt.jpg/revision/latest?cb=20170531045837",
+      pictureheader:"https://cdn.geekwire.com/wp-content/uploads/2017/09/HORIZ_RGB_CL_A3.jpg",
+      picturebody:"https://cdn.cloudflare.steamstatic.com/steam/apps/1085660/ss_7fcc82f468fcf8278c7ffa95cebf949bfc6845fc.1920x1080.jpg?t=1684966156",
+      picturefooter:"https://imageio.forbes.com/specials-images/imageserve/63c568e2bb8fbadbe4c92cf4/0x0.jpg?format=jpg&height=900&width=1600&fit=bounds",
+      synopsis:
+        "Players assume the role of a Guardian, protectors of Earth's last safe city as they wield a power called Light to protect what's left of humanity from different alien races and combat the looming threat of the Darkness.",
+      about:
+        "Destiny 2 is a free-to-play online first-person shooter video game developed by Bungie. It was originally released as a pay to play game in 2017 for PlayStation 4, Xbox One, and Windows.",
+      forgamer:
+        "Destiny 2 is for fans of Bungie games, FPS games, and people who love playing online with their friends! Join a fireteam and fight your way across the stars.",
+      notfor:
+        "Destiny 2 is not for gamers who do not enjoy FPS games, fast competetive online play, or people that only want to play solo.",
+    });
+
+    const gameCOD = await createNewGame({
+      title: "Call of Duty Modern Warfare II",
+      platform: "PC, PS5, XBOX",
+      genre: "FPS",
+      msrp: "$39.99",
+      score: "4",
+      ourreview: "The game delivers an intense and cinematic gaming experience that pushes the boundaries of first-person shooters. With its gripping campaign, explosive multiplayer modes, and stunning visuals, the game keeps players on the edge of their seats, providing a thrilling and immersive warzone that will leave fans of the franchise wanting more.",
+      studio: "Activision",
+      ourscore: "5",
+      picturecard: "https://whatifgaming.com/wp-content/uploads/2022/05/Call-of-Duty-Modern-Warfare-2-scaled.jpg",
+      pictureheader: "https://assets.xboxservices.com/assets/a0/02/a0029671-98a2-4955-a9e7-ef32cd0eb544.jpg?n=CoD-MW-II_GLP-Page-Hero-Poster-1084_1920x1080.jpg",
+      picturebody: "https://cdn.oneesports.gg/cdn-data/2022/10/COD_MW2_Feature.webp",
+      picturefooter: "https://www.gameinformer.com/sites/default/files/styles/full/public/2022/06/08/87c3ff93/mw2header.jpg",
+      synopsis:
+        "An immersive first-person shooter that takes players on a gripping global campaign, following the intense and gritty conflicts of a modern war. With a combination of intense combat scenarios and a compelling narrative, players must navigate through various missions as they confront the complex realities and moral choices of modern warfare.",
+      about:
+        "Call of Duty: Modern Warfare II is a 2022 first-person shooter video game developed by Infinity Ward and published by Activision. It is a sequel to the 2019 reboot, and serves as the nineteenth installment in the overall Call of Duty series.",
+      forgamer:
+        "The game will appeal to gamers who enjoy high-octane, fast-paced first-person shooters with a focus on intense action, thrilling multiplayer matches, and cinematic set pieces. It caters to players who appreciate the adrenaline rush of engaging in intense firefights, mastering precise shooting mechanics, and participating in competitive online multiplayer modes.",
+      notfor:
+        "Call of Duty: Modern Warfare II may not be suitable for gamers who are sensitive to realistic violence or prefer games with slower-paced gameplay and intricate storytelling. It is a fast-paced, action-packed shooter that primarily caters to players who enjoy intense and adrenaline-fueled combat experiences rather than those seeking more relaxed or strategic gameplay.",
+    });
+
+    const gameResidentEvilVillage = await createNewGame({
+      title: "Resident Evil: Village",
+      platform: "PC, PS5, XBOX",
+      genre: "Horror",
+      msrp: "$39.99",
+      score: "5",
+      ourreview: "Terrifying and exhilirating, the game will leave you playing for hours and hours.... while your soul is slowly consumed by the Village.",
+      studio: "CAPCOM",
+      ourscore: "5",
+      picturecard:"https://image.api.playstation.com/vulcan/ap/rnd/202101/0812/FkzwjnJknkrFlozkTdeQBMub.png",
+      pictureheader: "https://img.youtube.com/vi/26tay8lMZW4/maxresdefault.jpg",
+      picturebody: "https://techraptor.net/sites/default/files/styles/image_header/public/2021-05/RE_Village_Apr_2021_Screens_03.jpg?itok=4LD5uDfx",
+      picturefooter: "https://www.gamespot.com/a/uploads/original/1581/15811374/3820360-re_village_mercenaries_2.jpg",
+      synopsis:
+        "Resident Evil Village may be remembered for its alluring antagonist, the tall lady, but this first-person survival game soon lets loose the scares.",
+      about:
+        "Resident Evil Village is a 2021 survival horror game developed and published by Capcom. It is the sequel to Resident Evil 7: Biohazard.",
+      forgamer:
+        "Players control Ethan Winters, who searches for his kidnapped daughter in a village filled with mutant creatures. Fans of RPG and Horror alike will love the jump scares and creepy narrative.",
+      notfor:
+        "If players cannot stomach body horror and dismemberment, this may not be the right Resident Evil, or frankly, game for you.",
+    });
+
+    const gamePhasmophobia = await createNewGame({
+      title: "Phasmophobia",
+      platform: "PC, PS5, XBOX",
+      genre: "Horror",
+      msrp: "$29.99",
+      score: "5",
+      ourreview: "Phasmophobia offers VR support, however those with motion sickness issues may have trouble with the movement mechanisms in-game. Otherwise, mouse and keyboard and controller support offer amazing gameplay and a great unfolding story.",
+      studio: "Kinetic Games",
+      ourscore: "5",
+      picturecard: "https://m.media-amazon.com/images/M/MV5BNzQwZmU2MWQtODM2Ni00YTZjLWJiNzQtZTA0MDBiMzk1YjMzXkEyXkFqcGdeQXVyMTEzMTI1Mjk3._V1_.jpg",	
+      pictureheader: "https://prod.assets.earlygamecdn.com/images/phasmophobia-titelbild.jpg?x=0.5&y=0.5",
+      picturebody: "https://d1fs8ljxwyzba6.cloudfront.net/assets/article/2022/04/12/games-like-phasmophobia-featured_feature.jpg",	
+      picturefooter: "https://static1.srcdn.com/wordpress/wp-content/uploads/2020/10/phasmophobia-ghost.jpg",
+      synopsis:
+        "Phasmophobia is a paranormal horror game based primarily on the popular hobby of ghost hunting! Phasmophobia is a 4-player, online co-op, psychological horror game where you and your team of paranormal investigators will enter haunted locations and solve the mysteries.",
+      about:
+        "Developed and published by British indie game studio Kinetic Games, features VR support. The game became available in early access through Steam for Microsoft Windows with virtual reality support in September 2020.",
+      forgamer:
+        "Fans of horror and ghost hunting will love this creepy game where ghost hunting is your career. With VR support, players will enjoy various play styles.",
+      notfor:
+        "Gamers not fans of jump-scares will not enjoy this game. It also utilizes puzzles to progress the story, so gamers who are frustrated easily will not enjoy the game.",
+    });
+
+    const gameWOW = await createNewGame({
+      title: "World of Warcraft",
+      platform: "PC",
+      genre: "MMO",
+      msrp: "$59.99",
+      score: "4",
+      ourreview: "Basically the original MMO king of the globe. Servers remain full and player retention is one of the highest in the world.",
+      studio: "Blizzard",
+      ourscore: "4",
+      picturecard: "https://m.media-amazon.com/images/M/MV5BNTI4MjBkMmYtNjBkNC00NmZjLWEyN2EtZTc5ZmIwMGIyYjdiXkEyXkFqcGdeQXVyMTA0MTM5NjI2._V1_.jpg",
+      pictureheader: "https://static0.gamerantimages.com/wordpress/wp-content/uploads/2023/04/vanilla-world-of-warcraft-beta-screenshots.jpg",
+      picturebody: "https://media.cnn.com/api/v1/images/stellar/prod/190823120209-02-world-of-warcraft-classic.jpg?q=w_3840,h_2160,x_0,y_0,c_fill",
+      picturefooter:" https://s3.amazonaws.com/prod-media.gameinformer.com/styles/full/s3/2018/08/18/725c3c6a/WoW_BattleForAzeroth_IslandExpedition_3840x2160.jpg",
+      synopsis:
+        "World of Warcraft is an iconic massively multiplayer online role-playing game that transports players to the epic fantasy realm of Azeroth, where they can embark on quests, battle mythical creatures, and interact with a vast community of players from around the world. With its immersive world, rich lore, and endless adventures, World of Warcraft offers an unparalleled experience that captivates both longtime fans and newcomers alike.",
+      about:
+        "Initially released on November 23, 2004, by Blizzard Entertainment. Since then, it has seen several expansions, including The Burning Crusade, Wrath of the Lich King, Cataclysm, Mists of Pandaria, Warlords of Draenor, Legion, Battle for Azeroth, and Shadowlands, each expanding the game's universe and introducing new gameplay features and content.",
+      forgamer:
+        "Original fans of wow will still enjoy playing the latest expansions, and replaying the older content to gain unique armor sets, pets, mounts, and so much more. WOW appeals to a wide range of gamers, particularly those who enjoy immersive and expansive multiplayer experiences in a richly detailed fantasy world.",
+      notfor:
+        "WOW may not be suitable for gamers who prefer fast-paced action or competitive gameplay focused on quick reflexes, as it primarily emphasizes exploration, cooperative play, and long-term character progression.",
+    });
+
+    const gameGuildWars2 = await createNewGame({
+      title: "Guild Wars 2",
+      platform: "PC, PS5, XBOX",
+      genre: "MMO",
+      msrp: "Free",
+      score: "4",
+      ourreview: "Such a dynamic MMO experience that truly leaves the game extremely popular for both long-term and short-term gamers alike.",
+      studio: "Arena Net",
+      ourscore: "5",
+      picturecard: "https://images.saymedia-content.com/.image/t_share/MTc0MjIzOTM3MTk3MDU3NTMy/guild-wars-2-a-critical-review-upon-completion.jpg",
+      pictureheader:"https://eu-images.contentstack.com/v3/assets/blt95b381df7c12c15d/bltf985c0054b1d00d1/63eb790d26ab754785e2339e/Guild_Wars_2.png",
+      picturebody: "https://cdn.videogamesblogger.com/wp-content/uploads/2011/12/Guild-Wars-2-Screenshot-4.jpg",
+      picturefooter:"https://d3b4yo2b5lbfy.cloudfront.net/wp-content/uploads/2013/01/b0d4bgw084.jpg",
+      synopsis:
+        "Guild Wars 2 is a free-to-play, MMO RPG set in the fantasy world of Tyria, the core game follows the re-emergence of Destiny's Edge, a disbanded guild dedicated to fighting Elder Dragons, colossal Lovecraftian-esque entities that have seized control of Tyria in the time since the original Guild Wars (2005), a plot line that was concluded in the latest expansion End of Dragons (2022). A dynamic event system replaces traditional questing, utilizing the ripple effect to allow players to approach quests in different ways as part of a persistent world.",
+      about:
+        "Guild Wars 2 is the fourth major entry in the Guild Wars series, and claims to be unique in the MMO genre by featuring a storyline that is responsive to player actions, something which is common in single player role-playing games but rarely seen in multiplayer ones.",
+      forgamer:
+        "Guild Wars 2 is ideal for gamers who appreciate immersive storytelling, dynamic events, and a cooperative gameplay experience in a visually stunning fantasy world, with a focus on player choice and exploration.",
+      notfor:
+        "This game may not be suitable for those who prefer highly competitive PvP (player versus player) experiences or heavily structured endgame progression with vertical power scaling. GuildWars 2 can also be played either solo or in a group which may or may not appeal to some gamers.",
+    });
+
+    const gameHOTS = await createNewGame({
+      title: "Heroes of the Storm",
+      platform: "PC, XBOX",
+      genre: "MOBA",
+      msrp: "Free",
+      score: "3",
+      ourreview: "A highly competitive multiplayer online battle arena game that offers strategic depth, diverse champions, and a thriving esports scene, making it a captivating experience for players seeking intense team-based gameplay. Rotating free heroes also keeps the game interesting every session.",
+      studio: "Blizzard",
+      ourscore: "3",
+      picturecard:"https://assets-prd.ignimgs.com/2022/01/28/heroes-of-the-storm-button-crop-1643355577739.jpg",
+      pictureheader: "https://www.trustedreviews.com/wp-content/uploads/sites/54/2015/05/Heroes-of-the-Storm-1.jpg",
+      picturebody: "https://assets-prd.ignimgs.com/2022/07/09/heroesofthestorm-blogroll-1521503788593-1657388128204.jpg",
+      picturefooter: "https://cdn.mos.cms.futurecdn.net/f845288d54a86a0e661179381d10c841.jpg",
+      synopsis:
+        "Heroes of the Storm heroes are characters plucked from across the StarCraft, Warcraft, Diablo, and Overwatch universes and dropped into an all star mash-up; so if you fancy piloting D.Va from Overwatch in a battle against Jaina Proudmoore from World of Warcraft, HoTS is the MOBA for you.",
+      about:
+        "HOTS is a multiplayer online battle arena (MOBA) game developed and published by Blizzard Entertainment, released on June 2, 2015. It brings together iconic characters from various Blizzard franchises, offering fast-paced team-based gameplay, unique maps, and a dynamic approach to traditional MOBA mechanics, making it a distinctive experience within the genre.",
+      forgamer:
+        "The game was designed for gamers who enjoy team-based multiplayer experiences, strategic decision-making, and fast-paced action. It appeals to those who appreciate the diverse roster of heroes from different Blizzard franchises and the dynamic gameplay that combines elements of MOBA and teamfight-oriented mechanics.",
+      notfor:
+        "HOTS may not be suitable for gamers who prefer a more focused and competitive MOBA experience with a strong emphasis on individual skill and mechanical mastery. It may also be less appealing to players who prioritize a deep progression system or a highly structured esports scene, as the game's design leans more towards accessible and team-oriented gameplay rather than a hardcore competitive environment.",
+    });
+
+    const gameLOL = await createNewGame({
+      title: "League of Legends",
+      platform: "PC",
+      genre: "MOBA",
+      msrp: "Free",
+      score: "3",
+      ourreview: "A highly competitive multiplayer online battle arena game that offers strategic depth, diverse champions, and a thriving esports scene, making it a captivating experience for players seeking intense team-based gameplay. Rotating free heroes also keeps the game interesting every session.",
+      studio: "Riot Games",
+      ourscore: "4",
+      picturecard: "https://m.media-amazon.com/images/M/MV5BZDQyYjc0NjQtMWExMC00YTBhLTgzYzYtMzUyY2MxNTNjZjliXkEyXkFqcGdeQXVyNjAwNDUxODI@._V1_FMjpg_UX1000_.jpg",
+      pictureheader: "https://i0.wp.com/highschool.latimes.com/wp-content/uploads/2021/09/league-of-legends.jpeg?fit=1607%2C895&ssl=1",
+      picturebody:"https://cdn.cloudflare.steamstatic.com/steam/apps/1276790/ss_0ac14f00c1a0c98797c7529823fddaedcad13edf.1920x1080.jpg?t=1680125489",
+      picturefooter:"https://static1.thegamerimages.com/wordpress/wp-content/uploads/2022/11/Games-Like-League-of-Legends-Featured-Image.jpg",
+        synopsis:
+        "League of Legends follows the traditional MOBA blueprint but certainly is not lacking depth. Players choose the best League of Legends champions from a rapidly expanding roster of over 150 playable characters, upgrade them with optimal item builds, and attempt to outplay your lane opponent.",
+      about:
+        "League of Legends was developed by Riot Games, released on October 27, 2009. It quickly gained immense popularity, becoming one of the most played and influential esports titles worldwide, with a dedicated player base, a thriving professional competitive scene, and numerous updates and expansions over the years to keep the game fresh and engaging.",
+      forgamer:
+        "This game is for gamers who enjoy competitive team-based gameplay, strategic decision-making, and tactical coordination. It appeals to those who thrive in fast-paced, skill-driven matches where individual and team performance, map control, and objective-based gameplay are key factors for success.",
+      notfor:
+        "League may not be suitable for gamers who prefer solo play or those who are easily discouraged by a steep learning curve and the need for continuous skill improvement. Additionally, players who do not enjoy competitive environments or the team-oriented nature of the game may find it less appealing.",
+    });
+
+    const gameEternalReturn = await createNewGame({
+      title: "Eternal Return",
+      platform: "PC, PS5, XBOX",
+      genre: "MOBA",
+      msrp: "Free",
+      score: "3",
+      ourreview: "Absolutely mind-blowing game that combines elements of battle royale, survival, and MOBA genres flawlessly, offering an unparalleled experience that will keep players hooked for hours on end with its addictive gameplay and stunning visuals",
+      studio: "Nimble Neuron",
+      ourscore: "4",
+      picturecard: "https://cdkeyprices.com/images/games/5619440/cover.jpg",
+      pictureheader: "https://m.media-amazon.com/images/M/MV5BYjhlNWYyMTMtOWM2Yy00MGIwLWEyZWEtMDg1MDZiMjFkNGJhXkEyXkFqcGdeQXVyMTIwODcyMzky._V1_.jpg",
+      picturebody: "https://mmoculture.com/wp-content/uploads/2020/10/Eternal-Return-Black-Survival-screenshot-1.jpg",
+      picturefooter: "https://static0.gamerantimages.com/wordpress/wp-content/uploads/2021/08/Eternal-Return-Best-Playable-Characters-Ranked.jpg",
+      synopsis:
+        "Eternal Return is the unique multiplayer online survival arena that combines strategy, mechanics, and aesthetic characters. Choose one of the ever-growing cast of test subjects, take on Lumia Island as one of 18 test subjects - either solo or with a team, and prove your strength, ability, and wit.",
+      about:
+        "Eternal Return is a free-to-play multiplayer online battle royale game developed and published by Nimble Neuron initially released as an early access title on October 14, 2020, and has since been regularly updated with new content, including characters, items, and gameplay features, as the developers continue to refine and expand the game based on player feedback.",
+      forgamer:
+        "This game is for gamers who enjoy a unique blend of battle royale, survival, and MOBA elements in a top-down isometric perspective. It appeals to players who appreciate strategic decision-making, character abilities, crafting, and resource management, creating an engaging experience that combines both individual skill and teamwork.",
+      notfor:
+        "Eternal Return may not be suitable for gamers who prefer fast-paced, twitch-reflex gameplay or those who are not fond of the isometric perspective. Additionally, players who do not enjoy the combination of battle royale and MOBA mechanics or those who prefer a more traditional battle royale experience without the added complexity of character abilities and crafting, may find the game less appealing.",
+    });
+
+    const gameForzaMotorsports8 = await createNewGame({
+      title: "Forza Motorsport 8",
+      platform: "PC, PS5, XBOX",
+      genre: "Racing",
+      msrp: "$59.99",
+      score: "4",
+      ourreview: "Forza Motorsports is an absolute disaster of a racing game, with horrendous controls, bland graphics, and an incredibly dull selection of cars that will put even the most avid racing fans to sleep.",
+      studio: "Xbox Games Studios",
+      ourscore: "4",
+      picturecard: "https://static.wikia.nocookie.net/forzamotorsport/images/c/cf/FM23_Boxart.jpg/revision/latest?cb=20230606190530",
+      pictureheader: "https://editors.dexerto.com/wp-content/uploads/2023/06/11/forza-motorsport-reboot-2023.jpg",
+      picturebody: "https://assets1.ignimgs.com/thumbs/userUploaded/2022/6/13/forza2-1655055146059.jpg",
+      picturefooter: "https://www.topgear.com/sites/default/files/2022/06/Forza_Motorsport-XboxGamesShowcase2022-PressKit-10-16x9_WM-76568d3fa79d335b8293%20%281%29.jpg",
+      synopsis:
+        "Forza Motorsports is an ultimate racing simulator that brings the thrill of high-performance cars to your fingertips.",
+      about:
+        "Forza Motorsport was first announced at Xbox Showcase in 2020. The Forza Motorsport release date was previously set for 'Spring 2023', but has moved to a late 2023 launch window, with a current release date set for October 10, 2023.",
+      forgamer:
+        "Forza primarily appeals to gamers who enjoy realistic and immersive racing experiences. Those who appreciate precision driving, attention to detail in car mechanics and physics, and a wide range of customizable options, making it suitable for both casual racing enthusiasts and dedicated motorsport fans, will love it.",
+      notfor:
+        "Forza Motorsports may not be suitable for gamers who prefer arcade-style racing games with a focus on fast-paced action and less emphasis on realistic driving mechanics. Players who are not particularly interested in cars or motorsports may find the game's attention to detail and simulation aspects less engaging and boring.",
+    });
+
+    const gameGranTurismo7 = await createNewGame({
+      title: "Gran Turismo 7",
+      platform: "PC, PS5, XBOX",
+      genre: "Racing",
+      msrp: "$59.99",
+      score: "4",
+      ourreview: "Gran Turismo is a Playstation exclusive and is an absolute disappointment of a racing game, with outdated graphics, boring gameplay, and a limited selection of cars that make it feel like a relic from the past, unable to compete with other modern racing titles.",
+      studio: "Sony Interactive Entertainment",
+      ourscore: "2",
+      picturecard: "https://image.api.playstation.com/vulcan/ap/rnd/202109/1321/eFGBuaRr21HUpGtsy3biwJip.png",
+      pictureheader: "https://cdn.racinggames.gg/images/ncavvykf/racinggames/4cfa9528c1cbd5acef9c7cf308d8779af2949ca6-1280x720.jpg?auto=format",
+      picturebody: "https://www.techspot.com/images2/news/bigimage/2022/03/2022-03-22-image-37.jpg",
+      picturefooter: "https://www.videogameschronicle.com/files/2022/03/GT-7-VO.00_00_14_34.Still006-scaled.jpg",
+      synopsis:
+        "Gran Turismo 7 features the return of the single player campaign, GT Simulation Mode. Other returning features are the return of traditional racing tracks and vehicles, Special Events, Championships, Driving School, Tuning Parts Shop, Used Cars dealership, and GT Auto while still retaining the new GT Sport Mode, Brand Central, and Discover (now labelled Showcase) that were introduced in Gran Turismo Sport. The player needs to progress through tasks (Menu Books) from the GT Café to unlock features like multiplayer, and all tracks and cars.",
+      about:
+        "Gran Turismo 7 is a racing simulation game developed by Polyphony Digital and published by Sony Interactive Entertainment. The video game is the eighth mainline installment in the Gran Turismo series.",
+      forgamer:
+        "Gran Tourismo will appeal to gamers who enjoy a deep and authentic automotive experience. It caters to players who appreciate realistic driving physics, extensive car customization and tuning options, and a wide selection of meticulously recreated real-world vehicles and tracks, making it ideal for racing enthusiasts and automotive aficionados who seek a more serious and immersive racing experience.",
+      notfor:
+        "This game may not be suitable for gamers who prefer arcade-style racing games with a focus on fast-paced action and less emphasis on realistic driving mechanics. Additionally, players who are not particularly interested in cars or the intricacies of automotive simulation may find the game's attention to detail and the depth of its mechanics less appealing.",
+    });
+
+    const gameSims4 = await createNewGame({
+      title: "The Sims 4",
+      platform: "PC, PS5, XBOX",
+      genre: "Simulation",
+      msrp: "Free",
+      score: "4",
+      ourreview: "The Sims 4 is an incredibly tedious and monotonous game that offers little creativity or meaningful gameplay, leaving players with a dull and repetitive virtual life simulator that fails to capture any sense of excitement or engagement.",
+      studio: "Electronic Arts",
+      ourscore: "4",
+      picturecard: "https://store-images.s-microsoft.com/image/apps.53697.64737940845214615.82a9a5cd-32c5-4fb1-a951-2a7b976ad460.f0e0779f-450f-421f-b0c6-7b04bf25fa60",
+      pictureheader: "https://cdn.windowsreport.com/wp-content/uploads/2021/04/sims4.jpg",
+      picturebody: "https://cdn2.unrealengine.com/egs-thesims4-electronicarts-g1a-00-1920x1080-acc697b40374.jpg",	
+      picturefooter: "https://www.pcgamesn.com/wp-content/sites/pcgamesn/2019/04/The-Sims-4-DLC-cost.jpg",
+      synopsis:
+        "The Sims 4 builds upon the success of its predecessors, offering players the ability to create and control virtual characters, known as Sims, and guide them through various aspects of life, from relationships and careers to home design and personal aspirations. The game has multiple expansion packs available to purchase including updates since the game's release, adding new content and features to enhance the player's creative and storytelling possibilities within the virtual world.",
+      about:
+        "The Sims 4 is a social simulation game developed by Maxis and published by Electronic Arts. It is the fourth major title in The Sims series, and is the sequel to The Sims 3.",
+      forgamer:
+        "The Sims is designed for gamers who enjoy creative expression, character customization, and immersive life simulation experiences. It appeals to players who enjoy designing and building virtual homes, managing relationships and aspirations, and crafting unique stories within a virtual world.",
+      notfor:
+        "The Sims 4 may not be as enjoyable for gamers who prefer fast-paced action, intense competition, or highly structured gameplay. It may also be less appealing to players who prefer games with linear narratives or a strong emphasis on challenging objectives, as the game offers a more open-ended and sandbox-style experience focused on creativity and personal expression.",
+    });
+
+    const gameFlightSim = await createNewGame({
+      title: "Microsoft Flight Simulator 2020",
+      platform: "PC, XBOX",
+      genre: "Simulation",
+      msrp: "Free",
+      score: "3",
+      ourreview: "Microsoft Flight Simulator 2020 is an absolute marvel, providing an unmatched and breathtaking flight simulation experience that brings the world to your fingertips. With its stunning visuals, realistic flight physics, and a vast, meticulously recreated planet Earth to explore, it's a true testament to the wonders of modern technology and a must-play for aviation enthusiasts and curious explorers alike.",
+      studio: "Xbox Games Studios",
+      ourscore: "4",
+      picturecard: "https://store-images.s-microsoft.com/image/apps.57274.13630274674230323.ef522ebd-e0ea-449e-b0c8-3271887caa67.2e92ae62-cd3e-458f-a8f8-3927865645e2",
+      pictureheader: "https://assets.xboxservices.com/assets/ba/1d/ba1d9395-5db7-4072-b916-f276892a919c.jpg?n=Microsoft-Flight-Simulator_Poster-Image-1084_40th-Ann_1920x1080.jpg",
+      picturebody: "https://media.cnn.com/api/v1/images/stellar/prod/191015160824-robin-dr-400-a.jpg?q=w_1600,h_900,x_0,y_0,c_fill/h_778",
+      picturefooter: "https://cdn.akamai.steamstatic.com/steam/apps/1250410/ss_b962d1b93b3d457bc26d38e3228f60df9d877b08.1920x1080.jpg?t=1688584020",
+      synopsis:
+        "Microsoft Flight Simulator is a realistic flight simulation game that allows players to pilot a wide variety of aircraft and explore highly detailed and accurately recreated landscapes from around the world. With stunning visuals and a focus on authenticity, players can embark on thrilling flights, hone their piloting skills, and experience the joy of soaring through the skies in a true-to-life aviation adventure.",
+      about:
+        "Microsoft Flight Simulator is an amateur flight simulator developed by Asobo Studio and published by Xbox Game Studios. It is an entry in the Microsoft Flight Simulator series which began in 1982, and was preceded by Microsoft Flight Simulator X in 2006.",
+      forgamer:
+        "Flight Simulator is designed for gamers who have a fascination with aviation, a love for exploration, and a preference for immersive and realistic simulation experiences. It appeals to players who enjoy the challenge of mastering flight controls, appreciating breathtaking visuals, and embarking on virtual journeys to explore the world from a pilot's perspective.",
+      notfor:
+        "The game may not be as enjoyable for gamers who prefer action-packed and fast-paced gameplay experiences. It may also be less appealing to those who are not interested in aviation or have little patience for the meticulous attention to detail and learning curve associated with realistic flight simulation. Lastly, players seeking a structured narrative or clearly defined objectives might find the open-ended nature of the game daunting.",
+    });
+
+    const gameFootballManager = await createNewGame({
+      title: "Football Manager 2023",
+      platform: "PC, PS5, XBOX",
+      genre: "Sports",
+      msrp: "$29.99",
+      score: "3",
+      ourreview: "Football Manager 2023 offers an immersive and addictive managerial experience, providing unparalleled depth and realism for football fans. With its extensive database, realistic player interactions, and tactical decision-making, it delivers hours of strategic gameplay that will keep football enthusiasts hooked and eager to lead their favorite teams to glory.",
+      studio: "SEGA",
+      ourscore: "4",
+      picturecard: "https://image.api.playstation.com/vulcan/ap/rnd/202301/0611/V9laPtwEM897lECsRxStEDxy.jpg",
+      pictureheader: "https://cdn1.epicgames.com/offer/5c7a78e0c4d640898d690c5e38c0392f/EGS_FootballManager2023_SportsInteractive_S1_2560x1440-28187c5e17149ab967b8f3d3dd56a796",
+      picturebody: "https://cdn.akamai.steamstatic.com/steam/apps/1904540/ss_1de15b6145de31fdc907895de2ec69a6d44e5237.1920x1080.jpg?t=1680627762",
+      picturefooter: "https://cdn.akamai.steamstatic.com/steam/apps/1904540/ss_8d2a70ea08faf17cb96b7f9efff3bdb68d5bb425.1920x1080.jpg?t=1680627762",
+      synopsis:
+        "Build your dream squad, outsmart your rivals and experience the thrill of big European nights in the UEFA Champions League. Your journey towards footballing glory awaits.",
+      about:
+        "Football Manager 2023 is a football management simulation video game developed by Sports Interactive and published by SEGA. It is part of its very successfull Football Manager series.",
+      forgamer:
+        "Primarily, the game will appeal to gamers who have a strong interest in football (soccer) and enjoy strategic decision-making, team management, and in-depth gameplay. It caters to players who relish the challenge of leading a football team, making tactical choices, managing player transfers, and experiencing the intricacies of the sport from a managerial perspective.",
+      notfor:
+        "Football Manager not be as enjoyable for gamers who are not interested in football or sports management. It requires a significant investment of time and attention to detail, so players who prefer fast-paced or action-oriented gameplay experiences might find the game's slower pace and emphasis on strategy and statistics less engaging.",
+    });
+
+    const gameUndisputed = await createNewGame({
+      title: "Undisputed",
+      platform: "PC, PS5, XBOX",
+      genre: "Sports",
+      msrp: "$59.99",
+      score: "3",
+      ourreview: "Undisputed is a true-to-life boxing experience, with accurate physics, authentic boxing techniques, and a range of customizable options for players to create their ultimate fighter. We think it immerses players in the intensity of the ring, delivering satisfying and strategic boxing matches that will satisfy both boxing enthusiasts and sports fans everywhere.",
+      studio: "Steel City Interactive",
+      ourscore: "5",
+      picturecard: "https://assets-prd.ignimgs.com/2022/10/11/undisputed-button-2-1665519933271.jpg",	
+      pictureheader: "https://itrboxing.com/wp-content/uploads/2022/10/Undisputed-logo.png",
+      picturebody: "https://d1lss44hh2trtw.cloudfront.net/assets/article/2023/01/30/undisputed-boxer_feature.jpg",
+      picturefooter: "https://cdn-cf-east.streamable.com/image/9vdxj6.jpg?Expires=1686978660&Signature=XMsipTh2CRhjHIyT3TKAKYn88rITVxi0MUwR7Uw4WBlxEOfca1pUURQ0-RDb7CoKcmfaf5RSLHSwtOsmLStqmSDhV-9pYTjuGuGPsFR8vWu9D09y1o5iQyQCaQaj~vfrf2BAH5Vbl2F77utyLY00JLOAVWOZvwvt3warh0FGbKFvx6SW1OOYPLmZr1FWSLANQBs8BmfI2YI6935NW1JdBigT0RnDcVf~JFAn~RZ9j4SdEQmIRXgp-4wNDwXYvrznyYM9W5oGSsQPRMu0DibWc9tRMHMzE5ovdoAGV6klLaaK4PHqYeszQIgNOgH2mMn8C~PfWm7jiFQmScPHwUAYDA__&Key-Pair-Id=APKAIEYUVEN4EVB2OKEQ",
+      synopsis:
+        "Boxing is not just about throwing punches anymore! In Undisputed, the ring is a strategic battlefield where fighters can choose an angle of attack, set up traps, and outsmart opponents through clever tactics. Several layers of fight mechanics were added to Undisputed, giving more control than ever to master the Sweet Science.",
+      about:
+        "Undisputed is the most authentic boxing game to date! Featuring true to life visuals, bone-jarring action, and more licensed boxers than ever before, Undisputed gives players unprecedented control to master every inch of the ring.",
+      forgamer:
+        "Undisputed would primarily appeal to gamers who have a passion for the sport of boxing and enjoy the tactical aspects, skill-based gameplay, and strategic decision-making involved in boxing matches. It will cater to players who appreciate the authenticity of the sport, including accurate physics, realistic graphics, and a deep understanding of boxing techniques and strategies.",
+      notfor:
+        "Undisputed may not be as enjoyable for gamers who prefer fast-paced action, flashy moves, or arcade-style gameplay experiences. Obviously players who are not interested in the sport of boxing or the intricacies of boxing mechanics and tactics may find the realistic nature of the game terrifying. Those seeking games with a broader range of gameplay options or who prefer less intense or competitive experiences may also find the game to be less appealing.",
+    });
+
+    const gameWarhammer3 = await createNewGame({
+      title: "Total War: WARHAMMER III",
+      platform: "PC",
+      genre: "Strategy",
+      msrp: "$59.99",
+      score: "3",
+      ourreview: "Total War: WARHAMMER III is an epic and immersive strategy game that combines the rich lore of the Warhammer fantasy universe with deep gameplay mechanics and captivating battles. With its diverse factions, intricate diplomacy, and massive campaign map, it offers a thrilling and rewarding experience for fans of both Warhammer and strategy gaming.",
+      studio: "SEGA",
+      ourscore: "4",
+      picturecard: "https://assets-prd.ignimgs.com/2021/02/03/total-war-warhammer-3-button-02-1612376264737.jpg",
+      pictureheader: "https://www.dexerto.com/cdn-cgi/image/width=3840,quality=75,format=auto/https://editors.dexerto.com/wp-content/uploads/2022/02/08/Warhammer-TW2.jpg",
+      picturebody: "https://www.wargamer.com/wp-content/sites/wargamer/2022/02/total-war-warhammer-3-review-tzeentch-kairos-fateweaver-and-horrors-zoomed.jpg",
+      picturefooter: "https://www.gameinformer.com/sites/default/files/styles/full/public/2021/05/12/9c8dee51/ksl_screenshot_asset02_final-2510226082c4f55a9259.42400474.png",
+      synopsis:
+        "The cataclysmic conclusion to the Total War: WARHAMMER trilogy is here. Rally your forces and step into the Realm of Chaos, a dimension of mind-bending horror where the very fate of the world will be decided. ",
+      about:
+        "Total War: Warhammer III is a turn-based strategy and real-time tactics video game developed by Creative Assembly and published by Sega. It is part of the Total War series, and the third to be set in Games Workshop's Warhammer Fantasy fictional universe.",
+      forgamer:
+        "Warhammer may appeal to gamers who enjoy strategic gameplay, immersive fantasy worlds, and a rich lore. It caters to players who appreciate tactical decision-making, deep customization options, and engaging battles in a dark and expansive universe, whether they are fans of the Warhammer tabletop game or newcomers to the franchise.",
+      notfor:
+        "The latest Warhammer video game may not be as enjoyable for gamers who prefer fast-paced action or instant gratification. It requires a strategic mindset, careful planning, and a willingness to invest time in learning the intricacies of the game mechanics. Additionally, players who are not interested in the fantasy genre, the Warhammer universe, or turn-based strategy gameplay may find the game less appealing.",
+    });
+
+    const gameCivilizationVI = await createNewGame({
+      title: "Sid Meier's Civilization VI",
+      platform: "PC, PS5, XBOX",
+      genre: "Strategy",
+      msrp: "$59.99",
+      score: "5",
+      ourreview: "Sid Meier's Civilization VI is an epic and immersive strategy game that combines the rich lore of the Warhammer fantasy universe with deep gameplay mechanics and captivating battles. With its diverse factions, intricate diplomacy, and massive campaign map, it offers a thrilling and rewarding experience for fans of both Warhammer and strategy gaming.",
+      studio: "Firaxis Games",
+      ourscore: "4",
+      picturecard: "https://cdn1.epicgames.com/cd14dcaa4f3443f19f7169a980559c62/offer/EGS_SidMeiersCivilizationVI_FiraxisGames_S2-860x1148-bffad83909595b7c5c60489a17056a59.jpg",
+      pictureheader: "https://assets.nintendo.com/image/upload/c_fill,w_1200/q_auto:best/f_auto/dpr_2.0/ncom/software/switch/70010000013704/918c0badde3aeba760e2185f382a2402248a1292322cf540fd8d098eeb292e1e",
+      picturebody: "https://cdn.2kgames.com/civilization.com/Beginners_Civ_hero.jpg",
+      picturefooter: "https://www.digitaltrends.com/wp-content/uploads/2016/11/CivilizationVI-MediumMedium.png?p=1",
+      synopsis:
+        "Civ VI is a turn-based strategy game where players lead a civilization from its early beginnings to achieving global domination. With its intricate gameplay, diverse civilizations, and strategic decision-making, the game offers a captivating experience as players explore, expand, exploit, and exterminate their way to victory throughout history.",
+      about:
+        "The game was developed by Firaxis Games and published by 2K Games. It was initially released on October 21, 2016, and has since received multiple expansions and updates, introducing new civilizations, gameplay mechanics, and enhancing the overall experience for players as they shape the destiny of their civilization through the ages.",
+      forgamer:
+        "Civilization VI is for gamers who enjoy strategic gameplay, deep empire-building, and immersive historical experiences. It appeals to players who relish the challenge of managing resources, exploring new technologies, engaging in diplomacy, and competing against other civilizations to create a thriving society from scratch. The game caters to those who appreciate a blend of long-term planning, tactical decision-making, and the thrill of building and shaping a civilization throughout the ages.",
+      notfor:
+        "Civ VI may not be as enjoyable for gamers who prefer fast-paced action, immediate gratification, or games with a strong emphasis on intense combat. The game's turn-based nature and focus on strategy and long-term planning may not appeal to players seeking quick and adrenaline-fueled gameplay experiences. Additionally, players who are not interested in history, resource management, or complex systems may find the game's depth and intricacy less engaging.",
+    });
+
+    const gameStellaris = await createNewGame({
+      title: "Stellaris",
+      platform: "PC, PS5, XBOX",
+      genre: "Strategy",
+      msrp: "$9.99",
+      score: "5",
+      ourreview: "Stellaris is a stellar grand strategy game that takes players on a captivating journey through the vast expanse of space. With its deep and complex gameplay, vast customization options, and the thrill of exploring unknown galaxies, it offers an immersive and addictive experience for strategy enthusiasts and fans of science fiction.",
+      studio: "Paradox Interactive",
+      ourscore: "5",
+      picturecard: "https://image.api.playstation.com/vulcan/img/rnd/202009/3014/Duaw5GDGGTUKSB17we8CzRfZ.png",
+      pictureheader: "https://img.opencritic.com/game/1713/o/gtoOzXem.jpg",
+      picturebody: "https://cdn.akamai.steamstatic.com/steam/apps/281990/ss_f844372cc220e3858aa17205e9fec0ae79a4e665.1920x1080.jpg?t=1687453160",
+      picturefooter: "https://cdn.akamai.steamstatic.com/steam/apps/281990/ss_034b0d55a5c370bec4709f09d0914f9d131b7788.1920x1080.jpg?t=1687453160",
+      synopsis:
+        "A grand strategy game set in space, where players lead a civilization in their quest for galactic dominance. From exploring the cosmos and encountering diverse alien species to managing interstellar diplomacy and engaging in epic space battles, the game offers a vast and dynamic universe for players to shape and conquer.",
+      about:
+        "Stellaris was developed by Paradox Development Studio and published by Paradox Interactive. It was initially released on May 9, 2016, and has since received multiple expansions, updates, and DLCs, expanding the game's content, mechanics, and depth over time. These additions have further enriched the player's experience and provided ongoing support to the game's vibrant community.",
+      forgamer:
+        "Stellaris is for gamers who enjoy deep and immersive grand strategy experiences set in space. It appeals to players who relish the exploration of vast galaxies, strategic decision-making, diplomacy with alien civilizations, and managing the complexities of a growing interstellar empire. It is suitable for those who appreciate a combination of expansive sandbox gameplay, complex systems, and a sense of epic scale in their gaming experiences.",
+      notfor:
+        "The game may not be as enjoyable for gamers who prefer fast-paced action, immediate gratification, or linear storytelling and it requires a significant investment of time and patience to fully grasp its complex mechanics, manage the intricacies of empire-building, and navigate the complexities of interstellar politics. Additionally, players who prefer more focused and narrow gameplay experiences or are not particularly interested in space exploration and strategy may find the game's expansive scope and depth less engaging.",
     });
 
     console.log("Finished seed games.")
@@ -1903,6 +2347,168 @@ async function buildDatabase() {
       reviewUserId: 5,
       reviewGameId: 2,
     });
+    const seedReview16 = await createReviews({
+      reviewbody: "The game's intuitive user interface and helpful tutorials make it accessible to players of all skill levels.",
+      userscore: 3,
+      reviewUserId: 7,
+      reviewGameId: 14,
+    });
+    const seedReview17 = await createReviews({
+      reviewbody: "With its branching storyline and multiple endings, this game offers high replay value and encourages exploration.",
+      userscore: 3,
+      reviewUserId: 15,
+      reviewGameId: 5,
+    });
+    const seedReview18 = await createReviews({
+      reviewbody: "The game's vast arsenal of weapons and equipment allows for endless customization and strategic gameplay.",
+      userscore: 4,
+      reviewUserId: 8,
+      reviewGameId: 20,
+    });
+    const seedReview19 = await createReviews({
+      reviewbody: "From its breathtaking landscapes to its meticulously designed environments, this game is a visual masterpiece.",
+      userscore: 3,
+      reviewUserId: 23,
+      reviewGameId: 3,
+    });
+    const seedReview20 = await createReviews({
+      reviewbody: "The game's witty dialogue and memorable characters bring humor and charm to an already fantastic gaming experience.",
+      userscore: 4,
+      reviewUserId: 19,
+      reviewGameId: 8,
+    });
+    const seedReview21 = await createReviews({
+      reviewbody: "With its well-crafted level design and challenging obstacles, this game keeps players engaged and motivated to succeed.",
+      userscore: 2,
+      reviewUserId: 28,
+      reviewGameId: 16,
+    });
+    const seedReview22 = await createReviews({
+      reviewbody: "The game's addictive multiplayer mode ensures hours of competitive fun and intense online battles.",
+      userscore: 3,
+      reviewUserId: 4,
+      reviewGameId: 27,
+    });
+    const seedReview23 = await createReviews({
+      reviewbody: "Featuring a deep crafting system and resource management mechanics, this game offers a satisfying sense of progression.",
+      userscore: 1,
+      reviewUserId: 11,
+      reviewGameId: 9,
+    });
+    const seedReview24 = await createReviews({
+      reviewbody: "This game's intricate lore and rich world-building captivate players, leaving them eager to unravel its mysteries.",
+      userscore: 4,
+      reviewUserId: 17,
+      reviewGameId: 23,
+    });
+    const seedReview25 = await createReviews({
+      reviewbody: "With its compelling moral choices and branching storylines, this game provides a truly immersive and thought-provoking experience.",
+      userscore: 1,
+      reviewUserId: 29,
+      reviewGameId: 11,
+    });
+    const seedReview26 = await createReviews({
+      reviewbody: "The game's extensive character development options and diverse playstyles cater to a wide range of player preferences.",
+      userscore: 2,
+      reviewUserId: 21,
+      reviewGameId: 26,
+    });
+    const seedReview27 = await createReviews({
+      reviewbody: "Featuring stunning cinematics and breathtaking set pieces, this game feels like an interactive blockbuster movie.",
+      userscore: 5,
+      reviewUserId: 1,
+      reviewGameId: 13,
+    });
+    const seedReview28 = await createReviews({
+      reviewbody: "The game's intuitive and responsive controls make it easy for players to pick up and play, regardless of their experience level.",
+      userscore: 3,
+      reviewUserId: 13,
+      reviewGameId: 17,
+    });
+    const seedReview29 = await createReviews({
+      reviewbody: "With its addictive gameplay loop and satisfying progression system, this game keeps players hooked for hours on end.",
+      userscore: 2,
+      reviewUserId: 25,
+      reviewGameId: 24,
+    });
+    const seedReview30 = await createReviews({
+      reviewbody: "The game's dynamic and reactive world creates a sense of realism and immersion rarely seen in the gaming industry.",
+      userscore: 4,
+      reviewUserId: 1,
+      reviewGameId: 21,
+    });
+    const seedReview31 = await createReviews({
+      reviewbody: "Featuring a deep and engaging storyline, this game keeps players invested in the fates of its characters from beginning to end.",
+      userscore: 2,
+      reviewUserId: 16,
+      reviewGameId: 1,
+    });
+    const seedReview32 = await createReviews({
+      reviewbody: "The game's diverse cast of playable characters and unique abilities adds a layer of strategic depth to the gameplay.",
+      userscore: 5,
+      reviewUserId: 14,
+      reviewGameId: 35,
+    });
+    const seedReview33 = await createReviews({
+      reviewbody: "This game's multiplayer modes offer endless fun and excitement, whether players are competing or cooperating with each other.",
+      userscore: 4,
+      reviewUserId: 27,
+      reviewGameId: 6,
+    });
+    const seedReview34 = await createReviews({
+      reviewbody: "The game's attention to detail and meticulous craftsmanship shine through in every aspect of its design.",
+      userscore: 3,
+      reviewUserId: 18,
+      reviewGameId: 22,
+    });
+    const seedReview35 = await createReviews({
+      reviewbody: "Featuring breathtaking boss battles and challenging encounters, this game tests players' skills and reflexes to the limit.",
+      userscore: 3,
+      reviewUserId: 30,
+      reviewGameId: 29,
+    });
+    const seedReview36 = await createReviews({
+      reviewbody: "The game's well-implemented cooperative gameplay allows friends to team up and tackle challenges together, fostering camaraderie.",
+      userscore: 4,
+      reviewUserId: 24,
+      reviewGameId: 18,
+    });
+    const seedReview37 = await createReviews({
+      reviewbody: "With its captivating storytelling and memorable dialogue, this game creates an emotional connection with players.",
+      userscore: 4,
+      reviewUserId: 6,
+      reviewGameId: 47,
+    });
+    const seedReview38 = await createReviews({
+      reviewbody: "The game's expansive and immersive world begs to be explored, rewarding players with hidden treasures and secrets.",
+      userscore: 3,
+      reviewUserId: 22,
+      reviewGameId: 12,
+    });
+    const seedReview39 = await createReviews({
+      reviewbody: "Featuring a variety of gameplay modes and unlockable content, this game offers endless replayability.",
+      userscore: 5,
+      reviewUserId: 3,
+      reviewGameId: 28,
+    });
+    const seedReview40 = await createReviews({
+      reviewbody: "The game's well-balanced difficulty curve provides a satisfying challenge without feeling overly frustrating.",
+      userscore: 4,
+      reviewUserId: 12,
+      reviewGameId: 4,
+    });
+    const seedReview41 = await createReviews({
+      reviewbody: "This game's attention to historical accuracy and period detail brings a unique educational aspect to the gaming experience.",
+      userscore: 3,
+      reviewUserId: 9,
+      reviewGameId: 19,
+    });
+    const seedReview42 = await createReviews({
+      reviewbody: "With its jaw-dropping graphics and smooth frame rates, this game is a visual feast for the eyes.",
+      userscore: 3,
+      reviewUserId: 26,
+      reviewGameId: 30,
+    });
 
     const allReviews = await fetchAllReviews();
     console.log(allReviews);
@@ -1944,7 +2550,7 @@ async function buildDatabase() {
 
 
     client.end();
-    console.log("Finished seed.")
+    console.log("Finished running build database with all seed data.")
   } catch (error) {
     console.log(error);
   }
@@ -1955,19 +2561,23 @@ module.exports = {
   fetchGameById,
   fetchGameByStudio,
   createNewGame,
+  fetchGameByOurscore,
+  fetchAllGamesByTitle,
+  // fetchGamesByGenre
 
   createUsers,
   fetchAllUsers,
   fetchUsersByUsername,
   fetchUsersById,
-  updateUserByUserId,
+  fetchUsersByAdmin,
 
   createReviews,
   fetchAllReviews,
+  editReview,
   deleteReview,
 
-  // createComments,
-  // fetchAllComments,
+  createComments,
+  fetchAllComments,
 
   buildDatabase,
 };
