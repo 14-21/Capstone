@@ -219,6 +219,7 @@ async function fetchAllUsers() {
       SELECT * FROM users;
       `
     );
+        // delete password;
     if (rows.length) {
       return rows;
     }
@@ -232,8 +233,7 @@ async function fetchUsersByUsername() {
     const { rows } = await client.query(
       `
       SELECT * FROM users
-      WHERE is_admin = FALSE
-      ORDER BY username;
+      WHERE username = $1
       `
     );
 
@@ -283,24 +283,6 @@ async function fetchUsersByAdmin() {
   }
 }
 
-// async function updateUserByUserId(userId, {username, fname, lname, password, email, profilepic,}) {
-// try {
-//   const { rows } = await client.query(
-//     `
-//     UPDATE users
-//     SET username = $1, fname = $2, lname = $3, password = $4, email = $5, profilepic = $6,
-//     WHERE "userId" = $7
-//     RETURNING username;
-//     `,
-//     [username, fname, lname, password, email, profilepic, is_admin])
-//     if (rows.lentgh){
-//       return rows[0];
-//     }
-// } catch (error) {
-//   console.log(error)
-// }
-// }
-
 //Start of review functions
 async function createReviews(reviewObj) {
   console.log("Start of createReviews")
@@ -343,34 +325,21 @@ async function fetchAllReviews() {
   }
 }
 
-// async function editReview() {
-//   try {
-//     console.log(id, fields, 'i am in the edit review')
-//     const arrayOfKeys - Object.keys(fields)
-//     console.log(arrayOfKeys, 'array of keys')
-//     const mapOfSetStringNames = arrayOfKeys.map((key, index) => {
-//       return `"${key}"= $$(index +1}`
-      
-//     })
-//     const setString = mapOfSetStringNames.join(`,`)
-//     if(setString.length === 0) {
-//       return
-//     }
-//     try {
-//       const { rows } = await client.query(`
-//       UPDATE reviews
-//       SET ${setString}
-//       WHERE id=${id}
-//       RETURNING *;
-//       `, Object.values(fields))
-//       console.log(rows[0], "object .values fields")
-//       return reviews
-//     }
-//   } catch (error) {
-//     console.log(error);
-//     throw error;
-//   }
-// }
+async function editReview() {
+try{
+const { rows } = await client.query(`
+UPDATE reviews
+SET reviewbody = $1, userscore = $2,"reviewUserId"=$3,"reviewGameId" = $4
+WHERE "reviewId" = $5
+`, [reviewbody, userscore, reviewUserId, reviewGameId])
+if (rows.length) {
+  return rows[0]
+}
+}catch (error) {
+  console.log(error)
+}
+}
+//we will need secured routes to make this available to both logged-in users and admins
 
 
 async function deleteReview(reviewId){
@@ -394,43 +363,43 @@ async function deleteReview(reviewId){
 }
 
 
-// async function createComments(commentObj) {
-//   try {
-//     const { rows } = await client.query(
-//       `
-//       INSERT INTO comments (commentbody, "origReviewId")
-//       VALUES ($1, $2)
-//       RETURNING commentbody;
-//       `, 
-//       [
-//         commentObj.commentbody,
-//         commentObj.origReviewId,
-//       ]
-//       );
-//       if (rows.length) {
-//         return rows[0];
-//       }
-//     } catch (error) {
-//       console.log(error)
-//     }
-//   }
+async function createComments(commentObj) {
+  try {
+    const { rows } = await client.query(
+      `
+      INSERT INTO comments (commentbody, "origReviewId")
+      VALUES ($1, $2)
+      RETURNING commentbody;
+      `, 
+      [
+        commentObj.commentbody,
+        commentObj.origReviewId,
+      ]
+      );
+      if (rows.length) {
+        return rows[0];
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
-  // async function fetchAllComments() {
-  //   try {
-  //     const { rows } = await client.query(
-  //       `
-  //       SELECT * FROM comments
-  //       INNER JOIN comments ON reviews.reviewId = comments.id
+  async function fetchAllComments() {
+    try {
+      const { rows } = await client.query(
+        `
+        SELECT * FROM comments
+        INNER JOIN comments ON reviews.reviewId = comments.id
         
-  //       `
-  //     );
-  //     if (rows.length) {
-  //       return rows;
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }
+        `
+      );
+      if (rows.length) {
+        return rows;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
 
 //Build the master DB
@@ -2527,6 +2496,18 @@ async function buildDatabase() {
       reviewUserId: 12,
       reviewGameId: 4,
     });
+    const seedReview41 = await createReviews({
+      reviewbody: "This game's attention to historical accuracy and period detail brings a unique educational aspect to the gaming experience.",
+      userscore: 3,
+      reviewUserId: 9,
+      reviewGameId: 19,
+    });
+    const seedReview42 = await createReviews({
+      reviewbody: "With its jaw-dropping graphics and smooth frame rates, this game is a visual feast for the eyes.",
+      userscore: 3,
+      reviewUserId: 26,
+      reviewGameId: 30,
+    });
 
     const allReviews = await fetchAllReviews();
     console.log(allReviews);
@@ -2568,7 +2549,7 @@ async function buildDatabase() {
 
 
     client.end();
-    console.log("Finished seed.")
+    console.log("Finished running build database with all seed data.")
   } catch (error) {
     console.log(error);
   }
@@ -2581,22 +2562,21 @@ module.exports = {
   createNewGame,
   fetchGameByOurscore,
   fetchAllGamesByTitle,
+  // fetchGamesByGenre
 
   createUsers,
   fetchAllUsers,
   fetchUsersByUsername,
   fetchUsersById,
   fetchUsersByAdmin,
-  // updateUserByUserId,
 
   createReviews,
   fetchAllReviews,
-  // editReview,
+  editReview,
   deleteReview,
-  fetchAllReviewsByGameId,
 
-  // createComments,
-  // fetchAllComments,
+  createComments,
+  fetchAllComments,
 
   buildDatabase,
 };
