@@ -228,7 +228,7 @@ async function fetchAllUsers() {
   }
 }
 
-async function fetchUsersByUsername() {
+async function fetchUsersByUsername(username) {
   try {
     const { rows } = await client.query(
       `
