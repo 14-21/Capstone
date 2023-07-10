@@ -233,14 +233,14 @@ async function fetchUsersByUsername() {
     const { rows } = await client.query(
       `
       SELECT * FROM users
-      WHERE username = $1
-      `
-    );
+      WHERE username = $1;
+      `,
+      [username]);
 
     // delete password;
 
     if (rows.length) {
-      return rows;
+      return rows[0];
     }
   } catch (error) {
     console.log(error);
@@ -286,6 +286,54 @@ async function fetchUsersByAdmin() {
 //Start of review functions
 async function createReviews(reviewObj) {
   console.log("Start of createReviews")
+  try {
+    const { rows } = await client.query(
+      `
+        INSERT INTO reviews(reviewbody, userscore, "reviewUserId","reviewGameId")
+        VALUES ($1, $2, $3, $4)
+        RETURNING reviewbody;
+        `,
+      [
+        reviewObj.reviewbody,
+        reviewObj.userscore,
+        reviewObj.reviewUserId,
+        reviewObj.reviewGameId,
+      ]
+    );
+    if (rows.length) {
+      return rows[0];
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+//Start of Reviews functions
+async function createReviews(reviewObj) {
+  try {
+    const { rows } = await client.query(
+      `
+        INSERT INTO reviews(reviewbody, userscore, "reviewUserId","reviewGameId")
+        VALUES ($1, $2, $3, $4)
+        RETURNING reviewbody;
+        `,
+      [
+        reviewObj.reviewbody,
+        reviewObj.userscore,
+        reviewObj.reviewUserId,
+        reviewObj.reviewGameId,
+      ]
+    );
+    if (rows.length) {
+      return rows[0];
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+//Start of Reviews functions
+async function createReviews(reviewObj) {
   try {
     const { rows } = await client.query(
       `
@@ -2556,6 +2604,8 @@ async function buildDatabase() {
   }
 }
 
+//commenting this out to test github
+
 module.exports = {
   fetchAllGames,
   fetchGameById,
@@ -2577,7 +2627,7 @@ module.exports = {
   deleteReview,
 
   createComments,
-  fetchAllComments,
+  // fetchAllComments,
 
   buildDatabase,
 };
