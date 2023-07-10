@@ -233,14 +233,14 @@ async function fetchUsersByUsername() {
     const { rows } = await client.query(
       `
       SELECT * FROM users
-      WHERE username = $1
+      WHERE username = $1;
       `
-    );
+    , [username])
 
     // delete password;
 
     if (rows.length) {
-      return rows;
+      return rows[0];
     }
   } catch (error) {
     console.log(error);
