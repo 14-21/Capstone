@@ -2,14 +2,21 @@ const {
   fetchAllGames,
   fetchGameById,
   fetchGameByStudio,
-  fetchAllUsers,
   createNewGame,
-  fetchUsersByUsername,
+  fetchGameByOurscore,
+  fetchAllGamesByTitle,
+  
   createUsers,
+  fetchAllUsers,
+  fetchUsersByUsername,
+  fetchUsersById,
+  fetchUsersByAdmin,
+  //July 8, 2023 we need this fetch by admin but need to figure out the secured routes thing first
+  
   createReviews,
   fetchAllReviews,
-  fetchUsersById,
 } = require("./db/seedData");
+
 //Express server code goes here, routes, and middleware etc.
 require("dotenv").config();
 const express = require("express");
@@ -80,7 +87,7 @@ async function getAllUsers(req, res) {
   try {
     const allUsersData = await fetchAllUsers();
     if (allUsersData && allUsersData.length) {
-      res.send(allGamesData);
+      res.send(allUsersData);
     } else {
       res.send("No User Data Available...");
     }
@@ -89,7 +96,42 @@ async function getAllUsers(req, res) {
   }
 }
 
-app.get("/games/users", getAllUsers);
+app.get("/games/users", getAllUsers); //NOT A SECURE ROUTE RIGHT NOW
+
+//New routes for users filtered in db below
+async function getUsersByUsername(req, res) {
+  try {
+    const allUsersByUsername = await fetchUsersByUsername();
+    if (allUsersByUsername && allUsersByUsername.length) {
+      res.send(allUsersByUsername);
+    } else {
+      res.send("No User Data Available...");
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+app.get("/games/usernames", getUsersByUsername);//NOT A SECURE ROUTE RIGHT NOW
+
+async function getAdminUsers(req, res) {
+  try {
+    const allAdminUsers = await fetchUsersByAdmin();
+    if (allAdminUsers && allAdminUsers.length) {
+      res.send(allAdminUsers);
+    } else {
+      res.send("No User Data Available...");
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+app.get("/adminusers", getAdminUsers); //NOT A SECURE ROUTE RIGHT NOW
+
+
+
+
 
 async function getGameById(req, res, next) {
   try {
@@ -125,7 +167,7 @@ async function getGamesByStudio(req, res, next) {
     console.log(req.params.studio);
 
     const myStudioGame = await fetchGameByStudio(req.params.studio);
-    // console.log("Finished Fetching my Studio Game");
+    console.log("Finished Fetching my Studio Game");
 
     res.send(myStudioGame);
   } catch (error) {
@@ -134,6 +176,37 @@ async function getGamesByStudio(req, res, next) {
 }
 
 app.get("/games/studio/:studio", getGamesByStudio);
+
+async function getGamesByOurscore(req, res, next) {
+  try {
+    console.log(req.params.ourscore);
+
+    const ourscoreRating = await fetchGameByOurscore (Number(req.params.ourscore));
+    console.log("Finished Fetching my get games by ourscore");
+
+    res.send(ourscoreRating);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+app.get("/games/ourscore/orderedrating", getGamesByOurscore);
+
+async function getGamesByTitle(req, res, next) {
+    try {
+      const allGamesTitles = await fetchAllGamesByTitle();
+      if (allGamesTitles && allGamesTitles.length) {
+        res.send(allGamesTitles);
+      } else {
+        res.send("No games to display");
+      }
+      console.log("Finished fetching get games by title");
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+app.get("/allgames/titles", getGamesByTitle);
 
 async function registerNewUser(req, res, next) {
   try {
@@ -235,11 +308,11 @@ async function loginUser(req, res, next) {
     } else {
       next({
         name: "Incorrect Username or Password.",
-        message: " Login information incorrect, please try again.",
+        message: "Login information incorrect, please try again.",
       });
     }
   } catch (error) {
-    next(error);
+    console.log(error);
   }
 }
 
@@ -276,13 +349,15 @@ async function postNewGame(req, res, next) {
   }
 }
 
-app.post("/games/create/game", postNewGame);
+app.post("/games/create/game", postNewGame); //NOT A SECURE ROUTE RIGHT NOW
 
 async function getAllReviews(req, res, next) {
+  console.log("before get all reviews")
   try {
-    const allGamesData = await fetchAllReviews();
-    if (allGamesData && allGamesData.length) {
-      res.send(allGamesData);
+    const allReviewsData = await fetchAllReviews();
+    console.log("all reviews fetched");
+    if (allReviewsData && allReviewsData.length) {
+      res.send(allReviewsData);
     } else {
       res.send("No Reviews Available...");
     }
@@ -290,7 +365,8 @@ async function getAllReviews(req, res, next) {
     console.log(error);
   }
 }
-app.get("/games/reviews", getAllReviews);
+app.get("/api/games/reviews", getAllReviews);
+
 
 // async function getAllComments(req,res,next){
 //   try {
