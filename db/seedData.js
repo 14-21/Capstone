@@ -2593,7 +2593,7 @@ module.exports = {
   fetchAllReviews,
   // editReview,
   deleteReview,
-  fetchAllReviewsByGameId,
+  // fetchAllReviewsByGameId,
 
   // createComments,
   // fetchAllComments,
