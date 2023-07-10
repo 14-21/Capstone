@@ -433,27 +433,22 @@ async function createComments(commentObj) {
     }
   }
 
-
-// async function fetchAllComments(commentObj) {
-//   try {
-//     const { rows } = await client.query(
-//       `
-//       INSERT INTO comments (commentbody, "origReviewId")
-//       VALUES ($1, $2)
-//       RETURNING commentbody;
-//       `, 
-//       [
-//         commentObj.commentbody,
-//         commentObj.origReviewId,
-//       ]
-//       );
-//       if (rows.length) {
-//         return rows[0];
-//       }
-//     } catch (error) {
-//       console.log(error)
-//     }
-//   }
+  async function fetchAllComments() {
+    try {
+      const { rows } = await client.query(
+        `
+        SELECT * FROM comments
+        INNER JOIN comments ON reviews.reviewId = comments.id
+        
+        `
+      );
+      if (rows.length) {
+        return rows;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
 
 //Build the master DB
