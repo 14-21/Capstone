@@ -234,8 +234,8 @@ async function fetchUsersByUsername() {
       `
       SELECT * FROM users
       WHERE username = $1;
-      `
-    , [username])
+      `,
+      [username]);
 
     // delete password;
 
