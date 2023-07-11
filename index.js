@@ -147,11 +147,9 @@ app.get("/games/:id", getGameById);
 
 async function getUserById(req, res, next) {
   try {
-    console.log(req.user.id);
+    const specificUser = await fetchUsersById(Number(req.user.userId));
 
-    const specificUser = await fetchUsersById(Number(req.user.id));
-
-    if (fetchUsersById && fetchUsersById.length) {
+    if (specificUser) {
       res.send(specificUser);
     }
   } catch (error) {
@@ -384,7 +382,6 @@ async function postReview(req, res, next) {
       if (validUser) {
         const newGameReview = await createReviews(req.body);
 
-<<<<<<< Updated upstream
         res.send(newGameReview);
       } else {
         res.send({
@@ -405,30 +402,18 @@ async function postReview(req, res, next) {
 
 app.post("/games/post/review", requireUser, postReview);
 
-async function getAllComments(req, res, next) {
-  try {
-    const allComments = await fetchAllComments();
-    if (allComments && allGamesData.length) {
-      res.send(allComments);
-    } else {
-      res.send("No Comments Available...");
-    }
-=======
-async function getGamesByGenre(req, res, next) {
-  try {
-    console.log(req.params.genre);
+// async function getAllComments(req, res, next) {
+//   try {
+//     const allComments = await fetchAllComments();
+//     if (allComments && allGamesData.length) {
+//       res.send(allComments);
+//     } else {
+//       res.send("No Comments Available...");
+//     }
+//   }
+//   }
 
-    const myGenreGame = await fetchGameByGenre(req.params.genre);
-
-    res.send(myGenreGame);
->>>>>>> Stashed changes
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-<<<<<<< Updated upstream
-app.get("/games/users/comments", getAllComments);
+// app.get("/games/users/comments", getAllComments);
 
 async function getGamesByGenre(req, res, next) {
   try {
@@ -442,8 +427,6 @@ async function getGamesByGenre(req, res, next) {
   }
 }
 
-=======
->>>>>>> Stashed changes
 app.get("/games/genre", getGamesByGenre);
 
 app.get("*", (req, res) => {
