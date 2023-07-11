@@ -46,8 +46,10 @@ app.use("/", async (req, res, next) => {
       const { id } = jwt.verify(token, process.env.JWT_SECRET);
       console.log("Our user Id:-----", id);
       if (id) {
-        req.user = await fetchUsersById(id);
-        console.log(req.user);
+        const foundUser = await fetchUsersById(id);
+        if (foundUser) {
+          req.user = foundUser;
+        }
         next();
       }
     } catch (error) {
@@ -402,18 +404,55 @@ async function postReview(req, res, next) {
 
 app.post("/games/post/review", requireUser, postReview);
 
-// async function getAllComments(req, res, next) {
-//   try {
-//     const allComments = await fetchAllComments();
-//     if (allComments && allGamesData.length) {
-//       res.send(allComments);
-//     } else {
-//       res.send("No Comments Available...");
-//     }
-//   }
-//   }
+async function updateReview(req, res, next) {
+  try {
+    const myAuthToken = req.headers.authorization.slice(7);
+    console.log("My Actual Token", myAuthToken);
+    console.log(process.env.JWT_SECRET, " !!!!!!!!!!!!!!!!!!!!!!!");
 
-// app.get("/games/users/comments", getAllComments);
+    const isThisAGoodToken = jwt.verify(myAuthToken, process.env.JWT_SECRET);
+    console.log("This is my decrypted token:", isThisAGoodToken);
+
+    if (isThisAGoodToken) {
+      const correctUser = await fetchUsersByUsername(isThisAGoodToken.username);
+
+      if (correctUser) {
+        const newReview = await editReview(req.body);
+      } else {
+        res.send({
+          error: true,
+          message:
+            "Unable to update the review, please make sure you are logged in and viewing the review you posted.",
+        });
+      }
+    } else {
+      res.send({
+        error: true,
+        message: "Unauthorized Token",
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+}
+
+app.put("/games/user/review/update", requireUser, updateReview);
+
+// COMMENTS FUNCTIONS
+async function getAllComments(req, res, next) {
+  try {
+    const allComments = await fetchAllComments();
+    if (allComments && allGamesData.length) {
+      res.send(allComments);
+    } else {
+      res.send("No Comments Available...");
+    }
+  } catch (error) {
+    next(error);
+  }
+}
+
+app.get("/games/users/comments", getAllComments);
 
 async function getGamesByGenre(req, res, next) {
   try {
