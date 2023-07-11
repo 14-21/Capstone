@@ -1,6 +1,6 @@
 # Capstone
-
 All GET functions:
+
 Games:
     /games, getAllGames
     /games/:id, getGameById
