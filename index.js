@@ -289,7 +289,7 @@ async function loginUser(req, res, next) {
         message: "Incorrect Username or Login.",
       });
     }
-
+    console.log(user, "user code")
     if (password == user.password) {
       const token = jwt.sign(
         {
