@@ -69,15 +69,6 @@ async function createTables() {
         );
         `);
 
-<<<<<<< Updated upstream
-    // await client.query(`
-    //     CREATE TABLE comments (
-    //       "commentId" SERIAL PRIMARY KEY,
-    //       commentbody TEXT DEFAULT 'Your Comment Here',
-    //       "origReviewId" INTEGER REFERENCES reviews("reviewId")
-    //     );
-    //     `);
-=======
     await client.query(`
         CREATE TABLE comments (
           "commentId" SERIAL PRIMARY KEY,			
@@ -85,7 +76,6 @@ async function createTables() {
           "origReviewId" INTEGER REFERENCES reviews("reviewId")
         );
         `);
->>>>>>> Stashed changes
 
     console.log("Finished creating tables");
   } catch (error) {
@@ -276,6 +266,7 @@ async function fetchUsersByUsername(username) {
 }
 
 async function fetchUsersById(id) {
+  console.log(id, typeof id);
   try {
     const {
       rows: [user],
@@ -286,7 +277,7 @@ async function fetchUsersById(id) {
       `,
       [id]
     );
-
+    console.log(user, "I AM THE USER");
     delete user.password;
 
     return user;
@@ -369,12 +360,7 @@ WHERE "reviewId" = $5
   }
 }
 //we will need secured routes to make this available to both logged-in users and admins
-<<<<<<< Updated upstream
-
 async function deleteReview(reviewId) {
-=======
-async function deleteReview(reviewId){
->>>>>>> Stashed changes
   try {
     const { rows } = await client.query(
       `
@@ -427,44 +413,45 @@ async function fetchAllComments() {
   } catch (error) {
     console.log(error);
   }
-<<<<<<< Updated upstream
 }
-=======
-  async function editComment() {
-    try{
-    const { rows } = await client.query(`
+
+async function editComment() {
+  try {
+    const { rows } = await client.query(
+      `
     UPDATE comments
     SET reviewbody = $1, userscore = $2,"reviewUserId"=$3,"reviewGameId" = $4
     WHERE "reviewId" = $5
-    `, [reviewbody, userscore, reviewUserId, reviewGameId])
+    `,
+      [reviewbody, userscore, reviewUserId, reviewGameId]
+    );
     if (rows.length) {
-      return rows[0]
+      return rows[0];
     }
-    }catch (error) {
-      console.log(error)
-    }
-    }
-    //we will need secured routes to make this available to both logged-in users and admins
-    async function deleteComment(commentId){
-      try {
-        const { rows } = await client.query(
-          `
+  } catch (error) {
+    console.log(error);
+  }
+}
+//we will need secured routes to make this available to both logged-in users and admins
+async function deleteComment(commentId) {
+  try {
+    const { rows } = await client.query(
+      `
           DELETE FROM comments
           WHERE "origReviewId" = $1
           RETURNING *;
-          `, [commentId]
-        )
-        if (rows.length){
-          return rows[0]
-        }else {
-          return "Failed to delete comment"
-        }
-    
-      } catch (error) {
-        console.log(error)
-      }
+          `,
+      [commentId]
+    );
+    if (rows.length) {
+      return rows[0];
+    } else {
+      return "Failed to delete comment";
     }
->>>>>>> Stashed changes
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 //Build the master DB
 async function buildDatabase() {
@@ -2706,78 +2693,41 @@ async function buildDatabase() {
     console.log(allReviews);
     console.log("Finished seed reviews");
 
-<<<<<<< Updated upstream
     //Begin seed comment data
-    // const seedComment1 = await createComments({
-    //   commentbody: "Graphics are out of this world!",
-    //   origReviewId: 2,
-    //   origReviewUserId: 19,
-    // });
-    // const seedComment2 = await createComments({
-    //   commentbody: "I couldn't put the controller down!" ,
-    //   origReviewId: 16,
-    //   origReviewUserId: 10,
-    // });
-    // const seedComment3 = await createComments({
-    //   commentbody:"I got lost in its vastness." ,
-    //   origReviewId: 14,
-    //   origReviewUserId: 7,
-    // });
-    // const seedComment4 = await createComments({
-    //   commentbody: "Multiplayer battles were pure adrenaline." ,
-    //   origReviewId: 27,
-    //   origReviewUserId: 28,
-    // });
-    // const seedComment5 = await createComments({
-    //   commentbody: "I felt like the ultimate hero!" ,
-    //   origReviewId: 18,
-    //   origReviewUserId: 15,
-    // });
-    // const seedComment6 = await createComments({
-    //   commentbody:"Gameplay was smooth as butter." ,
-    //   origReviewId: 30,
-    //   origReviewUserId: 21,
-    // });
-
-    // console.log("Finished seed comments.")
-
-=======
-//Begin seed comment data
     const seedComment1 = await createComments({
       commentbody: "Graphics are out of this world!",
       origReviewId: 2,
       origReviewUserId: 19,
     });
     const seedComment2 = await createComments({
-      commentbody: "I couldn't put the controller down!" ,
+      commentbody: "I couldn't put the controller down!",
       origReviewId: 16,
       origReviewUserId: 10,
     });
     const seedComment3 = await createComments({
-      commentbody:"I got lost in its vastness." ,
+      commentbody: "I got lost in its vastness.",
       origReviewId: 14,
       origReviewUserId: 7,
     });
     const seedComment4 = await createComments({
-      commentbody: "Multiplayer battles were pure adrenaline." ,
+      commentbody: "Multiplayer battles were pure adrenaline.",
       origReviewId: 27,
       origReviewUserId: 28,
     });
     const seedComment5 = await createComments({
-      commentbody: "I felt like the ultimate hero!" ,
+      commentbody: "I felt like the ultimate hero!",
       origReviewId: 18,
       origReviewUserId: 15,
     });
     const seedComment6 = await createComments({
-      commentbody:"Gameplay was smooth as butter." ,
+      commentbody: "Gameplay was smooth as butter.",
       origReviewId: 30,
       origReviewUserId: 21,
     });
 
-    console.log("Finished seed comments.")
-//end of seed comments section
+    console.log("Finished seed comments.");
+    //end of seed comments section
 
->>>>>>> Stashed changes
     client.end();
     console.log("Finished running build database with all seed data.");
   } catch (error) {
