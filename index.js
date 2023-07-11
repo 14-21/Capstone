@@ -149,10 +149,8 @@ app.get("/games/:id", getGameById);
 
 async function getUserById(req, res, next) {
   try {
-    console.log(req.user.userId, "HELLOOOOOOO!@!!!!");
-
     const specificUser = await fetchUsersById(Number(req.user.userId));
-    console.log(specificUser, "Specific USER@@@@@@@");
+
     if (specificUser) {
       res.send(specificUser);
     }
