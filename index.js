@@ -384,6 +384,7 @@ async function postReview(req, res, next) {
       if (validUser) {
         const newGameReview = await createReviews(req.body);
 
+<<<<<<< Updated upstream
         res.send(newGameReview);
       } else {
         res.send({
@@ -412,11 +413,21 @@ async function getAllComments(req, res, next) {
     } else {
       res.send("No Comments Available...");
     }
+=======
+async function getGamesByGenre(req, res, next) {
+  try {
+    console.log(req.params.genre);
+
+    const myGenreGame = await fetchGameByGenre(req.params.genre);
+
+    res.send(myGenreGame);
+>>>>>>> Stashed changes
   } catch (error) {
     console.log(error);
   }
 }
 
+<<<<<<< Updated upstream
 app.get("/games/users/comments", getAllComments);
 
 async function getGamesByGenre(req, res, next) {
@@ -431,6 +442,8 @@ async function getGamesByGenre(req, res, next) {
   }
 }
 
+=======
+>>>>>>> Stashed changes
 app.get("/games/genre", getGamesByGenre);
 
 app.get("*", (req, res) => {
