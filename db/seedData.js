@@ -266,6 +266,7 @@ async function fetchUsersByUsername(username) {
 }
 
 async function fetchUsersById(id) {
+  console.log(id, typeof id);
   try {
     const {
       rows: [user],
@@ -276,7 +277,7 @@ async function fetchUsersById(id) {
       `,
       [id]
     );
-
+    console.log(user, "I AM THE USER");
     delete user.password;
 
     return user;
