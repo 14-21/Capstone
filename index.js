@@ -159,7 +159,7 @@ async function getUserById(req, res, next) {
   }
 }
 
-app.get("/games/get/user/:id", requireUser, getUserById);
+app.get("/games/get/user", requireUser, getUserById);
 
 async function getGamesByStudio(req, res, next) {
   try {
