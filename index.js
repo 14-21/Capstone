@@ -97,7 +97,7 @@ async function getAllUsers(req, res) {
   }
 }
 
-app.get("/games/users", getAllUsers); //NOT A SECURE ROUTE RIGHT NOW
+app.get("/games/users", requireAdmin, getAllUsers);
 
 //New routes for users filtered in db below
 async function getUsersByUsername(req, res) {
@@ -109,7 +109,7 @@ async function getUsersByUsername(req, res) {
       res.send("No User Data Available...");
     }
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 }
 
@@ -147,17 +147,17 @@ app.get("/games/:id", getGameById);
 
 async function getUserById(req, res, next) {
   try {
-    console.log(req.params.id);
+    const specificUser = await fetchUsersById(Number(req.user.userId));
 
-    const specificUser = await fetchUsersById;
-
-    res.send(specificUser);
+    if (specificUser) {
+      res.send(specificUser);
+    }
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 }
 
-app.get("/games/get/user", getUserById);
+app.get("/games/get/user", requireUser, getUserById);
 
 async function getGamesByStudio(req, res, next) {
   try {
@@ -272,7 +272,7 @@ app.post("/games/users/register", registerNewUser);
 async function loginUser(req, res, next) {
   try {
     const { username, password } = req.body;
-
+    console.log(req.body);
     if (!username || !password) {
       next({
         name: "Missing Login Information",
@@ -328,7 +328,7 @@ async function postNewGame(req, res, next) {
 
     if (isThisAGoodToken) {
       const userFromDb = await fetchUsersByUsername(isThisAGoodToken.username);
-      console.log(req.body, " ?????????");
+      // console.log(req.body, " ?????????");
       if (userFromDb) {
         const newGamePost = await createNewGame(req.body);
 
@@ -350,6 +350,7 @@ async function postNewGame(req, res, next) {
 
 app.post("/games/create/game", requireAdmin, postNewGame); //NOT A SECURE ROUTE RIGHT NOW
 
+// REVIEWS FUNCTIONS
 async function getAllReviews(req, res, next) {
   console.log("before get all reviews");
   try {
@@ -366,34 +367,67 @@ async function getAllReviews(req, res, next) {
 }
 app.get("/api/games/reviews", getAllReviews);
 
-async function getAllComments(req, res, next) {
+async function postReview(req, res, next) {
   try {
-    const allComments = await fetchAllComments();
-    if (allComments && allGamesData.length) {
-      res.send(allComments);
+    const myAuthToken = req.headers.authorization.slice(7);
+    console.log("My Actual Token", myAuthToken);
+    console.log(process.env.JWT_SECRET, " !!!!!!!!!!!!!!!!!!!!!!!");
+
+    const isThisAGoodToken = jwt.verify(myAuthToken, process.env.JWT_SECRET);
+    console.log("This is my decrypted token:", isThisAGoodToken);
+
+    if (isThisAGoodToken) {
+      const validUser = await fetchUsersByUsername(isThisAGoodToken.username);
+      console.log(req.body);
+      if (validUser) {
+        const newGameReview = await createReviews(req.body);
+
+        res.send(newGameReview);
+      } else {
+        res.send({
+          error: true,
+          message: "Unable to post review, please make sure you are logged in.",
+        });
+      }
     } else {
-      res.send("No Comments Available...");
+      res.send({
+        error: true,
+        message: "Failed to decrypt Token.",
+      });
     }
+  } catch (error) {
+    next(error);
+  }
+}
+
+app.post("/games/post/review", requireUser, postReview);
+
+// async function getAllComments(req, res, next) {
+//   try {
+//     const allComments = await fetchAllComments();
+//     if (allComments && allGamesData.length) {
+//       res.send(allComments);
+//     } else {
+//       res.send("No Comments Available...");
+//     }
+//   }
+//   }
+
+// app.get("/games/users/comments", getAllComments);
+
+async function getGamesByGenre(req, res, next) {
+  try {
+    console.log(req.params.genre);
+
+    const myGenreGame = await fetchGameByGenre(req.params.genre);
+
+    res.send(myGenreGame);
   } catch (error) {
     console.log(error);
   }
 }
 
-app.get("/comments", getAllComments);
-
-// async function getGamesByGenre(req, res, next) {
-//   try {
-//     console.log(req.params.genre);
-
-//     const myGenreGame = await fetchGameByGenre(req.params.genre);
-
-//     res.send(myGenreGame);
-//   } catch (error) {
-//     console.log(error);
-//   }
-// }
-
-// app.get("/games/genre", getGamesByGenre);
+app.get("/games/genre", getGamesByGenre);
 
 app.get("*", (req, res) => {
   res.status(404).send({

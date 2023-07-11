@@ -69,13 +69,13 @@ async function createTables() {
         );
         `);
 
-    // await client.query(`
-    //     CREATE TABLE comments (
-    //       "commentId" SERIAL PRIMARY KEY,
-    //       commentbody TEXT DEFAULT 'Your Comment Here',
-    //       "origReviewId" INTEGER REFERENCES reviews("reviewId")
-    //     );
-    //     `);
+    await client.query(`
+        CREATE TABLE comments (
+          "commentId" SERIAL PRIMARY KEY,			
+          commentbody TEXT DEFAULT 'Your Comment Here',
+          "origReviewId" INTEGER REFERENCES reviews("reviewId")
+        );
+        `);
 
     console.log("Finished creating tables");
   } catch (error) {
@@ -325,55 +325,6 @@ async function createReviews(reviewObj) {
     console.log(error);
   }
 }
-
-//Start of Reviews functions
-async function createReviews(reviewObj) {
-  try {
-    const { rows } = await client.query(
-      `
-        INSERT INTO reviews(reviewbody, userscore, "reviewUserId","reviewGameId")
-        VALUES ($1, $2, $3, $4)
-        RETURNING reviewbody;
-        `,
-      [
-        reviewObj.reviewbody,
-        reviewObj.userscore,
-        reviewObj.reviewUserId,
-        reviewObj.reviewGameId,
-      ]
-    );
-    if (rows.length) {
-      return rows[0];
-    }
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-//Start of Reviews functions
-async function createReviews(reviewObj) {
-  try {
-    const { rows } = await client.query(
-      `
-        INSERT INTO reviews(reviewbody, userscore, "reviewUserId","reviewGameId")
-        VALUES ($1, $2, $3, $4)
-        RETURNING reviewbody;
-        `,
-      [
-        reviewObj.reviewbody,
-        reviewObj.userscore,
-        reviewObj.reviewUserId,
-        reviewObj.reviewGameId,
-      ]
-    );
-    if (rows.length) {
-      return rows[0];
-    }
-  } catch (error) {
-    console.log(error);
-  }
-}
-
 async function fetchAllReviews() {
   console.log("Starting fetchAllReviews");
   try {
@@ -390,7 +341,6 @@ async function fetchAllReviews() {
     console.log(error);
   }
 }
-
 async function editReview() {
   try {
     const { rows } = await client.query(
@@ -409,7 +359,6 @@ WHERE "reviewId" = $5
   }
 }
 //we will need secured routes to make this available to both logged-in users and admins
-
 async function deleteReview(reviewId) {
   try {
     const { rows } = await client.query(
@@ -429,8 +378,6 @@ async function deleteReview(reviewId) {
     console.log(error);
   }
 }
-
-//need updateReviewbody function then route
 
 async function createComments(commentObj) {
   try {
@@ -461,6 +408,44 @@ async function fetchAllComments() {
     );
     if (rows.length) {
       return rows;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function editComment() {
+  try {
+    const { rows } = await client.query(
+      `
+    UPDATE comments
+    SET reviewbody = $1, userscore = $2,"reviewUserId"=$3,"reviewGameId" = $4
+    WHERE "reviewId" = $5
+    `,
+      [reviewbody, userscore, reviewUserId, reviewGameId]
+    );
+    if (rows.length) {
+      return rows[0];
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+//we will need secured routes to make this available to both logged-in users and admins
+async function deleteComment(commentId) {
+  try {
+    const { rows } = await client.query(
+      `
+          DELETE FROM comments
+          WHERE "origReviewId" = $1
+          RETURNING *;
+          `,
+      [commentId]
+    );
+    if (rows.length) {
+      return rows[0];
+    } else {
+      return "Failed to delete comment";
     }
   } catch (error) {
     console.log(error);
@@ -2708,38 +2693,39 @@ async function buildDatabase() {
     console.log("Finished seed reviews");
 
     //Begin seed comment data
-    // const seedComment1 = await createComments({
-    //   commentbody: "Graphics are out of this world!",
-    //   origReviewId: 2,
-    //   origReviewUserId: 19,
-    // });
-    // const seedComment2 = await createComments({
-    //   commentbody: "I couldn't put the controller down!" ,
-    //   origReviewId: 16,
-    //   origReviewUserId: 10,
-    // });
-    // const seedComment3 = await createComments({
-    //   commentbody:"I got lost in its vastness." ,
-    //   origReviewId: 14,
-    //   origReviewUserId: 7,
-    // });
-    // const seedComment4 = await createComments({
-    //   commentbody: "Multiplayer battles were pure adrenaline." ,
-    //   origReviewId: 27,
-    //   origReviewUserId: 28,
-    // });
-    // const seedComment5 = await createComments({
-    //   commentbody: "I felt like the ultimate hero!" ,
-    //   origReviewId: 18,
-    //   origReviewUserId: 15,
-    // });
-    // const seedComment6 = await createComments({
-    //   commentbody:"Gameplay was smooth as butter." ,
-    //   origReviewId: 30,
-    //   origReviewUserId: 21,
-    // });
+    const seedComment1 = await createComments({
+      commentbody: "Graphics are out of this world!",
+      origReviewId: 2,
+      origReviewUserId: 19,
+    });
+    const seedComment2 = await createComments({
+      commentbody: "I couldn't put the controller down!",
+      origReviewId: 16,
+      origReviewUserId: 10,
+    });
+    const seedComment3 = await createComments({
+      commentbody: "I got lost in its vastness.",
+      origReviewId: 14,
+      origReviewUserId: 7,
+    });
+    const seedComment4 = await createComments({
+      commentbody: "Multiplayer battles were pure adrenaline.",
+      origReviewId: 27,
+      origReviewUserId: 28,
+    });
+    const seedComment5 = await createComments({
+      commentbody: "I felt like the ultimate hero!",
+      origReviewId: 18,
+      origReviewUserId: 15,
+    });
+    const seedComment6 = await createComments({
+      commentbody: "Gameplay was smooth as butter.",
+      origReviewId: 30,
+      origReviewUserId: 21,
+    });
 
-    // console.log("Finished seed comments.")
+    console.log("Finished seed comments.");
+    //end of seed comments section
 
     client.end();
     console.log("Finished running build database with all seed data.");
@@ -2747,8 +2733,6 @@ async function buildDatabase() {
     console.log(error);
   }
 }
-
-//commenting this out to test github
 
 module.exports = {
   fetchAllGames,
@@ -2771,7 +2755,9 @@ module.exports = {
   deleteReview,
 
   createComments,
-  // fetchAllComments,
+  fetchAllComments,
+  editComment,
+  deleteComment,
 
   buildDatabase,
 };
