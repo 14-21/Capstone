@@ -183,8 +183,25 @@ async function fetchAllGamesByTitle() {
     console.log(error);
   }
 }
+//Start of the genre functions
 
-//Start of Users table section lines 201 through xxx
+async function fetchGameByGenre(genreValue) {
+  try {
+    const { rows } = await client.query(`
+        SELECT * FROM games
+        WHERE "genre" = '${genreValue}';
+        `);
+
+    console.log(rows);
+    console.log("This is the fetchGameByGenre function");
+
+    return rows[0];
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+//Start of Users table section lines
 async function createUsers(userObj) {
   try {
     const { rows } = await client.query(
@@ -2740,7 +2757,7 @@ module.exports = {
   createNewGame,
   fetchGameByOurscore,
   fetchAllGamesByTitle,
-  // fetchGamesByGenre
+  fetchGameByGenre,
 
   createUsers,
   fetchAllUsers,
