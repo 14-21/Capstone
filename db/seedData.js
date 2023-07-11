@@ -208,7 +208,7 @@ async function createUsers(userObj) {
       `
         INSERT INTO users(username, fname, lname, password, email, profilepic, is_admin)
         VALUES ($1, $2, $3, $4, $5, $6, $7)
-        RETURNING "userId", username, email;
+        RETURNING "userId", username, email, is_admin;
         `,
       [
         userObj.username,
