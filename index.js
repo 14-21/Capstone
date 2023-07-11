@@ -5,14 +5,14 @@ const {
   createNewGame,
   fetchGameByOurscore,
   fetchAllGamesByTitle,
-  
+
   createUsers,
   fetchAllUsers,
   fetchUsersByUsername,
   fetchUsersById,
   fetchUsersByAdmin,
   //July 8, 2023 we need this fetch by admin but need to figure out the secured routes thing first
-  
+
   createReviews,
   fetchAllReviews,
 } = require("./db/seedData");
@@ -67,6 +67,7 @@ app.get("/", function (req, res) {
 });
 
 const client = require("./db/index");
+const { requireAdmin } = require("./adminutils");
 client.connect();
 
 async function getAllGames(req, res, next) {
@@ -112,7 +113,7 @@ async function getUsersByUsername(req, res) {
   }
 }
 
-app.get("/games/usernames", getUsersByUsername);//NOT A SECURE ROUTE RIGHT NOW
+app.get("/games/usernames", getUsersByUsername); //NOT A SECURE ROUTE RIGHT NOW
 
 async function getAdminUsers(req, res) {
   try {
@@ -129,10 +130,6 @@ async function getAdminUsers(req, res) {
 
 app.get("/adminusers", getAdminUsers); //NOT A SECURE ROUTE RIGHT NOW
 
-
-
-
-
 async function getGameById(req, res, next) {
   try {
     // console.log("Testing getGameById");
@@ -148,19 +145,19 @@ async function getGameById(req, res, next) {
 
 app.get("/games/:id", getGameById);
 
-// async function getUserById(req, res, next){
-//   try {
-//     console.log(req.params.id):
+async function getUserById(req, res, next) {
+  try {
+    console.log(req.params.id);
 
-//     const specificUser = await fetchUsersById
+    const specificUser = await fetchUsersById;
 
-//     res.send(specificUser):
-//   } catch (error) {
-//     console.log(error)
-//   }
-// }
+    res.send(specificUser);
+  } catch (error) {
+    console.log(error);
+  }
+}
 
-// app.get("/games/get/user", getUserById)
+app.get("/games/get/user", getUserById);
 
 async function getGamesByStudio(req, res, next) {
   try {
@@ -181,7 +178,9 @@ async function getGamesByOurscore(req, res, next) {
   try {
     console.log(req.params.ourscore);
 
-    const ourscoreRating = await fetchGameByOurscore (Number(req.params.ourscore));
+    const ourscoreRating = await fetchGameByOurscore(
+      Number(req.params.ourscore)
+    );
     console.log("Finished Fetching my get games by ourscore");
 
     res.send(ourscoreRating);
@@ -193,18 +192,18 @@ async function getGamesByOurscore(req, res, next) {
 app.get("/games/ourscore/orderedrating", getGamesByOurscore);
 
 async function getGamesByTitle(req, res, next) {
-    try {
-      const allGamesTitles = await fetchAllGamesByTitle();
-      if (allGamesTitles && allGamesTitles.length) {
-        res.send(allGamesTitles);
-      } else {
-        res.send("No games to display");
-      }
-      console.log("Finished fetching get games by title");
-    } catch (error) {
-      console.log(error);
+  try {
+    const allGamesTitles = await fetchAllGamesByTitle();
+    if (allGamesTitles && allGamesTitles.length) {
+      res.send(allGamesTitles);
+    } else {
+      res.send("No games to display");
     }
+    console.log("Finished fetching get games by title");
+  } catch (error) {
+    console.log(error);
   }
+}
 
 app.get("/allgames/titles", getGamesByTitle);
 
@@ -289,7 +288,7 @@ async function loginUser(req, res, next) {
         message: "Incorrect Username or Login.",
       });
     }
-
+    console.log(user, "user code")
     if (password == user.password) {
       const token = jwt.sign(
         {
@@ -349,10 +348,10 @@ async function postNewGame(req, res, next) {
   }
 }
 
-app.post("/games/create/game", postNewGame); //NOT A SECURE ROUTE RIGHT NOW
+app.post("/games/create/game", requireAdmin, postNewGame); //NOT A SECURE ROUTE RIGHT NOW
 
 async function getAllReviews(req, res, next) {
-  console.log("before get all reviews")
+  console.log("before get all reviews");
   try {
     const allReviewsData = await fetchAllReviews();
     console.log("all reviews fetched");
@@ -367,21 +366,20 @@ async function getAllReviews(req, res, next) {
 }
 app.get("/api/games/reviews", getAllReviews);
 
+async function getAllComments(req, res, next) {
+  try {
+    const allComments = await fetchAllComments();
+    if (allComments && allGamesData.length) {
+      res.send(allComments);
+    } else {
+      res.send("No Comments Available...");
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
 
-// async function getAllComments(req,res,next){
-//   try {
-//     const allComments = await fetchAllComments():
-//     if (allComments && allGamesData.length){
-//       res.send(allComments);
-//     }else{
-//       res.send("No Comments Available...");
-//     }
-//   } catch (error) {
-//     console.log(error)
-//   }
-// }
-
-// app.get("/comments", getAllComments)
+app.get("/comments", getAllComments);
 
 // async function getGamesByGenre(req, res, next) {
 //   try {
