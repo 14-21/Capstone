@@ -97,7 +97,7 @@ async function getAllUsers(req, res) {
   }
 }
 
-app.get("/games/users", getAllUsers); //NOT A SECURE ROUTE RIGHT NOW
+app.get("/games/users", requireAdmin, getAllUsers);
 
 //New routes for users filtered in db below
 async function getUsersByUsername(req, res) {
@@ -147,9 +147,9 @@ app.get("/games/:id", getGameById);
 
 async function getUserById(req, res, next) {
   try {
-    console.log(req.params.id);
+    console.log(req.user.id);
 
-    const specificUser = await fetchUsersById(Number(req.params.id));
+    const specificUser = await fetchUsersById(Number(req.user.id));
 
     if (fetchUsersById && fetchUsersById.length) {
       res.send(specificUser);
@@ -159,7 +159,7 @@ async function getUserById(req, res, next) {
   }
 }
 
-app.get("/games/get/user/:id", getUserById);
+app.get("/games/get/user/:id", requireUser, getUserById);
 
 async function getGamesByStudio(req, res, next) {
   try {
@@ -274,7 +274,7 @@ app.post("/games/users/register", registerNewUser);
 async function loginUser(req, res, next) {
   try {
     const { username, password } = req.body;
-
+    console.log(req.body);
     if (!username || !password) {
       next({
         name: "Missing Login Information",
