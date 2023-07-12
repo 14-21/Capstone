@@ -15,6 +15,8 @@ const {
 
   createReviews,
   fetchAllReviews,
+  editReview,
+  fetchAllReviewsByUserId,
 } = require("./db/seedData");
 
 //Express server code goes here, routes, and middleware etc.
@@ -369,6 +371,11 @@ async function getAllReviews(req, res, next) {
 }
 app.get("/api/games/reviews", getAllReviews);
 
+async function getReviewsByUsername(req, res, next) {
+  try {
+  } catch (error) {}
+}
+
 async function postReview(req, res, next) {
   try {
     const myAuthToken = req.headers.authorization.slice(7);
@@ -380,22 +387,35 @@ async function postReview(req, res, next) {
 
     if (isThisAGoodToken) {
       const validUser = await fetchUsersByUsername(isThisAGoodToken.username);
-      console.log(req.body);
-      if (validUser) {
-        const newGameReview = await createReviews(req.body);
+      const userReviews = await fetchAllReviewsByUserId(isThisAGoodToken.id);
+      const currentGame = await fetchGameById(req.body.reviewGameId);
 
-        res.send(newGameReview);
+      const foundUserReviews = userReviews.find((e) => {
+        if (e.reviewGameId === req.body.reviewGameId) {
+          return true;
+        }
+      });
+
+      if (validUser.username && !foundUserReviews) {
+        if (validUser) {
+          console.log(validUser, "THIS IS THE USER@@@@@@");
+          const newGameReview = await createReviews(req.body);
+          console.log(newGameReview, "THIS IS THE REVIEW!!!!!!!!");
+
+          res.send(newGameReview);
+        } else {
+          res.send({
+            error: true,
+            message:
+              "Unable to post review, please make sure you are logged in.",
+          });
+        }
       } else {
         res.send({
           error: true,
-          message: "Unable to post review, please make sure you are logged in.",
+          message: `You cannot post a second review on the same game, ${currentGame.title}.`,
         });
       }
-    } else {
-      res.send({
-        error: true,
-        message: "Failed to decrypt Token.",
-      });
     }
   } catch (error) {
     next(error);
