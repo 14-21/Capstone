@@ -342,6 +342,24 @@ async function fetchAllReviews() {
     console.log(error);
   }
 }
+
+async function fetchAllReviewsByUserId(reviewUserId) {
+  try {
+    const { rows } = await client.query(
+      `
+      SELECT * FROM reviews
+      WHERE "reviewUserId" = $1;
+
+      `,
+      [reviewUserId]
+    );
+
+    return rows;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 async function editReview() {
   try {
     const { rows } = await client.query(
@@ -2754,6 +2772,7 @@ module.exports = {
   fetchAllReviews,
   editReview,
   deleteReview,
+  fetchAllReviewsByUserId,
 
   createComments,
   fetchAllComments,
