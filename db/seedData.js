@@ -54,7 +54,7 @@ async function createTables() {
           lname VARCHAR(255) NOT NULL,
           password VARCHAR(255) NOT NULL,
           email VARCHAR(255) UNIQUE NOT NULL,
-          profilepic TEXT DEFAULT 'https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png',
+          profilepic TEXT DEFAULT 'https://images.unsplash.com/photo-1511367461989-f85a21fda167?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1631&q=80',
           is_admin BOOLEAN DEFAULT false
           );
           `);
@@ -342,19 +342,20 @@ async function fetchAllReviews() {
     console.log(error);
   }
 }
-
-async function fetchAllReviewsByUserId(reviewUserId) {
+async function fetchAllReviewsByUserId(id) {
+  console.log("Starting fetchAllReviewsByUserId");
   try {
     const { rows } = await client.query(
       `
       SELECT * FROM reviews
       WHERE "reviewUserId" = $1;
-
       `,
-      [reviewUserId]
+      [id]
     );
-
-    return rows;
+    console.log("end of select from reviews");
+    if (rows.length) {
+      return rows;
+    }
   } catch (error) {
     console.log(error);
   }
@@ -2776,7 +2777,7 @@ module.exports = {
 
   createComments,
   fetchAllComments,
-  editComment,
+  editComment, //only logged-in users can do this
   deleteComment,
 
   buildDatabase,
