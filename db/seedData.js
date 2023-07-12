@@ -389,11 +389,8 @@ async function deleteReview(reviewId) {
       `,
       [reviewId]
     );
-    if (rows.length) {
-      return rows[0];
-    } else {
-      return "Failed to delete review";
-    }
+
+    return rows;
   } catch (error) {
     console.log(error);
   }
