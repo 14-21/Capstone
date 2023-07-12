@@ -73,6 +73,7 @@ async function createTables() {
         CREATE TABLE comments (
           "commentId" SERIAL PRIMARY KEY,			
           commentbody TEXT DEFAULT 'Your Comment Here',
+          "commentUserId" INTEGER REFERENCES users("userId")
           "origReviewId" INTEGER REFERENCES reviews("reviewId")
         );
         `);
@@ -342,6 +343,7 @@ async function fetchAllReviews() {
     console.log(error);
   }
 }
+
 async function fetchAllReviewsByUserId(id) {
   console.log("Starting fetchAllReviewsByUserId");
   try {
@@ -353,6 +355,25 @@ async function fetchAllReviewsByUserId(id) {
       [id]
     );
     console.log("end of select from reviews");
+    if (rows.length) {
+      return rows;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function fetchAllReviewsByGameId(reviewGameId) {
+  console.log("Starting fetchAllReviewsByGameId");
+  try {
+    const { rows } = await client.query(
+      `
+      SELECT * FROM reviews
+      WHERE "reviewGameId" = $1;
+      `, [reviewGameId]
+
+    );
+    console.log("end of select reviewsByGameId");
     if (rows.length) {
       return rows;
     }
@@ -380,6 +401,7 @@ WHERE "reviewId" = $5
 }
 //we will need secured routes to make this available to both logged-in users and admins
 async function deleteReview(reviewId) {
+  console.log(reviewId, typeof reviewId);
   try {
     const { rows } = await client.query(
       `
@@ -400,11 +422,11 @@ async function createComments(commentObj) {
   try {
     const { rows } = await client.query(
       `
-      INSERT INTO comments (commentbody, "origReviewId")
-      VALUES ($1, $2)
-      RETURNING commentbody;
+      INSERT INTO comments (commentbody, "origUserId", "origReviewId")
+      VALUES ($1, $2, $3)
+      RETURNING commentbody, "origUserId";
       `,
-      [commentObj.commentbody, commentObj.origReviewId]
+      [commentObj.commentbody, commentObj.origUserId, commentObj.origReviewId]
     );
     if (rows.length) {
       return rows[0];
@@ -431,6 +453,22 @@ async function fetchAllComments() {
   }
 }
 
+async function fetchAllCommentsByUserId(commentUserId) {
+  try {
+    const { rows } = await client.query(
+      `
+        SELECT * FROM comments
+        WHERE "commentUserId" = ${commentUserId};
+        `
+    );
+    if (rows) {
+      return rows;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 async function editComment() {
   try {
     const { rows } = await client.query(
@@ -448,7 +486,7 @@ async function editComment() {
     console.log(error);
   }
 }
-//we will need secured routes to make this available to both logged-in users and admins
+
 async function deleteComment(commentId) {
   try {
     const { rows } = await client.query(
@@ -2771,11 +2809,13 @@ module.exports = {
   editReview,
   deleteReview,
   fetchAllReviewsByUserId,
+  fetchAllReviewsByGameId,
 
   createComments,
   fetchAllComments,
   editComment, //only logged-in users can do this
   deleteComment,
+  fetchAllCommentsByUserId,
 
   buildDatabase,
 };

@@ -28,5 +28,10 @@ All POST functions:
 
 All UPDATE functions:
 
+/games/user/review/update, updateReview
+
+
 
 All DELETE functions:
+
+/api/games/user/review/delete/:id, deleteReviewsByUser
