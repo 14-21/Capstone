@@ -2,6 +2,7 @@
 All GET functions:
 
 Games:
+
     /games, getAllGames
     /games/:id, getGameById
     /games/studio/:studio, getGamesByStudio
@@ -11,12 +12,14 @@ Games:
     /games/genre, getGamesByGenre
 
 Users:
+
     /games/users, getAllUsers
     /games/usernames, getUsersByUsername
     /adminusers, getAdminUsers
     /games/get/user/:id, getUsersById
 
 All POST functions:
+
     post request /games/create/game, postNewGame
     post request /games/users/register, registerNewUser
     post request /games/users/login, loginUser
