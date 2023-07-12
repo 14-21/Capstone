@@ -398,9 +398,7 @@ async function postReview(req, res, next) {
 
       if (validUser.username && !foundUserReviews) {
         if (validUser) {
-          console.log(validUser, "THIS IS THE USER@@@@@@");
           const newGameReview = await createReviews(req.body);
-          console.log(newGameReview, "THIS IS THE REVIEW!!!!!!!!");
 
           res.send(newGameReview);
         } else {
@@ -457,6 +455,34 @@ async function updateReview(req, res, next) {
 }
 
 app.put("/games/user/review/update", requireUser, updateReview);
+
+async function getReviewsByUserId(req, res, next) {
+  try {
+    const myAuthToken = req.headers.authorization.slice(7);
+    console.log("My Actual Token", myAuthToken);
+    console.log(process.env.JWT_SECRET, " !!!!!!!!!!!!!!!!!!!!!!!");
+
+    const isThisAGoodToken = jwt.verify(myAuthToken, process.env.JWT_SECRET);
+    console.log("This is my decrypted token:", isThisAGoodToken);
+
+    if (isThisAGoodToken) {
+      const reviewsByUser = await fetchAllReviewsByUserId(isThisAGoodToken.id);
+
+      if (reviewsByUser.length) {
+        res.send(reviewsByUser);
+      } else {
+        res.send({
+          error: "No Reviews",
+          message: "No reviews found.",
+        });
+      }
+    }
+  } catch (error) {
+    next(error);
+  }
+}
+
+app.get("/api/games/user/specific/reviews", requireUser, getReviewsByUserId);
 
 // COMMENTS FUNCTIONS
 async function getAllComments(req, res, next) {

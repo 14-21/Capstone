@@ -348,8 +348,9 @@ async function fetchAllReviewsByUserId(id) {
     const { rows } = await client.query(
       `
       SELECT * FROM reviews
-      WHERE "userId" = $1;
-      `, [id]
+      WHERE "reviewUserId" = $1;
+      `,
+      [id]
     );
     console.log("end of select from reviews");
     if (rows.length) {
