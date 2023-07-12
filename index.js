@@ -17,6 +17,7 @@ const {
   fetchAllReviews,
   editReview,
   fetchAllReviewsByUserId,
+  deleteReview,
 } = require("./db/seedData");
 
 //Express server code goes here, routes, and middleware etc.
@@ -483,6 +484,52 @@ async function getReviewsByUserId(req, res, next) {
 }
 
 app.get("/api/games/user/specific/reviews", requireUser, getReviewsByUserId);
+
+async function deleteReviewsByUser(req, res, next) {
+  try {
+    const myAuthToken = req.headers.authorization.slice(7);
+    console.log("My Actual Token", myAuthToken);
+    console.log(process.env.JWT_SECRET, " !!!!!!!!!!!!!!!!!!!!!!!");
+
+    const isThisAGoodToken = jwt.verify(myAuthToken, process.env.JWT_SECRET);
+    console.log("This is my decrypted token:", isThisAGoodToken);
+
+    if (isThisAGoodToken) {
+      const reviewsByUser = await fetchAllReviewsByUserId(isThisAGoodToken.id);
+      console.log(reviewsByUser, "!!!!!!!!!!!!!!!!!!!!!");
+      const foundUserReviews = reviewsByUser.find((e) => {
+        if (e.reviewId === req.params.id) {
+          return true;
+        }
+      });
+      console.log(foundUserReviews, " @@@@@@");
+      if (foundUserReviews) {
+        const deletedReview = await deleteReview(Number(req.params.id));
+        console.log(deletedReview, "$$$$$$$$$$$$$");
+
+        res.send(deletedReview);
+      } else {
+        res.send({
+          error: "Delete Error",
+          message: "You can only delete reviews that you have posted.",
+        });
+      }
+    } else {
+      res.send({
+        error: "Token Error",
+        message: "Must be logged in.",
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+}
+
+app.delete(
+  "/api/games/user/review/delete/:id",
+  requireUser,
+  deleteReviewsByUser
+);
 
 // COMMENTS FUNCTIONS
 async function getAllComments(req, res, next) {
