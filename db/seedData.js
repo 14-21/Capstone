@@ -64,8 +64,10 @@ async function createTables() {
           "reviewId" SERIAL PRIMARY KEY,			
           reviewbody TEXT DEFAULT 'Your Review Here',
           userscore INTEGER NOT NULL,
-          "reviewUserId" INTEGER REFERENCES users("userId"),
+          "reviewUserId" INTEGER REFERENCES users("userId")
+          ON DELETE CASCADE,
           "reviewGameId" INTEGER REFERENCES games("gameId")
+          ON DELETE CASCADE
         );
         `);
 
@@ -73,8 +75,10 @@ async function createTables() {
         CREATE TABLE comments (
           "commentId" SERIAL PRIMARY KEY,			
           commentbody TEXT DEFAULT 'Your Comment Here',
-          "origUserId" INTEGER REFERENCES users("userId"),
+          "origUserId" INTEGER REFERENCES users("userId")
+          ON DELETE CASCADE,
           "origReviewId" INTEGER REFERENCES reviews("reviewId")
+          ON DELETE CASCADE
         );
         `);
 
