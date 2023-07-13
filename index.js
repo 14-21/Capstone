@@ -11,13 +11,19 @@ const {
   fetchUsersByUsername,
   fetchUsersById,
   fetchUsersByAdmin,
-  //July 8, 2023 we need this fetch by admin but need to figure out the secured routes thing first
 
   createReviews,
   fetchAllReviews,
   editReview,
   fetchAllReviewsByUserId,
   deleteReview,
+
+  // Database Comments Functions
+  fetchAllComments,
+  editComment,
+  fetchAllCommentsByReviewId,
+  fetchAllCommentsByUserId,
+  deleteComment,
 } = require("./db/seedData");
 
 //Express server code goes here, routes, and middleware etc.
@@ -379,27 +385,26 @@ async function getReviewsByUsername(req, res, next) {
 
 async function postReview(req, res, next) {
   try {
-      console.log(req.user, "This is the result of req.user");
-      const userReviews = await fetchAllReviewsByUserId(req.user.userId);
-      const currentGame = await fetchGameById(req.body.reviewGameId);
+    console.log(req.user, "This is the result of req.user");
+    const userReviews = await fetchAllReviewsByUserId(req.user.userId);
+    const currentGame = await fetchGameById(req.body.reviewGameId);
 
-      const foundUserReviews = userReviews.find((e) => {
-        if (e.reviewGameId === req.body.reviewGameId) {
-          return true;
-        }
-      });
-
-      if (!foundUserReviews) { 
-        req.body.reviewUserId = req.user.userId
-        const newGameReview = await createReviews(req.body);
-          res.send(newGameReview);
-      } else {
-        res.send({
-          error: true,
-          message: `You cannot post a second review on the same game, ${currentGame.title}.`,
-        }
-        );
+    const foundUserReviews = userReviews.find((e) => {
+      if (e.reviewGameId === req.body.reviewGameId) {
+        return true;
       }
+    });
+
+    if (!foundUserReviews) {
+      req.body.reviewUserId = req.user.userId;
+      const newGameReview = await createReviews(req.body);
+      res.send(newGameReview);
+    } else {
+      res.send({
+        error: true,
+        message: `You cannot post a second review on the same game, ${currentGame.title}.`,
+      });
+    }
   } catch (error) {
     next(error);
   }
@@ -480,8 +485,9 @@ async function deleteReviewsByUser(req, res, next) {
     if (isThisAGoodToken) {
       const reviewsByUser = await fetchAllReviewsByUserId(isThisAGoodToken.id);
       console.log(reviewsByUser, "!!!!!!!!!!!!!!!!!!!!!");
-      const foundUserReviews = reviewsByUser.find((e) => {
+      const foundUserReviews = reviewsByUser.filter((e) => {
         if (e.reviewId === req.params.id) {
+          console.log(reviewId, "reviewId")
           return true;
         }
       });
@@ -529,6 +535,45 @@ async function getAllComments(req, res, next) {
 }
 
 app.get("/games/users/comments", getAllComments);
+
+async function getCommentsByUser() {}
+async function getCommentsByReview() {}
+async function postNewComment() {}
+
+async function updateComment(req, res, next) {
+  try {
+    console.log(req.user, "Im the user!!!!!!!!!!!!!!!!!!!!!");
+    const correctUser = await fetchUsersById(req.user.userId);
+    const { commentId } = req.params;
+    console.log(correctUser, "WHAT!!!!!!!");
+    if (correctUser && !req.user.is_admin) {
+      const newUpdatedComment = await editComment(req.body, commentId);
+      console.log(newUpdatedComment, "COMMENT HERE");
+      if (newUpdatedComment) {
+        res.send(newUpdatedComment);
+      } else {
+        next({
+          error: "Unable to Update",
+          message:
+            "Please verify that you are logged in, and trying to comment on your posts and try again.",
+        });
+      }
+    } else {
+      res.send({
+        error: "Unauthorized",
+        message: "You are only allowed to edit your comments.",
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+}
+
+app.put(
+  "/api/games/reviews/update/comments/:commentId",
+  requireUser,
+  updateComment
+);
 
 async function getGamesByGenre(req, res, next) {
   try {
