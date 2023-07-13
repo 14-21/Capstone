@@ -73,7 +73,7 @@ async function createTables() {
         CREATE TABLE comments (
           "commentId" SERIAL PRIMARY KEY,			
           commentbody TEXT DEFAULT 'Your Comment Here',
-          "commentUserId" INTEGER REFERENCES users("userId"),
+          "origUserId" INTEGER REFERENCES users("userId"),
           "origReviewId" INTEGER REFERENCES reviews("reviewId")
         );
         `);
@@ -327,6 +327,7 @@ async function createReviews(reviewObj) {
     console.log(error);
   }
 }
+
 async function fetchAllReviews() {
   console.log("Starting fetchAllReviews");
   try {
@@ -399,7 +400,7 @@ WHERE "reviewId" = $5
     console.log(error);
   }
 }
-//we will need secured routes to make this available to both logged-in users and admins
+
 async function deleteReview(reviewId) {
   console.log(reviewId, typeof reviewId);
   try {
@@ -469,10 +470,26 @@ async function fetchAllCommentsByUserId(commentUserId) {
   }
 }
 
-async function editComment() {
+async function fetchAllCommentsByReviewId(origReviewId) {
   try {
     const { rows } = await client.query(
       `
+        SELECT * FROM comments
+        WHERE "origReviewId" = ${origReviewId};
+        `
+    );
+    if (rows) {
+      return rows;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function editComment() {
+  try {
+    const { rows } = await client.query(
+    `
     UPDATE comments
     SET reviewbody = $1, userscore = $2,"reviewUserId"=$3,"reviewGameId" = $4
     WHERE "reviewId" = $5
@@ -2750,33 +2767,48 @@ async function buildDatabase() {
     //Begin seed comment data
     const seedComment1 = await createComments({
       commentbody: "Graphics are out of this world!",
-      origReviewId: 2,
-      origReviewUserId: 19,
+      origUserId: 1,
+      origReviewId: 12,
     });
     const seedComment2 = await createComments({
       commentbody: "I couldn't put the controller down!",
-      origReviewId: 16,
-      origReviewUserId: 10,
+      origUserId: 2,
+      origReviewId: 15,
     });
     const seedComment3 = await createComments({
       commentbody: "I got lost in its vastness.",
-      origReviewId: 14,
-      origReviewUserId: 7,
+      origUserId: 3,
+      origReviewId: 4,
     });
     const seedComment4 = await createComments({
       commentbody: "Multiplayer battles were pure adrenaline.",
-      origReviewId: 27,
-      origReviewUserId: 28,
+      origUserId: 4,
+      origReviewId: 29,
     });
     const seedComment5 = await createComments({
       commentbody: "I felt like the ultimate hero!",
-      origReviewId: 18,
-      origReviewUserId: 15,
+      origUserId: 5,
+      origReviewId: 30,
     });
     const seedComment6 = await createComments({
       commentbody: "Gameplay was smooth as butter.",
-      origReviewId: 30,
-      origReviewUserId: 21,
+      origUserId: 6,
+      origReviewId: 2,
+    });
+    const seedComment7 = await createComments({
+      commentbody: "i really don't agree with you bro.",
+      origUserId: 16,
+      origReviewId: 21,
+    });
+    const seedComment8 = await createComments({
+      commentbody: "Would love to agree but I have over 200 hours in this game, it rocks.",
+      origUserId: 8,
+      origReviewId: 32,
+    });
+    const seedComment9 = await createComments({
+      commentbody: "Would love to agree but I have over 200 hours in this game, it rocks.",
+      origUserId: 5,
+      origReviewId: 24,
     });
 
     console.log("Finished seed comments.");
@@ -2813,9 +2845,10 @@ module.exports = {
 
   createComments,
   fetchAllComments,
-  editComment, //only logged-in users can do this
-  deleteComment,
   fetchAllCommentsByUserId,
+  fetchAllCommentsByReviewId,
+  editComment, //only logged-in users can do this NOT admins
+  deleteComment,
 
   buildDatabase,
 };
