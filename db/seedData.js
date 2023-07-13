@@ -454,15 +454,16 @@ async function fetchAllComments() {
   }
 }
 
-async function fetchAllCommentsByUserId(commentUserId) {
+async function fetchAllCommentsByUserId(commentId) {
   try {
     const { rows } = await client.query(
       `
         SELECT * FROM comments
-        WHERE "commentUserId" = ${commentUserId};
-        `
+        WHERE "origUserId" = $1;
+        `,
+      [commentId]
     );
-    if (rows) {
+    if (rows.length) {
       return rows;
     }
   } catch (error) {
