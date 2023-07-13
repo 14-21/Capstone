@@ -371,8 +371,8 @@ async function fetchAllReviewsByGameId(reviewGameId) {
       `
       SELECT * FROM reviews
       WHERE "reviewGameId" = $1;
-      `, [reviewGameId]
-
+      `,
+      [reviewGameId]
     );
     console.log("end of select reviewsByGameId");
     if (rows.length) {
@@ -389,7 +389,7 @@ async function editReview() {
       `
 UPDATE reviews
 SET reviewbody = $1, userscore = $2,"reviewUserId"=$3,"reviewGameId" = $4
-WHERE "reviewId" = $5
+WHERE "reviewId" = $5;
 `,
       [reviewbody, userscore, reviewUserId, reviewGameId]
     );
@@ -486,16 +486,28 @@ async function fetchAllCommentsByReviewId(origReviewId) {
   }
 }
 
-async function editComment() {
+async function editComment(
+  { commentbody, origUserId, origReviewId },
+  commentId
+) {
   try {
-    const { rows } = await client.query(
-    `
-    UPDATE comments
-    SET reviewbody = $1, userscore = $2,"reviewUserId"=$3,"reviewGameId" = $4
-    WHERE "reviewId" = $5
-    `,
-      [reviewbody, userscore, reviewUserId, reviewGameId]
+    console.log(
+      commentbody,
+      origUserId,
+      origReviewId,
+      commentId,
+      "EDIT COMMENT DATABASE!!!"
     );
+    const { rows } = await client.query(
+      `
+    UPDATE comments
+    SET commentbody = $1, "origUserId" = $2,"origReviewId"=$3
+    WHERE "commentId" = $4
+    RETURNING *;
+    `,
+      [commentbody, origUserId, origReviewId, commentId]
+    );
+    console.log(rows, "@@@@@@@@@@");
     if (rows.length) {
       return rows[0];
     }
@@ -2801,12 +2813,14 @@ async function buildDatabase() {
       origReviewId: 21,
     });
     const seedComment8 = await createComments({
-      commentbody: "Would love to agree but I have over 200 hours in this game, it rocks.",
+      commentbody:
+        "Would love to agree but I have over 200 hours in this game, it rocks.",
       origUserId: 8,
       origReviewId: 32,
     });
     const seedComment9 = await createComments({
-      commentbody: "Would love to agree but I have over 200 hours in this game, it rocks.",
+      commentbody:
+        "Would love to agree but I have over 200 hours in this game, it rocks.",
       origUserId: 5,
       origReviewId: 24,
     });
