@@ -73,7 +73,7 @@ async function createTables() {
         CREATE TABLE comments (
           "commentId" SERIAL PRIMARY KEY,			
           commentbody TEXT DEFAULT 'Your Comment Here',
-          "commentUserId" INTEGER REFERENCES users("userId")
+          "commentUserId" INTEGER REFERENCES users("userId"),
           "origReviewId" INTEGER REFERENCES reviews("reviewId")
         );
         `);
