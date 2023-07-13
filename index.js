@@ -378,6 +378,11 @@ async function getAllReviews(req, res, next) {
 }
 app.get("/api/games/reviews", getAllReviews);
 
+async function getReviewsByUsername(req, res, next) {
+  try {
+  } catch (error) {}
+}
+
 async function postReview(req, res, next) {
   try {
     console.log(req.user, "This is the result of req.user");
@@ -480,8 +485,9 @@ async function deleteReviewsByUser(req, res, next) {
     if (isThisAGoodToken) {
       const reviewsByUser = await fetchAllReviewsByUserId(isThisAGoodToken.id);
       console.log(reviewsByUser, "!!!!!!!!!!!!!!!!!!!!!");
-      const foundUserReviews = reviewsByUser.find((e) => {
+      const foundUserReviews = reviewsByUser.filter((e) => {
         if (e.reviewId === req.params.id) {
+          console.log(reviewId, "reviewId")
           return true;
         }
       });
@@ -530,24 +536,7 @@ async function getAllComments(req, res, next) {
 
 app.get("/games/users/comments", getAllComments);
 
-async function getCommentsByUser(req, res, next) {
-  try {
-    const userComments = await fetchAllCommentsByUserId(req.user.userId);
-    if (userComments && userComments.length) {
-      res.send(userComments);
-    } else {
-      next({
-        error: "No Comments",
-        message: "No comments found by specific user.",
-      });
-    }
-  } catch (error) {
-    next(error);
-  }
-}
-
-app.get("/api/games/reviews/get/comments", requireUser, getCommentsByUser);
-
+async function getCommentsByUser() {}
 async function getCommentsByReview() {}
 async function postNewComment() {}
 
