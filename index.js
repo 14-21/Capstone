@@ -379,16 +379,8 @@ async function getReviewsByUsername(req, res, next) {
 
 async function postReview(req, res, next) {
   try {
-    const myAuthToken = req.headers.authorization.slice(7);
-    console.log("My Actual Token", myAuthToken);
-    console.log(process.env.JWT_SECRET, " !!!!!!!!!!!!!!!!!!!!!!!");
-
-    const isThisAGoodToken = jwt.verify(myAuthToken, process.env.JWT_SECRET);
-    console.log("This is my decrypted token:", isThisAGoodToken);
-
-    if (isThisAGoodToken) {
-      const validUser = await fetchUsersByUsername(isThisAGoodToken.username);
-      const userReviews = await fetchAllReviewsByUserId(isThisAGoodToken.id);
+      console.log(req.user, "This is the result of req.user");
+      const userReviews = await fetchAllReviewsByUserId(req.user.userId);
       const currentGame = await fetchGameById(req.body.reviewGameId);
 
       const foundUserReviews = userReviews.find((e) => {
@@ -397,30 +389,21 @@ async function postReview(req, res, next) {
         }
       });
 
-      if (validUser.username && !foundUserReviews) {
-        if (validUser) {
-          const newGameReview = await createReviews(req.body);
-
+      if (!foundUserReviews) { 
+        req.body.reviewUserId = req.user.userId
+        const newGameReview = await createReviews(req.body);
           res.send(newGameReview);
-        } else {
-          res.send({
-            error: true,
-            message:
-              "Unable to post review, please make sure you are logged in.",
-          });
-        }
       } else {
         res.send({
           error: true,
           message: `You cannot post a second review on the same game, ${currentGame.title}.`,
-        });
+        }
+        );
       }
-    }
   } catch (error) {
     next(error);
   }
 }
-
 app.post("/games/post/review", requireUser, postReview);
 
 async function updateReview(req, res, next) {
