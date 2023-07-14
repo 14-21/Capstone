@@ -427,16 +427,25 @@ async function fetchAllReviewsByGameId(reviewGameId) {
   }
 }
 
-async function editReview() {
+async function editReview({
+  reviewbody,
+  userscore,
+  reviewUserId,
+
+  reviewId,
+}) {
+  console.log(reviewId, userscore, reviewbody, reviewUserId, "@@@@@@@@@@@");
   try {
     const { rows } = await client.query(
       `
 UPDATE reviews
-SET reviewbody = $1, userscore = $2,"reviewUserId"=$3,"reviewGameId" = $4
-WHERE "reviewId" = $5;
+SET reviewbody = $1, userscore = $2
+WHERE "reviewUserId"=$3 AND "reviewId" = $4
+RETURNING *;
 `,
-      [reviewbody, userscore, reviewUserId, reviewGameId]
+      [reviewbody, userscore, reviewUserId, reviewId]
     );
+
     if (rows.length) {
       return rows[0];
     }
@@ -485,8 +494,8 @@ async function fetchAllComments() {
   try {
     const { rows } = await client.query(
       `
-        SELECT * FROM comments
-        INNER JOIN comments ON reviews.reviewId = comments.id
+        SELECT * FROM comments;
+        
         
         `
     );

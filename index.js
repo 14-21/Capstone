@@ -409,29 +409,23 @@ app.post("/games/post/review", requireUser, postReview);
 
 async function updateReview(req, res, next) {
   try {
-    const myAuthToken = req.headers.authorization.slice(7);
-    console.log("My Actual Token", myAuthToken);
-    console.log(process.env.JWT_SECRET, " !!!!!!!!!!!!!!!!!!!!!!!");
+    const { userscore, reviewbody, reviewId } = req.body;
+    const reviewUserId = req.user.userId;
 
-    const isThisAGoodToken = jwt.verify(myAuthToken, process.env.JWT_SECRET);
-    console.log("This is my decrypted token:", isThisAGoodToken);
-
-    if (isThisAGoodToken) {
-      const correctUser = await fetchUsersByUsername(isThisAGoodToken.username);
-
-      if (correctUser) {
-        const newReview = await editReview(req.body);
-      } else {
-        res.send({
-          error: true,
-          message:
-            "Unable to update the review, please make sure you are logged in and viewing the review you posted.",
-        });
-      }
+    const newReview = await editReview({
+      userscore,
+      reviewUserId,
+      reviewbody,
+      reviewId,
+    });
+    console.log(newReview, " NEW REVIEW!!!!!!!!!!!!!!!!");
+    if (newReview) {
+      res.send(newReview);
     } else {
-      res.send({
+      next({
         error: true,
-        message: "Unauthorized Token",
+        message:
+          "Unable to update the review, please make sure you are logged in and viewing the review you posted.",
       });
     }
   } catch (error) {
@@ -554,7 +548,23 @@ async function getCommentsByUser(req, res, next) {
 app.get("/api/user/review/comments", requireUser, getCommentsByUser);
 
 // admin function
-async function getAllComments() {}
+async function getAllComments(req, res, next) {
+  try {
+    console.log(req.body);
+    const allComments = fetchAllComments(req.body.commentBody);
+    if (allComments.length) {
+      res.send(allComments);
+    } else {
+      next({
+        error: "No Comments",
+        message: "No comments found.",
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+}
+app.get("/api/games/all/comments", requireAdmin, getAllComments);
 
 async function postNewComment() {}
 
