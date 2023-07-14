@@ -525,6 +525,7 @@ async function getAllComments(req, res, next) {
   try {
     const allComments = await fetchAllComments();
     if (allComments && allGamesData.length) {
+      console.log(reviewGameId, "reviewgameid!!!!")
       res.send(allComments);
     } else {
       res.send("No Comments Available...");
