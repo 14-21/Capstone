@@ -79,6 +79,7 @@ app.get("/", function (req, res) {
 
 const client = require("./db/index");
 const { requireAdmin } = require("./adminutils");
+const { trace } = require("console");
 client.connect();
 
 async function getAllGames(req, res, next) {
@@ -378,11 +379,6 @@ async function getAllReviews(req, res, next) {
 }
 app.get("/api/games/reviews", getAllReviews);
 
-async function getReviewsByUsername(req, res, next) {
-  try {
-  } catch (error) {}
-}
-
 async function postReview(req, res, next) {
   try {
     console.log(req.user, "This is the result of req.user", req.body);
@@ -414,29 +410,23 @@ app.post("/games/post/review", requireUser, postReview);
 
 async function updateReview(req, res, next) {
   try {
-    const myAuthToken = req.headers.authorization.slice(7);
-    console.log("My Actual Token", myAuthToken);
-    console.log(process.env.JWT_SECRET, " !!!!!!!!!!!!!!!!!!!!!!!");
+    const { userscore, reviewbody, reviewId } = req.body;
+    const reviewUserId = req.user.userId;
 
-    const isThisAGoodToken = jwt.verify(myAuthToken, process.env.JWT_SECRET);
-    console.log("This is my decrypted token:", isThisAGoodToken);
-
-    if (isThisAGoodToken) {
-      const correctUser = await fetchUsersByUsername(isThisAGoodToken.username);
-
-      if (correctUser) {
-        const newReview = await editReview(req.body);
-      } else {
-        res.send({
-          error: true,
-          message:
-            "Unable to update the review, please make sure you are logged in and viewing the review you posted.",
-        });
-      }
+    const newReview = await editReview({
+      userscore,
+      reviewUserId,
+      reviewbody,
+      reviewId,
+    });
+    console.log(newReview, " NEW REVIEW!!!!!!!!!!!!!!!!");
+    if (newReview) {
+      res.send(newReview);
     } else {
-      res.send({
+      next({
         error: true,
-        message: "Unauthorized Token",
+        message:
+          "Unable to update the review, please make sure you are logged in and viewing the review you posted.",
       });
     }
   } catch (error) {
@@ -485,7 +475,7 @@ async function deleteReviewsByUser(req, res, next) {
 
     if (isThisAGoodToken) {
       const reviewsByUser = await fetchAllReviewsByUserId(isThisAGoodToken.id);
-      console.log(reviewsByUser, "!!!!!!!!!!!!!!!!!!!!!");
+
       const foundUserReviews = reviewsByUser.filter((e) => {
         if (e.reviewId === req.params.id) {
           console.log(reviewId, "reviewId");
@@ -540,8 +530,43 @@ async function getAllCommentsById(req, res, next) {
 
 app.get("/games/users/comments/:origReviewId", getAllCommentsById);
 
-async function getCommentsByUser() {}
-async function getCommentsByReview() {}
+async function getCommentsByUser(req, res, next) {
+  try {
+    const currentUserComments = await fetchAllCommentsByUserId(req.user.userId);
+    if (currentUserComments) {
+      res.send(currentUserComments);
+    } else {
+      next({
+        error: "No Comments Found",
+        message: "No comments found for this user.",
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+}
+
+app.get("/api/user/review/comments", requireUser, getCommentsByUser);
+
+// admin function
+async function getAllComments(req, res, next) {
+  try {
+    console.log(req.body);
+    const allComments = fetchAllComments(req.body.commentBody);
+    if (allComments.length) {
+      res.send(allComments);
+    } else {
+      next({
+        error: "No Comments",
+        message: "No comments found.",
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+}
+app.get("/api/games/all/comments", requireAdmin, getAllComments);
+
 async function postNewComment() {}
 
 async function updateComment(req, res, next) {
@@ -549,7 +574,7 @@ async function updateComment(req, res, next) {
     console.log(req.user, "Im the user!!!!!!!!!!!!!!!!!!!!!");
     const correctUser = await fetchUsersById(req.user.userId);
     const { commentId } = req.params;
-    console.log(correctUser, "WHAT!!!!!!!");
+
     if (correctUser && !req.user.is_admin) {
       const newUpdatedComment = await editComment(req.body, commentId);
       console.log(newUpdatedComment, "COMMENT HERE");
