@@ -26,7 +26,8 @@ async function createTables() {
 
     await client.query(`
             CREATE TABLE games(        
-                "gameId" SERIAL PRIMARY KEY,
+                "gameId" SERIAL PRIMARY KEY
+                ON DELETE CASCADE,
                 title VARCHAR(255) NOT NULL,
                 platform VARCHAR(255) NOT NULL,
                 genre VARCHAR(255) NOT NULL,
@@ -48,7 +49,8 @@ async function createTables() {
 
     await client.query(`
         CREATE TABLE users (
-          "userId" SERIAL PRIMARY KEY,
+          "userId" SERIAL PRIMARY KEY
+          ON DELETE CASCADE,
           username VARCHAR(255) UNIQUE NOT NULL,
           fname VARCHAR(255) NOT NULL,
           lname VARCHAR(255) NOT NULL,
@@ -61,7 +63,8 @@ async function createTables() {
 
     await client.query(`
         CREATE TABLE reviews (
-          "reviewId" SERIAL PRIMARY KEY,			
+          "reviewId" SERIAL PRIMARY KEY
+          ON DELETE CASCADE,			
           reviewbody TEXT DEFAULT 'Your Review Here',
           userscore INTEGER NOT NULL,
           "reviewUserId" INTEGER REFERENCES users("userId")
@@ -73,8 +76,10 @@ async function createTables() {
 
     await client.query(`
         CREATE TABLE comments (
-          "commentId" SERIAL PRIMARY KEY,			
-          commentbody TEXT DEFAULT 'Your Comment Here',
+          "commentId" SERIAL PRIMARY KEY
+          ON DELETE CASCADE,			
+          commentbody TEXT DEFAULT 'Your Comment Here'
+          ON DELETE CASCADE,
           "origUserId" INTEGER REFERENCES users("userId")
           ON DELETE CASCADE,
           "origReviewId" INTEGER REFERENCES reviews("reviewId")
@@ -2848,12 +2853,14 @@ module.exports = {
   fetchGameByOurscore,
   fetchAllGamesByTitle,
   fetchGameByGenre,
+  deleteGame,
 
   createUsers,
   fetchAllUsers,
   fetchUsersByUsername,
   fetchUsersById,
   fetchUsersByAdmin,
+  deleteUser,
 
   createReviews,
   fetchAllReviews,
