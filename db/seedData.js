@@ -355,7 +355,7 @@ async function createReviews(reviewObj) {
       `
         INSERT INTO reviews(reviewbody, userscore, "reviewUserId","reviewGameId")
         VALUES ($1, $2, $3, $4)
-        RETURNING reviewbody;
+        RETURNING reviewbody, userscore ;
         `,
       [
         reviewObj.reviewbody,
@@ -400,9 +400,10 @@ async function fetchAllReviewsByUserId(id) {
       [id]
     );
     console.log("end of select from reviews");
-    if (rows.length) {
-      return rows;
-    }
+    // if (rows.length) {
+    //   return rows;
+    // }
+    return rows;
   } catch (error) {
     console.log(error);
   }

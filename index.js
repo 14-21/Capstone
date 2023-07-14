@@ -385,8 +385,9 @@ async function getReviewsByUsername(req, res, next) {
 
 async function postReview(req, res, next) {
   try {
-    console.log(req.user, "This is the result of req.user");
+    console.log(req.user, "This is the result of req.user", req.body);
     const userReviews = await fetchAllReviewsByUserId(req.user.userId);
+    console.log(userReviews)
     const currentGame = await fetchGameById(req.body.reviewGameId);
 
     const foundUserReviews = userReviews.find((e) => {
