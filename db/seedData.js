@@ -400,9 +400,7 @@ async function fetchAllReviewsByUserId(id) {
       [id]
     );
     console.log("end of select from reviews");
-    // if (rows.length) {
-    //   return rows;
-    // }
+ 
     return rows;
   } catch (error) {
     console.log(error);
