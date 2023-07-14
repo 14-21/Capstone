@@ -191,15 +191,16 @@ async function fetchAllGamesByTitle() {
 
 async function deleteGame(gameId) {
   try {
-    const { rows } = await client.query(`
+    const { rows } = await client.query(
+      `
         DELETE FROM games
         WHERE "gameId" = $1
         RETURNING *;
         `,
-        [gameId]
-        );
-    
-      console.log(rows, "delete gameId rows console.log");
+      [gameId]
+    );
+
+    console.log(rows, "delete gameId rows console.log");
     return rows;
   } catch (error) {
     console.log(error);
@@ -325,7 +326,11 @@ async function fetchUsersByAdmin() {
 }
 
 async function deleteUser(userId) {
-  console.log(userId, typeof userId, "This is the userId and type of console log");
+  console.log(
+    userId,
+    typeof userId,
+    "This is the userId and type of console log"
+  );
   try {
     const { rows } = await client.query(
       `
@@ -335,7 +340,7 @@ async function deleteUser(userId) {
       `,
       [userId]
     );
-    console.log(rows, "these are the delete user rows console.log")
+    console.log(rows, "these are the delete user rows console.log");
     return rows;
   } catch (error) {
     console.log(error);
@@ -515,8 +520,9 @@ async function fetchAllCommentsByReviewId(origReviewId) {
     const { rows } = await client.query(
       `
         SELECT * FROM comments
-        WHERE "origReviewId" = ${origReviewId};
-        `
+        WHERE "origReviewId" = $1;
+        `,
+      [origReviewId]
     );
     if (rows) {
       return rows;

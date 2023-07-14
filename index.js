@@ -487,7 +487,7 @@ async function deleteReviewsByUser(req, res, next) {
       console.log(reviewsByUser, "!!!!!!!!!!!!!!!!!!!!!");
       const foundUserReviews = reviewsByUser.filter((e) => {
         if (e.reviewId === req.params.id) {
-          console.log(reviewId, "reviewId")
+          console.log(reviewId, "reviewId");
           return true;
         }
       });
@@ -521,11 +521,13 @@ app.delete(
 );
 
 // COMMENTS FUNCTIONS
-async function getAllComments(req, res, next) {
+async function getAllCommentsById(req, res, next) {
   try {
-    const allComments = await fetchAllComments();
-    if (allComments && allGamesData.length) {
-      console.log(reviewGameId, "reviewgameid!!!!")
+    const allComments = await fetchAllCommentsByReviewId(
+      req.params.origReviewId
+    );
+    console.log(req.params.origReviewId, "BODY OF REVIEWS");
+    if (allComments && allComments.length) {
       res.send(allComments);
     } else {
       res.send("No Comments Available...");
@@ -535,7 +537,7 @@ async function getAllComments(req, res, next) {
   }
 }
 
-app.get("/games/users/comments", getAllComments);
+app.get("/games/users/comments/:origReviewId", getAllCommentsById);
 
 async function getCommentsByUser() {}
 async function getCommentsByReview() {}
