@@ -193,8 +193,25 @@ async function fetchAllGamesByTitle() {
     console.log(error);
   }
 }
-//Start of the genre functions
 
+async function deleteGame(gameId) {
+  try {
+    const { rows } = await client.query(`
+        DELETE FROM games
+        WHERE "gameId" = $1
+        RETURNING *;
+        `,
+        [gameId]
+        );
+    
+      console.log(rows, "delete gameId rows console.log");
+    return rows;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+//Start of the genre functions
 async function fetchGameByGenre(genreValue) {
   try {
     const { rows } = await client.query(`
@@ -306,6 +323,24 @@ async function fetchUsersByAdmin() {
     );
 
     // delete adminuser.password;
+    return rows;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function deleteUser(userId) {
+  console.log(userId, typeof userId, "This is the userId and type of console log");
+  try {
+    const { rows } = await client.query(
+      `
+      DELETE FROM users
+      WHERE "userId" = $1
+      RETURNING *;
+      `,
+      [userId]
+    );
+    console.log(rows, "these are the delete user rows console.log")
     return rows;
   } catch (error) {
     console.log(error);
