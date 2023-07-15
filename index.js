@@ -666,6 +666,33 @@ app.put(
   updateComment
 );
 
+async function deleteCommentByCommentId(req, res, next){
+  try {
+    const { commentId } = req.params;
+    console.log(req.params,"This is req.params check in delete comment");
+    const commentToDelete = await deleteComment({commentId});
+    if(!commentToDelete){
+      next({
+        name:"Comment not found",
+        message:"No comment found to delete.",
+      });
+    }else{
+      res.send({
+        success: true,
+        data: commentToDelete,
+        error: null
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+}
+
+app.delete("/api/games/comments/delete/:commentId", requireUser, deleteCommentByCommentId);
+
+
+
+
 async function getGamesByGenre(req, res, next) {
   try {
     console.log(req.params.genre);
