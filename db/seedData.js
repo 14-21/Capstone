@@ -326,7 +326,7 @@ async function fetchUsersByAdmin() {
   }
 }
 
-async function deleteUser(userId) {
+async function deleteUser({userId}) {
   console.log(
     userId,
     typeof userId,
