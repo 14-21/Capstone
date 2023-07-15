@@ -189,9 +189,10 @@ async function fetchAllGamesByTitle() {
   }
 }
 
-async function deleteGame(gameId) {
+async function deleteGame({gameId}) {
   try {
-    const { rows } = await client.query(
+    console.log(gameId, "game id type");
+    const { rows: [game] } = await client.query(
       `
         DELETE FROM games
         WHERE "gameId" = $1
@@ -200,8 +201,8 @@ async function deleteGame(gameId) {
       [gameId]
     );
 
-    console.log(rows, "delete gameId rows console.log");
-    return rows;
+    console.log(game, "delete gameId rows console.log");
+    return game;
   } catch (error) {
     console.log(error);
   }
@@ -2825,6 +2826,202 @@ async function buildDatabase() {
       reviewUserId: 26,
       reviewGameId: 30,
     });
+    const seedReview43 = await createReviews({
+      reviewbody:
+        "The game's dynamic weather system and day-night cycle create a living, breathing world that evolves with each playthrough.",
+      userscore: 3,
+      reviewUserId: 26,
+      reviewGameId: 30,
+    });
+    const seedReview44 = await createReviews({
+      reviewbody:
+        "Featuring an epic and memorable soundtrack, this game's music enhances the atmosphere and immerses players in its universe.",
+      userscore: 2,
+      reviewUserId: 5,
+      reviewGameId: 25,
+    });
+    const seedReview45 = await createReviews({
+      reviewbody:
+        "The game's deep and complex narrative tackles mature themes, offering a thought-provoking and emotionally resonant experience.",
+      userscore: 4,
+      reviewUserId: 7,
+      reviewGameId: 2,
+    });
+    const seedReview46 = await createReviews({
+      reviewbody:
+        "With its intuitive level editor and robust modding support, this game allows players to unleash their creativity and share their creations with others.",
+      userscore: 5,
+      reviewUserId: 15,
+      reviewGameId: 14,
+    });
+    const seedReview47 = await createReviews({
+      reviewbody:
+        "The game's responsive and satisfying combat mechanics make every battle a thrilling and adrenaline-fueled experience.",
+      userscore: 2,
+      reviewUserId: 8,
+      reviewGameId: 5,
+    });
+    const seedReview48 = await createReviews({
+      reviewbody:
+        "Featuring a vast array of unique and diverse enemies, this game keeps players on their toes, adapting their strategies to each encounter.",
+      userscore: 3,
+      reviewUserId: 23,
+      reviewGameId: 20,
+    });
+    const seedReview49 = await createReviews({
+      reviewbody:
+        "The game has no seamless integration of cooperative and competitive multiplayer modes to provide a well-rounded and enjoyable online experience.",
+      userscore: 1,
+      reviewUserId: 19,
+      reviewGameId: 3,
+    });
+    const seedReview50 = await createReviews({
+      reviewbody:
+        "With its addictive loot system and rewarding progression, this game keeps players engaged as they constantly strive for better gear and upgrades.",
+      userscore: 2,
+      reviewUserId: 28,
+      reviewGameId: 8,
+    });
+    const seedReview51 = await createReviews({
+      reviewbody:
+        "The game's well-designed and challenging puzzles encourage critical thinking and problem-solving, keeping players engaged and entertained.",
+      userscore: 4,
+      reviewUserId: 4,
+      reviewGameId: 16,
+    });
+    const seedReview52 = await createReviews({
+      reviewbody:
+        "Featuring a deep and branching skill tree, this game allows players to customize their characters to suit their preferred playstyle.",
+      userscore: 4,
+      reviewUserId: 11,
+      reviewGameId: 27,
+    });
+    const seedReview53 = await createReviews({
+      reviewbody:
+        "The game's impressive attention to detail and realistic physics create a sense of immersion and authenticity.",
+      userscore: 5,
+      reviewUserId: 17,
+      reviewGameId: 9,
+    });
+    const seedReview54 = await createReviews({
+      reviewbody:
+        "With its breathtaking visuals and expansive open world, this game offers players a true sense of freedom and exploration.",
+      userscore: 3,
+      reviewUserId: 29,
+      reviewGameId: 23,
+    });
+    const seedReview55 = await createReviews({
+      reviewbody:
+        "The game's thoughtfully designed boss encounters and epic battles provide exhilarating and memorable gaming moments.",
+      userscore: 4,
+      reviewUserId: 21,
+      reviewGameId: 11,
+    });
+    const seedReview56 = await createReviews({
+      reviewbody:
+        "Featuring a compelling and well-written story, this game keeps players invested in its world and characters from start to finish.",
+      userscore: 5,
+      reviewUserId: 1,
+      reviewGameId: 26,
+    });
+    const seedReview57 = await createReviews({
+      reviewbody:
+        "The game's seamless blend of action, stealth, and exploration provides a diverse and engaging gameplay experience.",
+      userscore: 4,
+      reviewUserId: 13,
+      reviewGameId: 13,
+    });
+    const seedReview58 = await createReviews({
+      reviewbody:
+        "With its well-balanced multiplayer matchmaking and competitive ranking system, this game offers a fair and satisfying online competition.",
+      userscore: 3,
+      reviewUserId: 25,
+      reviewGameId: 17,
+    });
+    const seedReview59 = await createReviews({
+      reviewbody:
+        "The game's rich lore and world-building elements create a captivating and immersive gaming experience.",
+      userscore: 4,
+      reviewUserId: 4,
+      reviewGameId: 24,
+    });
+    const seedReview60 = await createReviews({
+      reviewbody:
+        "Featuring a variety of game modes and a thriving community, this game offers endless hours of multiplayer fun and social interaction.",
+      userscore: 5,
+      reviewUserId: 18,
+      reviewGameId: 21,
+    });
+    const seedReview61 = await createReviews({
+      reviewbody:
+        "A disappointing release that falls short in terms of content and replay value.",
+      userscore: 2,
+      reviewUserId: 14,
+      reviewGameId: 30,
+    });
+    const seedReview62 = await createReviews({
+      reviewbody:
+        "A fun multiplayer experience with friends, perfect for endless hours of gaming.",
+      userscore: 4,
+      reviewUserId: 27,
+      reviewGameId: 31,
+    });
+    const seedReview63 = await createReviews({
+      reviewbody:
+        "An exhilarating experience with breathtaking visuals and seamless gameplay.",
+      userscore: 5,
+      reviewUserId: 18,
+      reviewGameId: 33,
+    });
+    const seedReview64 = await createReviews({
+      reviewbody:
+        "Challenging gameplay experience that rewards skill and strategy.",
+      userscore: 2,
+      reviewUserId: 3,
+      reviewGameId: 35,
+    });
+    const seedReview65 = await createReviews({
+      reviewbody:
+        "An innovative title that introduces fresh mechanics to the genre.",
+      userscore: 3,
+      reviewUserId: 12,
+      reviewGameId: 36,
+    });
+    const seedReview66 = await createReviews({
+      reviewbody:
+        "Very forgettable game that fails to leave a lasting impression.",
+      userscore: 1,
+      reviewUserId: 9,
+      reviewGameId: 40,
+    });
+    const seedReview67 = await createReviews({
+      reviewbody:
+        "A terrible journey that won't pay homage to classic games of the past, not in a good way.",
+      userscore: 2,
+      reviewUserId: 20,
+      reviewGameId: 41,
+    });
+    const seedReview68 = await createReviews({
+      reviewbody:
+        "A lackluster game that fails to deliver on its promises.",
+      userscore: 4,
+      reviewUserId: 26,
+      reviewGameId: 44,
+    });
+    const seedReview69 = await createReviews({
+      reviewbody:
+        "A captivating narrative that keeps you engaged until the very end.",
+      userscore: 5,
+      reviewUserId: 5,
+      reviewGameId: 42,
+    });
+    const seedReview70 = await createReviews({
+      reviewbody:
+        "Not a visually stunning world that invites exploration or discovery.",
+      userscore: 2,
+      reviewUserId: 7,
+      reviewGameId: 48,
+    });
 
     const allReviews = await fetchAllReviews();
     console.log(allReviews);
@@ -2833,50 +3030,310 @@ async function buildDatabase() {
     //Begin seed comment data
     const seedComment1 = await createComments({
       commentbody: "Graphics are out of this world!",
-      origUserId: 1,
-      origReviewId: 12,
+      origUserId: 2,
+      origReviewId: 19,
     });
     const seedComment2 = await createComments({
       commentbody: "I couldn't put the controller down!",
-      origUserId: 2,
-      origReviewId: 15,
+      origUserId: 16,
+      origReviewId: 10,
     });
     const seedComment3 = await createComments({
       commentbody: "I got lost in its vastness.",
-      origUserId: 3,
-      origReviewId: 4,
+      origUserId: 14,
+      origReviewId: 7,
     });
     const seedComment4 = await createComments({
       commentbody: "Multiplayer battles were pure adrenaline.",
-      origUserId: 4,
-      origReviewId: 29,
+      origUserId: 27,
+      origReviewId: 28,
     });
     const seedComment5 = await createComments({
       commentbody: "I felt like the ultimate hero!",
-      origUserId: 5,
-      origReviewId: 30,
+      origUserId: 18,
+      origReviewId: 15,
     });
     const seedComment6 = await createComments({
       commentbody: "Gameplay was smooth as butter.",
-      origUserId: 6,
-      origReviewId: 2,
+      origUserId: 30,
+      origReviewId: 21,
     });
     const seedComment7 = await createComments({
-      commentbody: "i really don't agree with you bro.",
-      origUserId: 16,
-      origReviewId: 21,
+      commentbody: "The sound design blew me away!",
+      origUserId: 24,
+      origReviewId: 13,
     });
     const seedComment8 = await createComments({
       commentbody:
-        "Would love to agree but I have over 200 hours in this game, it rocks.",
-      origUserId: 8,
-      origReviewId: 32,
+        "Tactical gameplay at its finest.",
+      origUserId: 6,
+      origReviewId: 26,
     });
     const seedComment9 = await createComments({
       commentbody:
-        "Would love to agree but I have over 200 hours in this game, it rocks.",
+        "I couldn't stop staring, simply beautiful.",
+      origUserId: 22,
+      origReviewId: 9,
+    });
+    const seedComment10 = await createComments({
+      commentbody: "The story had me emotionally invested.",
+      origUserId: 3,
+      origReviewId: 4,
+    });
+    const seedComment11 = await createComments({
+      commentbody: "Puzzles challenged my brain, loved it!",
+      origUserId: 12,
+      origReviewId: 23,
+    });
+    const seedComment12 = await createComments({
+      commentbody: "I made so many friends online.",
+      origUserId: 9,
+      origReviewId: 30,
+    });
+    const seedComment13 = await createComments({
+      commentbody: "Boss battles left me breathless!",
+      origUserId: 20,
+      origReviewId: 5,
+    });
+    const seedComment14 = await createComments({
+      commentbody: "Movements were so realistic, wow!",
+      origUserId: 26,
+      origReviewId: 17,
+    });
+    const seedComment15 = await createComments({
+      commentbody: "VR made it an unforgettable experience.",
       origUserId: 5,
-      origReviewId: 24,
+      origReviewId: 3,
+    });
+    const seedComment16 = await createComments({
+      commentbody: "User-friendly interface, perfect for beginners.",
+      origUserId: 7,
+      origReviewId: 12,
+    });
+    const seedComment17 = await createComments({
+      commentbody:
+        "I kept replaying to explore more.",
+      origUserId: 15,
+      origReviewId: 25,
+    });
+    const seedComment18 = await createComments({
+      commentbody:
+        "Weapons galore, endless customization options!",
+      origUserId: 8,
+      origReviewId: 1,
+    });
+    const seedComment19 = await createComments({
+      commentbody:
+        "I felt like I was there!",
+      origUserId: 23,
+      origReviewId: 20,
+    });
+    const seedComment20 = await createComments({
+      commentbody:
+        "Characters had me laughing out loud.",
+      origUserId: 19,
+      origReviewId: 6,
+    });
+    const seedComment21 = await createComments({
+      commentbody: "Level design kept me engaged.",
+      origUserId: 28,
+      origReviewId: 29,
+    });
+    const seedComment22 = await createComments({
+      commentbody: "Online battles were intense and addictive.",
+      origUserId: 4,
+      origReviewId: 16,
+    });
+    const seedComment23 = await createComments({
+      commentbody: "Crafting added a whole new dimension.",
+      origUserId: 20,
+      origReviewId: 5,
+    });
+    const seedComment24 = await createComments({
+      commentbody: "The lore had me hooked!",
+      origUserId: 17,
+      origReviewId: 14,
+    });
+    const seedComment25 = await createComments({
+      commentbody: "Morally challenging decisions kept me guessing.",
+      origUserId: 29,
+      origReviewId: 8,
+    });
+    const seedComment26 = await createComments({
+      commentbody: "So many playstyles, endless possibilities.",
+      origUserId: 21,
+      origReviewId: 22,
+    });
+    const seedComment27 = await createComments({
+      commentbody: "Cinematics were like watching a movie.",
+      origUserId: 1,
+      origReviewId: 19,
+    });
+    const seedComment28 = await createComments({
+      commentbody:
+        "Controls were intuitive, easy to learn.",
+      origUserId: 13,
+      origReviewId: 10,
+    });
+    const seedComment29 = await createComments({
+      commentbody: "I lost track of time playing.",
+      origUserId: 25,
+      origReviewId: 7,
+    });
+    const seedComment30 = await createComments({
+      commentbody: "The world felt alive and interactive.",
+      origUserId: 19,
+      origReviewId: 6,
+    });
+    const seedComment31 = await createComments({
+      commentbody: "The storyline captivated me throughout.",
+      origUserId: 16,
+      origReviewId: 15,
+    });
+    const seedComment32 = await createComments({
+      commentbody: "Playing different characters was exhilarating.",
+      origUserId: 14,
+      origReviewId: 21,
+    });
+    const seedComment33 = await createComments({
+      commentbody: "Multiplayer brought friends closer, loved it.",
+      origUserId: 27,
+      origReviewId: 13,
+    });
+    const seedComment34 = await createComments({
+      commentbody: "Attention to detail was simply stunning.",
+      origUserId: 18,
+      origReviewId: 26,
+    });
+    const seedComment35 = await createComments({
+      commentbody: "Boss battles tested my gaming skills.",
+      origUserId: 30,
+      origReviewId: 9,
+    });
+    const seedComment36 = await createComments({
+      commentbody: "Co-op mode created unforgettable memories.",
+      origUserId: 24,
+      origReviewId: 4,
+    });
+    const seedComment37 = await createComments({
+      commentbody: "The dialogue added depth and emotion.",
+      origUserId: 6,
+      origReviewId: 23,
+    });
+    const seedComment38 = await createComments({
+      commentbody: "Exploration rewarded me at every turn.",
+      origUserId: 22,
+      origReviewId: 30,
+    });
+    const seedComment39 = await createComments({
+      commentbody: "I kept coming back for more!",
+      origUserId: 3,
+      origReviewId: 5,
+    });
+    const seedComment40 = await createComments({
+      commentbody: "Challenging but not overly frustrating.",
+      origUserId: 12,
+      origReviewId: 17,
+    });
+    const seedComment41 = await createComments({
+      commentbody: "I learned so much from playing.",
+      origUserId: 9,
+      origReviewId: 3,
+    });
+    const seedComment42 = await createComments({
+      commentbody: "Graphics were jaw-dropping, blew me away.",
+      origUserId: 20,
+      origReviewId: 12,
+    });
+    const seedComment43 = await createComments({
+      commentbody: "Weather effects made the game realistic.",
+      origUserId: 26,
+      origReviewId: 25,
+    });
+    const seedComment44 = await createComments({
+      commentbody: "The soundtrack elevated the experience.",
+      origUserId: 5,
+      origReviewId: 1,
+    });
+    const seedComment45 = await createComments({
+      commentbody: "The mature themes resonated with me.",
+      origUserId: 7,
+      origReviewId: 20,
+    });
+    const seedComment46 = await createComments({
+      commentbody: "Creating my own levels was awesome! Go download the mods.",
+      origUserId: 15,
+      origReviewId: 6,
+    });
+    const seedComment47 = await createComments({
+      commentbody: "Combat felt satisfying and exhilarating.",
+      origUserId: 8,
+      origReviewId: 29,
+    });
+    const seedComment48 = await createComments({
+      commentbody: "Enemy variety kept me on edge.",
+      origUserId: 23,
+      origReviewId: 16,
+    });
+    const seedComment49 = await createComments({
+      commentbody: "Multiplayer modes were a blast!",
+      origUserId: 19,
+      origReviewId: 27,
+    });
+    const seedComment50 = await createComments({
+      commentbody: "Loot system kept me addicted, always upgrading.",
+      origUserId: 28,
+      origReviewId: 14,
+    });
+    const seedComment51 = await createComments({
+      commentbody: "Loot system kept me addicted, always upgrading.",
+      origUserId: 4,
+      origReviewId: 8,
+    });
+    const seedComment52 = await createComments({
+      commentbody: "Skill tree let me personalize gameplay.",
+      origUserId: 11,
+      origReviewId: 22,
+    });
+    const seedComment53 = await createComments({
+      commentbody: "Realistic physics made it feel authentic.",
+      origUserId: 17,
+      origReviewId: 19,
+    });
+    const seedComment54 = await createComments({
+      commentbody: "Exploring the open world was freedom.",
+      origUserId: 29,
+      origReviewId: 10,
+    });
+    const seedComment55 = await createComments({
+      commentbody: "Boss battles had me at awe.",
+      origUserId: 21,
+      origReviewId: 7,
+    });
+    const seedComment56 = await createComments({
+      commentbody: "The story kept me hooked!",
+      origUserId: 1,
+      origReviewId: 28,
+    });
+    const seedComment57 = await createComments({
+      commentbody: "Action, stealth, and exploration combined!",
+      origUserId: 13,
+      origReviewId: 29,
+    });
+    const seedComment58 = await createComments({
+      commentbody: "Online competition was fair and thrilling.",
+      origUserId: 25,
+      origReviewId: 3,
+    });
+    const seedComment59 = await createComments({
+      commentbody: "The lore immersed me completely.",
+      origUserId: 4,
+      origReviewId: 5,
+    });
+    const seedComment60 = await createComments({
+      commentbody: "Multiplayer created a lively gaming community.",
+      origUserId: 18,
+      origReviewId: 13,
     });
 
     console.log("Finished seed comments.");

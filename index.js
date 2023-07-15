@@ -5,6 +5,7 @@ const {
   createNewGame,
   fetchGameByOurscore,
   fetchAllGamesByTitle,
+  deleteGame,
 
   createUsers,
   fetchAllUsers,
@@ -110,6 +111,35 @@ async function getAllUsers(req, res) {
 }
 
 app.get("/games/users", requireAdmin, getAllUsers);
+
+async function deleteGameByGameId(req, res, next){
+  try {
+    const { gameId } = req.params;
+    console.log(req.params, "This is the req.body console log in delete game function")
+    const gameToDelete = await deleteGame({gameId});
+    
+        if (!gameToDelete){
+          next({
+            name: "Game Not Found",
+            message: "No game found to be deleted.",
+          });
+        } else {
+        res.send({
+          success: true,
+          data: gameToDelete,
+          error: null
+        });
+  }
+} catch (error) {
+    next(error);
+  }
+}
+
+app.delete(
+  "/api/games/delete/:gameId",
+  requireAdmin,
+  deleteGameByGameId
+);
 
 //New routes for users filtered in db below
 async function getUsersByUsername(req, res) {
