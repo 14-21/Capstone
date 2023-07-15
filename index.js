@@ -26,6 +26,7 @@ const {
   fetchAllCommentsByReviewId,
   fetchAllCommentsByUserId,
   deleteComment,
+  createComments,
 } = require("./db/seedData");
 
 //Express server code goes here, routes, and middleware etc.
@@ -113,34 +114,33 @@ async function getAllUsers(req, res) {
 
 app.get("/games/users", requireAdmin, getAllUsers);
 
-async function deleteGameByGameId(req, res, next){
+async function deleteGameByGameId(req, res, next) {
   try {
     const { gameId } = req.params;
-    console.log(req.params, "This is the req.params console log in delete game function")
-    const gameToDelete = await deleteGame({gameId});
-    
-        if (!gameToDelete){
-          next({
-            name: "Game Not Found",
-            message: "No game found to be deleted.",
-          });
-        } else {
-        res.send({
-          success: true,
-          data: gameToDelete,
-          error: null
-        });
-  }
-} catch (error) {
+    console.log(
+      req.params,
+      "This is the req.params console log in delete game function"
+    );
+    const gameToDelete = await deleteGame({ gameId });
+
+    if (!gameToDelete) {
+      next({
+        name: "Game Not Found",
+        message: "No game found to be deleted.",
+      });
+    } else {
+      res.send({
+        success: true,
+        data: gameToDelete,
+        error: null,
+      });
+    }
+  } catch (error) {
     next(error);
   }
 }
 
-app.delete(
-  "/api/games/delete/:gameId",
-  requireAdmin,
-  deleteGameByGameId
-);
+app.delete("/api/games/delete/:gameId", requireAdmin, deleteGameByGameId);
 
 async function getGameById(req, res, next) {
   try {
@@ -187,7 +187,6 @@ async function getAdminUsers(req, res) {
 }
 
 app.get("/adminusers", getAdminUsers); //NOT A SECURE ROUTE RIGHT NOW
-
 
 async function getUserById(req, res, next) {
   try {
@@ -332,7 +331,7 @@ async function loginUser(req, res, next) {
         message: "Incorrect Username or Login.",
       });
     }
-    console.log(user, "user code")
+    console.log(user, "user code");
     if (password == user.password) {
       const token = jwt.sign(
         {
@@ -394,35 +393,33 @@ async function postNewGame(req, res, next) {
 
 app.post("/games/create/game", requireAdmin, postNewGame); //NOT A SECURE ROUTE RIGHT NOW
 
-async function deleteUserById(req, res, next){
+async function deleteUserById(req, res, next) {
   try {
     const { userId } = req.params;
-    console.log(req.params, "This is the req.params console log in delete game function")
-    const userToDelete = await deleteUser({userId});
-    
-        if (!userToDelete){
-          next({
-            name: "User Not Found",
-            message: "User does not exist.",
-          });
-        } else {
-        res.send({
-          success: true,
-          data: userToDelete,
-          error: null
-        });
-  }
-} catch (error) {
+    console.log(
+      req.params,
+      "This is the req.params console log in delete game function"
+    );
+    const userToDelete = await deleteUser({ userId });
+
+    if (!userToDelete) {
+      next({
+        name: "User Not Found",
+        message: "User does not exist.",
+      });
+    } else {
+      res.send({
+        success: true,
+        data: userToDelete,
+        error: null,
+      });
+    }
+  } catch (error) {
     next(error);
   }
 }
 
-app.delete(
-  "/api/users/delete/:userId",
-  requireAdmin,
-  deleteUserById
-);
-
+app.delete("/api/users/delete/:userId", requireAdmin, deleteUserById);
 
 // REVIEWS FUNCTIONS
 async function getAllReviews(req, res, next) {
@@ -443,9 +440,8 @@ app.get("/api/games/reviews", getAllReviews);
 
 async function postReview(req, res, next) {
   try {
-    console.log(req.user, "This is the result of req.user", req.body);
     const userReviews = await fetchAllReviewsByUserId(req.user.userId);
-    console.log(userReviews)
+    console.log(userReviews);
     const currentGame = await fetchGameById(req.body.reviewGameId);
 
     const foundUserReviews = userReviews.find((e) => {
@@ -629,7 +625,35 @@ async function getAllComments(req, res, next) {
 }
 app.get("/api/games/all/comments", requireAdmin, getAllComments);
 
-async function postNewComment() {}
+async function postNewComment(req, res, next) {
+  try {
+    const { userId } = req.user;
+    const { origReviewId } = req.body;
+    console.log(req.body, "#####");
+    const userComment = await createComments({
+      userId,
+      origReviewId,
+    });
+    console.log(userComment, "!!!!!!!!");
+
+    if (!userComment) {
+      next({
+        error: "Add Comment To Review Failure",
+        message: "Failed to add a comment.",
+      });
+    } else {
+      res.send({
+        success: true,
+        data: userComment,
+        error: null,
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+}
+
+app.post("/api/review/post/comment", requireUser, postNewComment);
 
 async function updateComment(req, res, next) {
   try {
@@ -666,21 +690,21 @@ app.put(
   updateComment
 );
 
-async function deleteCommentByCommentId(req, res, next){
+async function deleteCommentByCommentId(req, res, next) {
   try {
     const { commentId } = req.params;
-    console.log(req.params,"This is req.params check in delete comment");
-    const commentToDelete = await deleteComment({commentId});
-    if(!commentToDelete){
+    console.log(req.params, "This is req.params check in delete comment");
+    const commentToDelete = await deleteComment({ commentId });
+    if (!commentToDelete) {
       next({
-        name:"Comment not found",
-        message:"No comment found to delete.",
+        name: "Comment not found",
+        message: "No comment found to delete.",
       });
-    }else{
+    } else {
       res.send({
         success: true,
         data: commentToDelete,
-        error: null
+        error: null,
       });
     }
   } catch (error) {
@@ -688,9 +712,11 @@ async function deleteCommentByCommentId(req, res, next){
   }
 }
 
-app.delete("/api/games/comments/delete/:commentId", requireUser, deleteCommentByCommentId);
-
-
+app.delete(
+  "/api/games/comments/delete/:commentId",
+  requireUser,
+  deleteCommentByCommentId
+);
 
 async function getGamesByGenre(req, res, next) {
   try {
