@@ -540,7 +540,7 @@ async function deleteReviewsByUser(req, res, next) {
 
       const foundUserReviews = reviewsByUser.filter((e) => {
         if (e.reviewId === req.params.id) {
-          console.log(reviewId, "reviewId");
+          console.log(req.params.id, "req.params.id");
           return true;
         }
       });
@@ -689,7 +689,6 @@ async function deleteCommentByCommentId(req, res, next){
 }
 
 app.delete("/api/games/comments/delete/:commentId", requireUser, deleteCommentByCommentId);
-
 
 
 
