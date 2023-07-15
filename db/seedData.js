@@ -573,21 +573,19 @@ async function editComment(
   }
 }
 
-async function deleteComment(commentId) {
+async function deleteComment({commentId}) {
   try {
-    const { rows } = await client.query(
+    const { rows: [comment] } = await client.query(
       `
           DELETE FROM comments
-          WHERE "origReviewId" = $1
+          WHERE "commentId" = $1
           RETURNING *;
           `,
       [commentId]
     );
-    if (rows.length) {
-      return rows[0];
-    } else {
-      return "Failed to delete comment";
-    }
+    console.log(comment, "delete comment function rows console.log")
+      return comment;
+  
   } catch (error) {
     console.log(error);
   }
