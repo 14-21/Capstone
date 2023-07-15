@@ -34,4 +34,6 @@ All UPDATE functions:
 
 All DELETE functions:
 
+/api/games/comments/delete/:commentId, deleteCommentByCommentId
+/api/games/delete/:gameId", deleteGameByGameId
 /api/games/user/review/delete/:id, deleteReviewsByUser

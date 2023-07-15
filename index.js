@@ -12,6 +12,7 @@ const {
   fetchUsersByUsername,
   fetchUsersById,
   fetchUsersByAdmin,
+  deleteUser,
 
   createReviews,
   fetchAllReviews,
@@ -115,7 +116,7 @@ app.get("/games/users", requireAdmin, getAllUsers);
 async function deleteGameByGameId(req, res, next){
   try {
     const { gameId } = req.params;
-    console.log(req.params, "This is the req.body console log in delete game function")
+    console.log(req.params, "This is the req.params console log in delete game function")
     const gameToDelete = await deleteGame({gameId});
     
         if (!gameToDelete){
@@ -140,6 +141,21 @@ app.delete(
   requireAdmin,
   deleteGameByGameId
 );
+
+async function getGameById(req, res, next) {
+  try {
+    // console.log("Testing getGameById");
+    console.log(req.params.id);
+
+    const mySpecificGame = await fetchGameById(Number(req.params.id));
+
+    res.send(mySpecificGame);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+app.get("/games/:id", getGameById);
 
 //New routes for users filtered in db below
 async function getUsersByUsername(req, res) {
@@ -172,20 +188,6 @@ async function getAdminUsers(req, res) {
 
 app.get("/adminusers", getAdminUsers); //NOT A SECURE ROUTE RIGHT NOW
 
-async function getGameById(req, res, next) {
-  try {
-    // console.log("Testing getGameById");
-    console.log(req.params.id);
-
-    const mySpecificGame = await fetchGameById(Number(req.params.id));
-
-    res.send(mySpecificGame);
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-app.get("/games/:id", getGameById);
 
 async function getUserById(req, res, next) {
   try {
@@ -392,6 +394,36 @@ async function postNewGame(req, res, next) {
 
 app.post("/games/create/game", requireAdmin, postNewGame); //NOT A SECURE ROUTE RIGHT NOW
 
+async function deleteUserById(req, res, next){
+  try {
+    const { userId } = req.params;
+    console.log(req.params, "This is the req.params console log in delete game function")
+    const userToDelete = await deleteUser({userId});
+    
+        if (!userToDelete){
+          next({
+            name: "User Not Found",
+            message: "User does not exist.",
+          });
+        } else {
+        res.send({
+          success: true,
+          data: userToDelete,
+          error: null
+        });
+  }
+} catch (error) {
+    next(error);
+  }
+}
+
+app.delete(
+  "/api/users/delete/:userId",
+  requireAdmin,
+  deleteUserById
+);
+
+
 // REVIEWS FUNCTIONS
 async function getAllReviews(req, res, next) {
   console.log("before get all reviews");
@@ -508,7 +540,7 @@ async function deleteReviewsByUser(req, res, next) {
 
       const foundUserReviews = reviewsByUser.filter((e) => {
         if (e.reviewId === req.params.id) {
-          console.log(reviewId, "reviewId");
+          console.log(req.params.id, "req.params.id");
           return true;
         }
       });
@@ -633,6 +665,32 @@ app.put(
   requireUser,
   updateComment
 );
+
+async function deleteCommentByCommentId(req, res, next){
+  try {
+    const { commentId } = req.params;
+    console.log(req.params,"This is req.params check in delete comment");
+    const commentToDelete = await deleteComment({commentId});
+    if(!commentToDelete){
+      next({
+        name:"Comment not found",
+        message:"No comment found to delete.",
+      });
+    }else{
+      res.send({
+        success: true,
+        data: commentToDelete,
+        error: null
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+}
+
+app.delete("/api/games/comments/delete/:commentId", requireUser, deleteCommentByCommentId);
+
+
 
 async function getGamesByGenre(req, res, next) {
   try {
