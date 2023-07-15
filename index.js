@@ -627,16 +627,26 @@ app.get("/api/games/all/comments", requireAdmin, getAllComments);
 
 async function postNewComment(req, res, next) {
   try {
-    const { userId } = req.user;
-    const { origReviewId } = req.body;
+    // const { userId } = req.user;
+    const { origUserId, commentbody, origReviewId } = req.body;
     console.log(req.body, "#####");
+
+    const getUserComments = await fetchAllCommentsByUserId(origUserId);
+    console.log(getUserComments, "!!!!!!!!");
+    const foundUserComments = getUserComments.filter((e) => {
+      if (e.origUserId === req.user.userId) {
+        return true;
+      }
+    });
+
     const userComment = await createComments({
-      userId,
+      commentbody,
+      origUserId,
       origReviewId,
     });
-    console.log(userComment, "!!!!!!!!");
+    // console.log(userComment, "!!!!!!!!");
 
-    if (!userComment) {
+    if (foundUserComments) {
       next({
         error: "Add Comment To Review Failure",
         message: "Failed to add a comment.",
