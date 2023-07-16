@@ -189,6 +189,61 @@ async function fetchAllGamesByTitle() {
   }
 }
 
+
+async function fetchGameByGenre(genreValue) {
+  try {
+    const { rows } = await client.query(`
+    SELECT * FROM games
+    WHERE "genre" = '${genreValue}';
+    `);
+    
+    console.log(rows);
+    console.log("This is the fetchGameByGenre function");
+    
+    return rows[0];
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function editGame({
+  gameId,
+  title,
+  platform,
+  genre,
+  msrp,
+  score,
+  ourreview,
+  studio,
+  ourscore,
+  picturecard,
+  pictureheader,
+  picturebody,
+  picturefooter,
+  synopsis,
+  about,
+  forgamer,
+  notfor,
+}) {
+  try {
+    const { rows } = await client.query(
+      `
+UPDATE games
+SET title = $1, platform = $2, genre = $3, msrp = $4, score = $5, ourreview = $6, studio = $7, ourscore = $8, picturecard = $9, pictureheader = $10, picturebody = $11, picturefooter = $12, synopsis = $13, about = $14, forgamer = $15, notfor = $16
+WHERE "gameId" = $17
+RETURNING *;
+`,
+      [title, platform, genre, msrp, score, ourreview, studio, ourscore, picturecard, pictureheader, picturebody, picturefooter, synopsis, about, forgamer, notfor, gameId]
+    );
+
+    if (rows.length) {
+      return rows[0];
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 async function deleteGame({ gameId }) {
   try {
     console.log(gameId, "game id type");
@@ -205,23 +260,6 @@ async function deleteGame({ gameId }) {
 
     console.log(game, "delete gameId rows console.log");
     return game;
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-//Start of the genre functions
-async function fetchGameByGenre(genreValue) {
-  try {
-    const { rows } = await client.query(`
-        SELECT * FROM games
-        WHERE "genre" = '${genreValue}';
-        `);
-
-    console.log(rows);
-    console.log("This is the fetchGameByGenre function");
-
-    return rows[0];
   } catch (error) {
     console.log(error);
   }
@@ -458,44 +496,6 @@ RETURNING *;
   }
 }
 
-async function editGame({
-  gameId,
-  title,
-  platform,
-  genre,
-  msrp,
-  score,
-  ourreview,
-  studio,
-  ourscore,
-  picturecard,
-  pictureheader,
-  picturebody,
-  picturefooter,
-  synopsis,
-  about,
-  forgamer,
-  notfor,
-}) {
-  try {
-    const { rows } = await client.query(
-      `
-UPDATE games
-SET title = $1, platform = $2, genre = $3, msrp = $4, score = $5, ourreview = $6, studio = $7, ourscore = $8, picturecard = $9, pictureheader = $10, picturebody = $11, picturefooter = $12, synopsis = $13, about = $14, forgamer = $15, notfor = $16
-WHERE "gameId" = $17
-RETURNING *;
-`,
-      [title, platform, genre, msrp, score, ourreview, studio, ourscore, picturecard, pictureheader, picturebody, picturefooter, synopsis, about, forgamer, notfor, gameId]
-    );
-
-    if (rows.length) {
-      return rows[0];
-    }
-  } catch (error) {
-    console.log(error);
-  }
-}
-
 async function deleteReview(reviewId) {
   console.log(reviewId, typeof reviewId);
   try {
@@ -514,6 +514,8 @@ async function deleteReview(reviewId) {
   }
 }
 
+
+// Start of Comments Functions
 async function createComments(commentObj) {
   try {
     const { rows } = await client.query(
@@ -592,8 +594,6 @@ async function updateComment(commentId, updatedComment) {
   return rows[0];
 }
 
-
-
 async function fetchAllCommentsByReviewId(origReviewId) {
   try {
     const { rows } = await client.query(
@@ -630,7 +630,7 @@ async function deleteComment({ commentId }) {
   }
 }
 
-//Build the master DB
+//Build the master DB!
 async function buildDatabase() {
   try {
     client.connect();
