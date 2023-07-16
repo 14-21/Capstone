@@ -189,6 +189,60 @@ async function fetchAllGamesByTitle() {
   }
 }
 
+
+async function fetchGameByGenre(genreValue) {
+  try {
+    const { rows } = await client.query(`
+    SELECT * FROM games
+    WHERE "genre" = '${genreValue}';
+    `);
+    
+    console.log(rows);
+    console.log("This is the fetchGameByGenre function");
+    
+    return rows[0];
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function editGame(gameId, {
+  title,
+  platform,
+  genre,
+  msrp,
+  score,
+  ourreview,
+  studio,
+  ourscore,
+  picturecard,
+  pictureheader,
+  picturebody,
+  picturefooter,
+  synopsis,
+  about,
+  forgamer,
+  notfor,
+}) {
+  try {
+    const { rows } = await client.query(
+      `
+UPDATE games
+SET title = $1, platform = $2, genre = $3, msrp = $4, score = $5, ourreview = $6, studio = $7, ourscore = $8, picturecard = $9, pictureheader = $10, picturebody = $11, picturefooter = $12, synopsis = $13, about = $14, forgamer = $15, notfor = $16
+WHERE "gameId" = $17
+RETURNING *;
+`,
+      [title, platform, genre, msrp, score, ourreview, studio, ourscore, picturecard, pictureheader, picturebody, picturefooter, synopsis, about, forgamer, notfor, gameId]
+    );
+
+    if (rows.length) {
+      return rows[0];
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 async function deleteGame({ gameId }) {
   try {
     console.log(gameId, "game id type");
@@ -205,23 +259,6 @@ async function deleteGame({ gameId }) {
 
     console.log(game, "delete gameId rows console.log");
     return game;
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-//Start of the genre functions
-async function fetchGameByGenre(genreValue) {
-  try {
-    const { rows } = await client.query(`
-        SELECT * FROM games
-        WHERE "genre" = '${genreValue}';
-        `);
-
-    console.log(rows);
-    console.log("This is the fetchGameByGenre function");
-
-    return rows[0];
   } catch (error) {
     console.log(error);
   }
@@ -456,44 +493,6 @@ RETURNING *;
   }
 }
 
-async function editGame({
-  gameId,
-  title,
-  platform,
-  genre,
-  msrp,
-  score,
-  ourreview,
-  studio,
-  ourscore,
-  picturecard,
-  pictureheader,
-  picturebody,
-  picturefooter,
-  synopsis,
-  about,
-  forgamer,
-  notfor,
-}) {
-  try {
-    const { rows } = await client.query(
-      `
-UPDATE games
-SET title = $1, platform = $2, genre = $3, msrp = $4, score = $5, ourreview = $6, studio = $7, ourscore = $8, picturecard = $9, pictureheader = $10, picturebody = $11, picturefooter = $12, synopsis = $13, about = $14, forgamer = $15, notfor = $16
-WHERE "gameId" = $17
-RETURNING *;
-`,
-      [title, platform, genre, msrp, score, ourreview, studio, ourscore, picturecard, pictureheader, picturebody, picturefooter, synopsis, about, forgamer, notfor, gameId]
-    );
-
-    if (rows.length) {
-      return rows[0];
-    }
-  } catch (error) {
-    console.log(error);
-  }
-}
-
 async function deleteReview(reviewId) {
   console.log(reviewId, typeof reviewId);
   try {
@@ -512,6 +511,8 @@ async function deleteReview(reviewId) {
   }
 }
 
+
+// Start of Comments Functions
 async function createComments(commentObj) {
   try {
     const { rows } = await client.query(
@@ -590,8 +591,6 @@ async function updateComment(commentId, updatedComment) {
   return rows[0];
 }
 
-
-
 async function fetchAllCommentsByReviewId(origReviewId) {
   try {
     const { rows } = await client.query(
@@ -628,7 +627,7 @@ async function deleteComment({ commentId }) {
   }
 }
 
-//Build the master DB
+//Build the master DB!
 async function buildDatabase() {
   try {
     client.connect();
@@ -1962,14 +1961,14 @@ async function buildDatabase() {
     const findSpecificGame = await fetchGameById(1);
     // console.log(findSpecificGame);
 
-    //Start of user seed data
+    //Start of USER seed data
     const seedUser1 = await createUsers({
       username: "sarahadmin",
       fname: "sarah",
       lname: "admin",
       password: "adminPass1",
       email: "sadmin1@gmail.com",
-      profilepic: "url/href for sarahadmin",
+      profilepic: "https://source.unsplash.com/bexwsdM5BCw",
       is_admin: true,
     });
 
@@ -1979,7 +1978,7 @@ async function buildDatabase() {
       lname: "admin",
       password: "adminPass2",
       email: "sadmin2@gmail.com",
-      profilepic: "url/href for coltonadmin",
+      profilepic: "https://source.unsplash.com/P0YeIVOyvSI",
       is_admin: true,
     });
 
@@ -1989,7 +1988,7 @@ async function buildDatabase() {
       lname: "admin",
       password: "adminPass3",
       email: "sadmin3@gmail.com",
-      profilepic: "url/href for kelseyadmin",
+      profilepic: "https://source.unsplash.com/8CItx_c0CkI",
       is_admin: true,
     });
 
@@ -1999,7 +1998,7 @@ async function buildDatabase() {
       lname: "admin",
       password: "adminPass4",
       email: "sadmin4@gmail.com",
-      profilepic: "url/href for jessieadmin",
+      profilepic: "https://source.unsplash.com/3POMgLjfYv0",
       is_admin: true,
     });
 
@@ -2009,7 +2008,7 @@ async function buildDatabase() {
       lname: "Medhurst",
       password: "somethingDumb123",
       email: "atuny0@sohu.com",
-      profilepic: "url/href for tmedhurst",
+      profilepic: "https://source.unsplash.com/suLgJZ1edT4",
       is_admin: false,
     });
 
@@ -2568,7 +2567,7 @@ async function buildDatabase() {
     const allUsers = await fetchAllUsers();
     console.log(allUsers);
 
-    //Start of reviews seed data
+    //Start of REVIEWS seed data
     const seedReview1 = await createReviews({
       reviewbody:
         "With stunning graphics and immersive gameplay, this video game transports players to a breathtaking world filled with endless possibilities.",
@@ -3063,7 +3062,7 @@ async function buildDatabase() {
     console.log(allReviews);
     console.log("Finished seed reviews");
 
-    //Begin seed comment data
+    //Begin seed COMMENT data
     const seedComment1 = await createComments({
       commentbody: "Graphics are out of this world!",
       origUserId: 2,
@@ -3366,7 +3365,6 @@ async function buildDatabase() {
     });
 
     console.log("Finished seed comments.");
-    //end of seed comments section
 
     client.end();
     console.log("Finished running build database with all seed data.");
