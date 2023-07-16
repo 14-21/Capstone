@@ -189,10 +189,12 @@ async function fetchAllGamesByTitle() {
   }
 }
 
-async function deleteGame({gameId}) {
+async function deleteGame({ gameId }) {
   try {
     console.log(gameId, "game id type");
-    const { rows: [game] } = await client.query(
+    const {
+      rows: [game],
+    } = await client.query(
       `
         DELETE FROM games
         WHERE "gameId" = $1
@@ -326,7 +328,7 @@ async function fetchUsersByAdmin() {
   }
 }
 
-async function deleteUser({userId}) {
+async function deleteUser({ userId }) {
   console.log(
     userId,
     typeof userId,
@@ -484,9 +486,7 @@ async function createComments(commentObj) {
       `,
       [commentObj.commentbody, commentObj.origUserId, commentObj.origReviewId]
     );
-    if (rows.length) {
-      return rows[0];
-    }
+    return rows;
   } catch (error) {
     console.log(error);
   }
@@ -573,9 +573,11 @@ async function editComment(
   }
 }
 
-async function deleteComment({commentId}) {
+async function deleteComment({ commentId }) {
   try {
-    const { rows: [comment] } = await client.query(
+    const {
+      rows: [comment],
+    } = await client.query(
       `
           DELETE FROM comments
           WHERE "commentId" = $1
@@ -583,9 +585,8 @@ async function deleteComment({commentId}) {
           `,
       [commentId]
     );
-    console.log(comment, "delete comment function rows console.log")
-      return comment;
-  
+    console.log(comment, "delete comment function rows console.log");
+    return comment;
   } catch (error) {
     console.log(error);
   }
@@ -3002,8 +3003,7 @@ async function buildDatabase() {
       reviewGameId: 41,
     });
     const seedReview68 = await createReviews({
-      reviewbody:
-        "A lackluster game that fails to deliver on its promises.",
+      reviewbody: "A lackluster game that fails to deliver on its promises.",
       userscore: 4,
       reviewUserId: 26,
       reviewGameId: 44,
@@ -3064,14 +3064,12 @@ async function buildDatabase() {
       origReviewId: 13,
     });
     const seedComment8 = await createComments({
-      commentbody:
-        "Tactical gameplay at its finest.",
+      commentbody: "Tactical gameplay at its finest.",
       origUserId: 6,
       origReviewId: 26,
     });
     const seedComment9 = await createComments({
-      commentbody:
-        "I couldn't stop staring, simply beautiful.",
+      commentbody: "I couldn't stop staring, simply beautiful.",
       origUserId: 22,
       origReviewId: 9,
     });
@@ -3111,26 +3109,22 @@ async function buildDatabase() {
       origReviewId: 12,
     });
     const seedComment17 = await createComments({
-      commentbody:
-        "I kept replaying to explore more.",
+      commentbody: "I kept replaying to explore more.",
       origUserId: 15,
       origReviewId: 25,
     });
     const seedComment18 = await createComments({
-      commentbody:
-        "Weapons galore, endless customization options!",
+      commentbody: "Weapons galore, endless customization options!",
       origUserId: 8,
       origReviewId: 1,
     });
     const seedComment19 = await createComments({
-      commentbody:
-        "I felt like I was there!",
+      commentbody: "I felt like I was there!",
       origUserId: 23,
       origReviewId: 20,
     });
     const seedComment20 = await createComments({
-      commentbody:
-        "Characters had me laughing out loud.",
+      commentbody: "Characters had me laughing out loud.",
       origUserId: 19,
       origReviewId: 6,
     });
@@ -3170,8 +3164,7 @@ async function buildDatabase() {
       origReviewId: 19,
     });
     const seedComment28 = await createComments({
-      commentbody:
-        "Controls were intuitive, easy to learn.",
+      commentbody: "Controls were intuitive, easy to learn.",
       origUserId: 13,
       origReviewId: 10,
     });
