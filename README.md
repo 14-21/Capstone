@@ -29,7 +29,9 @@ Comments:
     /api/games/all/comments, getAllComments
 
 POST functions:
+
 Games:
+    
     /games/create/game, postNewGame
 
 User:
@@ -58,3 +60,6 @@ All DELETE functions:
     /api/users/delete/:userId, deleteUserById
     /api/games/user/review/delete/:id, deleteReviewsByUser
     /api/games/comments/delete/:commentId, deleteCommentByCommentId
+
+
+Please go to the API Documentation for full explanation of routes and endpoints.
