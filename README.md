@@ -1,7 +1,6 @@
 # Capstone
 
-All GET functions:
-
+GET functions:
 Games:
 
     /games, getAllGames
@@ -9,7 +8,6 @@ Games:
     /games/studio/:studio, getGamesByStudio
     /games/ourscore/orderedrating, getGamesByOurscore ordered from 5 - 1
     /allgames/titles, getGamesByTitle alphabetically ordered
-    /api/games/reviews, getAllReviews arbitrarily by reviewId
     /games/genre, getGamesByGenre
 
 Users:
@@ -17,32 +15,46 @@ Users:
     /games/users, getAllUsers
     /games/usernames, getUsersByUsername
     /adminusers, getAdminUsers
-    /games/get/user/:id, getUsersById
+    /games/get/user/, getUsersById
 
-    Comments:
-    /games/users/comments/:origReviewId, fetchAllCommentsByReviewId
+Reviews:
+
+    /api/games/reviews, getAllReviews arbitrarily by reviewId
+    /api/games/user/specific/reviews, getReviewsByUserId
+
+Comments:
+
+    /games/users/comments/:origReviewId, getAllCommentsById
     /api/user/review/comments, fetchAllCommentsByUserId
+    /api/games/all/comments, getAllComments
 
-    /api/games/all/comments, getAllComments-(requiresAdmin)
+POST functions:
+Games:
+    /games/create/game, postNewGame
 
-All POST functions:
+User:
 
-    post request /games/create/game, postNewGame
-    post request /games/users/register, registerNewUser
-    post request /games/users/login, loginUser
-    post request /games/post/review, postNewReview
-    post request /api/games/reviews/update/comments/:commentId, editComment
+    /games/users/register, registerNewUser
+    /games/users/login, loginUser
+
+Reviews:
+
+    /games/post/review, postNewReview
+
+Comments:
+
+    /api/games/reviews/update/comments/:commentId, editComment
+    /api/review/post/comment, postNewComment
 
 All UPDATE functions:
 
-/games/user/review/update, updateReview
+    /api/games/updategame/, updateGame
+    /games/user/review/update, updateReview
+    /api/comments/update/:commentId, updateComment
 
 All DELETE functions:
 
-<<<<<<< Updated upstream
-/api/games/comments/delete/:commentId, deleteCommentByCommentId
-/api/games/delete/:gameId", deleteGameByGameId
-/api/games/user/review/delete/:id, deleteReviewsByUser
-=======
-/api/games/user/review/delete/:id, deleteReviewsByUser
->>>>>>> Stashed changes
+    /api/games/delete/:gameId", deleteGameByGameId
+    /api/users/delete/:userId, deleteUserById
+    /api/games/user/review/delete/:id, deleteReviewsByUser
+    /api/games/comments/delete/:commentId, deleteCommentByCommentId
