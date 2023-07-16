@@ -22,12 +22,13 @@ const {
   deleteReview,
 
   // Database Comments Functions
-  fetchAllComments,
-  editComment,
-  fetchAllCommentsByReviewId,
-  fetchAllCommentsByUserId,
-  deleteComment,
   createComments,
+  fetchAllComments,
+  fetchAllCommentsByUserId,
+  fetchAllCommentsByReviewId,
+  fetchCommentById,
+  updateComment,
+  deleteComment,
 } = require("./db/seedData");
 
 //Express server code goes here, routes, and middleware etc.
@@ -251,36 +252,43 @@ async function getGamesByTitle(req, res, next) {
 
 app.get("/allgames/titles", getGamesByTitle);
 
-async function updateComment(req, res, next) {
+async function editComment(req, res, next) {
   try {
-    console.log(req.user, "Im the user!!!!!!!!!!!!!!!!!!!!!");
-    const correctUser = await fetchUsersById(req.user.userId);
     const { commentId } = req.params;
+    console.log(req.params, "these are req.params");
+    const loggedInUserId = req.user.userId;
+    const comment = await fetchCommentById(commentId);
 
-    if (correctUser && !req.user.is_admin) {
-      const newUpdatedComment = await editComment(req.body, commentId);
-      console.log(newUpdatedComment, "COMMENT HERE");
-      if (newUpdatedComment) {
-        res.send(newUpdatedComment);
-      } else {
-        next({
-          error: "Unable to Update",
-          message:
-            "Please verify that you are logged in, and trying to comment on your posts and try again.",
-        });
-      }
-    } else {
-      res.send({
-        error: "Unauthorized",
-        message: "You are only allowed to edit your comments.",
+    if (!comment) {
+      return res.status(404).json({
+        error: "Comment not found",
+        message: "The comment you are trying to edit does not exist.",
       });
     }
+
+    if (comment.origUserId !== loggedInUserId) {
+      return res.status(403).json({
+        error: "Unauthorized",
+        message: "You are only allowed to edit your own comments.",
+      });
+    }
+
+    const updatedComment = {
+      commentbody: req.body.commentbody,
+      origUserId: req.body.origUserId,
+      origReviewId: req.body.origReviewId,
+    };
+
+    const newUpdatedComment = await updateComment(commentId, updatedComment);
+    console.log(newUpdatedComment, "COMMENT HERE");
+
+    res.send(newUpdatedComment);
   } catch (error) {
     next(error);
   }
 }
 
-app.put("/api/editgames/update/", requireAdmin, updateGame);
+app.put("/api/comments/update/:commentId", requireUser, editComment);
 
 async function registerNewUser(req, res, next) {
   try {
