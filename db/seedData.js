@@ -458,6 +458,44 @@ RETURNING *;
   }
 }
 
+async function editGame({
+  gameId,
+  title,
+  platform,
+  genre,
+  msrp,
+  score,
+  ourreview,
+  studio,
+  ourscore,
+  picturecard,
+  pictureheader,
+  picturebody,
+  picturefooter,
+  synopsis,
+  about,
+  forgamer,
+  notfor,
+}) {
+  try {
+    const { rows } = await client.query(
+      `
+UPDATE games
+SET title = $1, platform = $2, genre = $3, msrp = $4, score = $5, ourreview = $6, studio = $7, ourscore = $8, picturecard = $9, pictureheader = $10, picturebody = $11, picturefooter = $12, synopsis = $13, about = $14, forgamer = $15, notfor = $16
+WHERE "gameId" = $17
+RETURNING *;
+`,
+      [title, platform, genre, msrp, score, ourreview, studio, ourscore, picturecard, pictureheader, picturebody, picturefooter, synopsis, about, forgamer, notfor, gameId]
+    );
+
+    if (rows.length) {
+      return rows[0];
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 async function deleteReview(reviewId) {
   console.log(reviewId, typeof reviewId);
   try {
@@ -855,7 +893,7 @@ async function buildDatabase() {
       genre: "Adventure",
       msrp: "$29.99",
       score: "4",
-      ourreview: "Was this the last of the uncharted series?.",
+      ourreview: "Rise of the Tomb Raider really showcases the graphics of the game, voice acting, and CGI effects.",
       studio: "Techland",
       ourscore: "5",
       picturecard:
@@ -3348,6 +3386,7 @@ module.exports = {
   fetchAllGamesByTitle,
   fetchGameByGenre,
   deleteGame,
+  editGame,
 
   createUsers,
   fetchAllUsers,

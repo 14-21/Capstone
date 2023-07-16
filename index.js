@@ -6,6 +6,7 @@ const {
   fetchGameByOurscore,
   fetchAllGamesByTitle,
   deleteGame,
+  editGame,
 
   createUsers,
   fetchAllUsers,
@@ -249,6 +250,37 @@ async function getGamesByTitle(req, res, next) {
 }
 
 app.get("/allgames/titles", getGamesByTitle);
+
+async function updateComment(req, res, next) {
+  try {
+    console.log(req.user, "Im the user!!!!!!!!!!!!!!!!!!!!!");
+    const correctUser = await fetchUsersById(req.user.userId);
+    const { commentId } = req.params;
+
+    if (correctUser && !req.user.is_admin) {
+      const newUpdatedComment = await editComment(req.body, commentId);
+      console.log(newUpdatedComment, "COMMENT HERE");
+      if (newUpdatedComment) {
+        res.send(newUpdatedComment);
+      } else {
+        next({
+          error: "Unable to Update",
+          message:
+            "Please verify that you are logged in, and trying to comment on your posts and try again.",
+        });
+      }
+    } else {
+      res.send({
+        error: "Unauthorized",
+        message: "You are only allowed to edit your comments.",
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+}
+
+app.put("/api/editgames/update/", requireAdmin, updateGame);
 
 async function registerNewUser(req, res, next) {
   try {
@@ -664,30 +696,47 @@ async function postNewComment(req, res, next) {
 
 app.post("/api/review/post/comment", requireUser, postNewComment);
 
-app.post("/api/review/post/comment", requireUser, postNewComment);
-
-async function updateComment(req, res, next) {
+async function updateGame(req, res, next) {
   try {
-    console.log(req.user, "Im the user!!!!!!!!!!!!!!!!!!!!!");
-    const correctUser = await fetchUsersById(req.user.userId);
-    const { commentId } = req.params;
+    console.log(req.user, "I am the user!!!!!!!!!!!!!!!!!!!!!");
+    const adminUser = await fetchUsersByAdmin(req.user.id);
+    const { title, platform, genre, msrp, score, ourreview, studio, ourscore, picturecard, pictureheader, picturebody, picturefooter, synopsis, about, forgamer, notfor } = req.body;
+    console.log(req.body, "req.body consolelog");
 
-    if (correctUser && !req.user.is_admin) {
-      const newUpdatedComment = await editComment(req.body, commentId);
-      console.log(newUpdatedComment, "COMMENT HERE");
-      if (newUpdatedComment) {
-        res.send(newUpdatedComment);
+    if (adminUser) {
+      const newUpdatedGame = await editGame({
+        title,
+        platform,
+        genre,
+        msrp,
+        score,
+        ourreview,
+        studio,
+        ourscore,
+        picturecard,
+        pictureheader,
+        picturebody,
+        picturefooter,
+        synopsis,
+        about,
+        forgamer,
+        notfor,
+        gameId: req.body.gameId // Assuming gameId is provided in req.body
+      });
+
+      console.log(newUpdatedGame, "new updated game console.log");
+      if (newUpdatedGame) {
+        res.send(newUpdatedGame);
       } else {
         next({
           error: "Unable to Update",
-          message:
-            "Please verify that you are logged in, and trying to comment on your posts and try again.",
+          message: "Admin user required.",
         });
       }
     } else {
       res.send({
         error: "Unauthorized",
-        message: "You are only allowed to edit your comments.",
+        message: "You are not allowed to post the same game.",
       });
     }
   } catch (error) {
@@ -696,9 +745,9 @@ async function updateComment(req, res, next) {
 }
 
 app.put(
-  "/api/games/reviews/update/comments/:commentId",
-  requireUser,
-  updateComment
+  "/api/games/updategame/",
+  requireAdmin,
+  updateGame
 );
 
 async function deleteCommentByCommentId(req, res, next) {
