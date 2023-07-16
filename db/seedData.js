@@ -564,6 +564,36 @@ async function fetchAllCommentsByUserId(commentId) {
   }
 }
 
+async function fetchCommentById(commentId) {
+  const query = `
+    SELECT *
+    FROM comments
+    WHERE "commentId" = $1
+  `;
+  const values = [commentId];
+  const { rows } = await client.query(query, values);
+  return rows[0];
+}
+
+async function updateComment(commentId, updatedComment) {
+  const query = `
+    UPDATE comments
+    SET commentbody = $1, "origUserId" = $2, "origReviewId" = $3
+    WHERE "commentId" = $4
+    RETURNING *;
+  `;
+  const values = [
+    updatedComment.commentbody,
+    updatedComment.origUserId,
+    updatedComment.origReviewId,
+    commentId,
+  ];
+  const { rows } = await client.query(query, values);
+  return rows[0];
+}
+
+
+
 async function fetchAllCommentsByReviewId(origReviewId) {
   try {
     const { rows } = await client.query(
@@ -575,36 +605,6 @@ async function fetchAllCommentsByReviewId(origReviewId) {
     );
     if (rows) {
       return rows;
-    }
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-async function editComment(
-  { commentbody, origUserId, origReviewId },
-  commentId
-) {
-  try {
-    console.log(
-      commentbody,
-      origUserId,
-      origReviewId,
-      commentId,
-      "EDIT COMMENT DATABASE!!!"
-    );
-    const { rows } = await client.query(
-      `
-    UPDATE comments
-    SET commentbody = $1, "origUserId" = $2,"origReviewId"=$3
-    WHERE "commentId" = $4
-    RETURNING *;
-    `,
-      [commentbody, origUserId, origReviewId, commentId]
-    );
-    console.log(rows, "@@@@@@@@@@");
-    if (rows.length) {
-      return rows[0];
     }
   } catch (error) {
     console.log(error);
@@ -3406,7 +3406,8 @@ module.exports = {
   fetchAllComments,
   fetchAllCommentsByUserId,
   fetchAllCommentsByReviewId,
-  editComment, //only logged-in users can do this NOT admins
+  fetchCommentById,
+  updateComment,
   deleteComment,
 
   buildDatabase,
