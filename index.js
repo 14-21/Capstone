@@ -84,11 +84,9 @@ app.get("/", function (req, res) {
 
 const client = require("./db/index");
 const { requireAdmin } = require("./adminutils");
-const { requireNotAdmin } = require("./notadminutils");
 const { trace } = require("console");
 client.connect();
 
-// Games Routes
 async function getAllGames(req, res, next) {
   try {
     const allGamesData = await fetchAllGames();
@@ -103,19 +101,20 @@ async function getAllGames(req, res, next) {
 }
 app.get("/games", getAllGames);
 
-async function getGamesByGenre(req, res, next) {
+async function getAllUsers(req, res) {
   try {
-    console.log(req.params.genre);
-
-    const myGenreGame = await fetchGameByGenre(req.params.genre);
-
-    res.send(myGenreGame);
+    const allUsersData = await fetchAllUsers();
+    if (allUsersData && allUsersData.length) {
+      res.send(allUsersData);
+    } else {
+      res.send("No User Data Available...");
+    }
   } catch (error) {
     console.log(error);
   }
 }
 
-app.get("/games/genre", getGamesByGenre);
+app.get("/games/users", requireAdmin, getAllUsers);
 
 async function deleteGameByGameId(req, res, next) {
   try {
@@ -160,138 +159,7 @@ async function getGameById(req, res, next) {
 
 app.get("/games/:id", getGameById);
 
-async function getGamesByStudio(req, res, next) {
-  try {
-    console.log(req.params.studio);
-
-    const myStudioGame = await fetchGameByStudio(req.params.studio);
-    console.log("Finished Fetching my Studio Game");
-
-    res.send(myStudioGame);
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-app.get("/games/studio/:studio", getGamesByStudio);
-
-async function getGamesByTitle(req, res, next) {
-  try {
-    const allGamesTitles = await fetchAllGamesByTitle();
-    if (allGamesTitles && allGamesTitles.length) {
-      res.send(allGamesTitles);
-    } else {
-      res.send("No games to display");
-    }
-    console.log("Finished fetching get games by title");
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-app.get("/allgames/titles", getGamesByTitle);
-
-async function postNewGame(req, res, next) {
-  try {
-    const myAuthToken = req.headers.authorization.slice(7);
-    console.log("My Actual Token", myAuthToken);
-    console.log(process.env.JWT_SECRET, " !!!!!!!!!!!!!!!!!!!!!!!");
-
-    const isThisAGoodToken = jwt.verify(myAuthToken, process.env.JWT_SECRET);
-    console.log("This is my decrypted token:", isThisAGoodToken);
-
-    if (isThisAGoodToken) {
-      const userFromDb = await fetchUsersByUsername(isThisAGoodToken.username);
-      // console.log(req.body, " ?????????");
-      if (userFromDb) {
-        const newGamePost = await createNewGame(req.body);
-
-        res.send(newGamePost);
-      } else {
-        res.send({
-          error: true,
-          message:
-            "User does not exist in database. Please register for a new account and try again.",
-        });
-      }
-    } else {
-      res.send({ error: true, message: "Failed to decrypt token." });
-    }
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-app.post("/games/create/game", requireAdmin, postNewGame);
-
-async function updateGame(req, res, next) {
-  try {
-    console.log(req.user, "I am the user!!!!!!!!!!!!!!!!!!!!!");
-    const adminUser = await fetchUsersByAdmin(req.user.id);
-    const {
-      title,
-      platform,
-      genre,
-      msrp,
-      score,
-      ourreview,
-      studio,
-      ourscore,
-      picturecard,
-      pictureheader,
-      picturebody,
-      picturefooter,
-      synopsis,
-      about,
-      forgamer,
-      notfor,
-    } = req.body;
-    console.log(req.body, "req.body consolelog");
-
-    if (adminUser) {
-      const newUpdatedGame = await editGame({
-        title,
-        platform,
-        genre,
-        msrp,
-        score,
-        ourreview,
-        studio,
-        ourscore,
-        picturecard,
-        pictureheader,
-        picturebody,
-        picturefooter,
-        synopsis,
-        about,
-        forgamer,
-        notfor,
-        gameId: req.body.gameId, // Assuming gameId is provided in req.body
-      });
-
-      console.log(newUpdatedGame, "new updated game console.log");
-      if (newUpdatedGame) {
-        res.send(newUpdatedGame);
-      } else {
-        next({
-          error: "Unable to Update",
-          message: "Admin user required.",
-        });
-      }
-    } else {
-      res.send({
-        error: "Unauthorized",
-        message: "You are not allowed to post the same game.",
-      });
-    }
-  } catch (error) {
-    next(error);
-  }
-}
-
-app.put("/api/games/updategame/", requireAdmin, updateGame);
-
-//USER ROUTES
+//New routes for users filtered in db below
 async function getUsersByUsername(req, res) {
   try {
     const allUsersByUsername = await fetchUsersByUsername();
@@ -305,22 +173,7 @@ async function getUsersByUsername(req, res) {
   }
 }
 
-app.get("/games/usernames", requireAdmin, getUsersByUsername);
-
-async function getAllUsers(req, res) {
-  try {
-    const allUsersData = await fetchAllUsers();
-    if (allUsersData && allUsersData.length) {
-      res.send(allUsersData);
-    } else {
-      res.send("No User Data Available...");
-    }
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-app.get("/games/users", requireAdmin, getAllUsers);
+app.get("/games/usernames", getUsersByUsername); //NOT A SECURE ROUTE RIGHT NOW
 
 async function getAdminUsers(req, res) {
   try {
@@ -335,7 +188,7 @@ async function getAdminUsers(req, res) {
   }
 }
 
-app.get("/adminusers", requireAdmin, getAdminUsers);
+app.get("/adminusers", getAdminUsers); //NOT A SECURE ROUTE RIGHT NOW
 
 async function getUserById(req, res, next) {
   try {
@@ -350,6 +203,21 @@ async function getUserById(req, res, next) {
 }
 
 app.get("/games/get/user", requireUser, getUserById);
+
+async function getGamesByStudio(req, res, next) {
+  try {
+    console.log(req.params.studio);
+
+    const myStudioGame = await fetchGameByStudio(req.params.studio);
+    console.log("Finished Fetching my Studio Game");
+
+    res.send(myStudioGame);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+app.get("/games/studio/:studio", getGamesByStudio);
 
 async function getGamesByOurscore(req, res, next) {
   try {
@@ -532,6 +400,39 @@ async function loginUser(req, res, next) {
 
 app.post("/games/users/login", loginUser);
 
+async function postNewGame(req, res, next) {
+  try {
+    const myAuthToken = req.headers.authorization.slice(7);
+    console.log("My Actual Token", myAuthToken);
+    console.log(process.env.JWT_SECRET, " !!!!!!!!!!!!!!!!!!!!!!!");
+
+    const isThisAGoodToken = jwt.verify(myAuthToken, process.env.JWT_SECRET);
+    console.log("This is my decrypted token:", isThisAGoodToken);
+
+    if (isThisAGoodToken) {
+      const userFromDb = await fetchUsersByUsername(isThisAGoodToken.username);
+      // console.log(req.body, " ?????????");
+      if (userFromDb) {
+        const newGamePost = await createNewGame(req.body);
+
+        res.send(newGamePost);
+      } else {
+        res.send({
+          error: true,
+          message:
+            "User does not exist in database. Please register for a new account and try again.",
+        });
+      }
+    } else {
+      res.send({ error: true, message: "Failed to decrypt token." });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+app.post("/games/create/game", requireAdmin, postNewGame); //NOT A SECURE ROUTE RIGHT NOW
+
 async function deleteUserById(req, res, next) {
   try {
     const { userId } = req.params;
@@ -560,7 +461,7 @@ async function deleteUserById(req, res, next) {
 
 app.delete("/api/users/delete/:userId", requireAdmin, deleteUserById);
 
-// REVIEWS ROUTES
+// REVIEWS FUNCTIONS
 async function getAllReviews(req, res, next) {
   console.log("before get all reviews");
   try {
@@ -708,7 +609,7 @@ app.delete(
   deleteReviewsByUser
 );
 
-// COMMENTS ROUTES
+// COMMENTS FUNCTIONS
 async function getAllCommentsById(req, res, next) {
   try {
     const allComments = await fetchAllCommentsByReviewId(
@@ -806,77 +707,44 @@ app.post("/api/review/post/comment", requireUser, postNewComment);
 async function updateGame(req, res, next) {
   try {
     console.log(req.user, "I am the user!!!!!!!!!!!!!!!!!!!!!");
-    const isAdmin = req.body.is_admin;
-    console.log(isAdmin, "This is whether the user is an admin");
-    if (isAdmin === false) {
-      next({
-        error: "Unauthorized",
-        message: "Only admin users are allowed to update games.",
+    const adminUser = await fetchUsersByAdmin(req.user.id);
+    const { title, platform, genre, msrp, score, ourreview, studio, ourscore, picturecard, pictureheader, picturebody, picturefooter, synopsis, about, forgamer, notfor } = req.body;
+    console.log(req.body, "req.body consolelog");
+
+    if (adminUser) {
+      const newUpdatedGame = await editGame({
+        title,
+        platform,
+        genre,
+        msrp,
+        score,
+        ourreview,
+        studio,
+        ourscore,
+        picturecard,
+        pictureheader,
+        picturebody,
+        picturefooter,
+        synopsis,
+        about,
+        forgamer,
+        notfor,
+        gameId: req.body.gameId // Assuming gameId is provided in req.body
       });
-      return;
-    }
 
-    const {
-      title,
-      platform,
-      genre,
-      msrp,
-      score,
-      ourreview,
-      studio,
-      ourscore,
-      picturecard,
-      pictureheader,
-      picturebody,
-      picturefooter,
-      synopsis,
-      about,
-      forgamer,
-      notfor,
-      gameId,
-    } = req.body;
-
-    console.log(req.body, "This is req.body console log");
-
-    const allGames = await fetchAllGames(gameId);
-
-    const foundGame = allGames.find((game) => game.gameId === gameId);
-    
-    if (!foundGame) {
-      next({
-        error: "Invalid Game ID",
-        message: "The provided game ID does not exist.",
-      });
-      return;
-    }
-
-    const newUpdatedGame = await editGame(gameId, {
-      title,
-      platform,
-      genre,
-      msrp,
-      score,
-      ourreview,
-      studio,
-      ourscore,
-      picturecard,
-      pictureheader,
-      picturebody,
-      picturefooter,
-      synopsis,
-      about,
-      forgamer,
-      notfor,
-    });
-
-    console.log(newUpdatedGame, "New updated game console log");
-
-    if (newUpdatedGame) {
-      res.send(newUpdatedGame);
+      console.log(newUpdatedGame, "new updated game console.log");
+      if (newUpdatedGame) {
+        res.send(newUpdatedGame);
+      } else {
+        next({
+          error: "Unable to Update",
+          message: "Admin user required.",
+        });
+      }
     } else {
-      next({
-        error: "Unable to Update",
-        message: "Check headers or column information.",
+      res.send({
+        error: "Unauthorized",
+        message: "You are not allowed to post the same game.",
       });
     }
   } catch (error) {
@@ -885,7 +753,7 @@ async function updateGame(req, res, next) {
 }
 
 app.put(
-  "/api/games/updategame",
+  "/api/games/updategame/",
   requireAdmin,
   updateGame
 );
@@ -917,6 +785,20 @@ app.delete(
   requireUser,
   deleteCommentByCommentId
 );
+
+async function getGamesByGenre(req, res, next) {
+  try {
+    console.log(req.params.genre);
+
+    const myGenreGame = await fetchGameByGenre(req.params.genre);
+
+    res.send(myGenreGame);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+app.get("/games/genre", getGamesByGenre);
 
 app.get("*", (req, res) => {
   res.status(404).send({
