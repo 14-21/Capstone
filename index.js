@@ -627,31 +627,30 @@ app.get("/api/games/all/comments", requireAdmin, getAllComments);
 
 async function postNewComment(req, res, next) {
   try {
-    // const { userId } = req.user;
     const { origUserId, commentbody, origReviewId } = req.body;
-    console.log(req.body, "#####");
+    console.log(req.body, "!#####!");
 
-    const getUserComments = await fetchAllCommentsByUserId(origUserId);
+    const getUserComments = await fetchAllComments(origUserId);
     console.log(getUserComments, "!!!!!!!!");
-    const foundUserComments = getUserComments.filter((e) => {
-      if (e.origUserId === req.user.userId) {
-        return true;
-      }
-    });
 
-    const userComment = await createComments({
-      commentbody,
-      origUserId,
-      origReviewId,
-    });
-    // console.log(userComment, "!!!!!!!!");
+    const existingComment = getUserComments.find(
+      (comment) =>
+        comment.origReviewId === origReviewId &&
+        comment.origUserId === req.user.userId
+    );
 
-    if (foundUserComments) {
+    if (existingComment) {
       next({
         error: "Add Comment To Review Failure",
-        message: "Failed to add a comment.",
+        message: "Only one comment per user on a review is allowed.",
       });
     } else {
+      const userComment = await createComments({
+        commentbody,
+        origUserId,
+        origReviewId,
+      });
+
       res.send({
         success: true,
         data: userComment,
@@ -662,6 +661,8 @@ async function postNewComment(req, res, next) {
     next(error);
   }
 }
+
+app.post("/api/review/post/comment", requireUser, postNewComment);
 
 app.post("/api/review/post/comment", requireUser, postNewComment);
 
