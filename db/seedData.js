@@ -206,7 +206,8 @@ async function fetchGameByGenre(genreValue) {
   }
 }
 
-async function editGame(gameId, {
+async function editGame({
+  gameId,
   title,
   platform,
   genre,
@@ -1963,7 +1964,7 @@ async function buildDatabase() {
     const findSpecificGame = await fetchGameById(1);
     // console.log(findSpecificGame);
 
-    //Start of USER seed data
+    //Start of user seed data
     const seedUser1 = await createUsers({
       username: "sarahadmin",
       fname: "sarah",
@@ -2569,7 +2570,7 @@ async function buildDatabase() {
     const allUsers = await fetchAllUsers();
     console.log(allUsers);
 
-    //Start of REVIEWS seed data
+    //Start of reviews seed data
     const seedReview1 = await createReviews({
       reviewbody:
         "With stunning graphics and immersive gameplay, this video game transports players to a breathtaking world filled with endless possibilities.",
@@ -3064,7 +3065,7 @@ async function buildDatabase() {
     console.log(allReviews);
     console.log("Finished seed reviews");
 
-    //Begin seed COMMENT data
+    //Begin seed comment data
     const seedComment1 = await createComments({
       commentbody: "Graphics are out of this world!",
       origUserId: 2,
@@ -3367,6 +3368,7 @@ async function buildDatabase() {
     });
 
     console.log("Finished seed comments.");
+    //end of seed comments section
 
     client.end();
     console.log("Finished running build database with all seed data.");
