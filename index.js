@@ -84,6 +84,7 @@ app.get("/", function (req, res) {
 
 const client = require("./db/index");
 const { requireAdmin } = require("./adminutils");
+const { requireNotAdmin } = require("./notadminutils");
 const { trace } = require("console");
 client.connect();
 
@@ -707,44 +708,77 @@ app.post("/api/review/post/comment", requireUser, postNewComment);
 async function updateGame(req, res, next) {
   try {
     console.log(req.user, "I am the user!!!!!!!!!!!!!!!!!!!!!");
-    const adminUser = await fetchUsersByAdmin(req.user.id);
-    const { title, platform, genre, msrp, score, ourreview, studio, ourscore, picturecard, pictureheader, picturebody, picturefooter, synopsis, about, forgamer, notfor } = req.body;
-    console.log(req.body, "req.body consolelog");
-
-    if (adminUser) {
-      const newUpdatedGame = await editGame({
-        title,
-        platform,
-        genre,
-        msrp,
-        score,
-        ourreview,
-        studio,
-        ourscore,
-        picturecard,
-        pictureheader,
-        picturebody,
-        picturefooter,
-        synopsis,
-        about,
-        forgamer,
-        notfor,
-        gameId: req.body.gameId // Assuming gameId is provided in req.body
-      });
-
-      console.log(newUpdatedGame, "new updated game console.log");
-      if (newUpdatedGame) {
-        res.send(newUpdatedGame);
-      } else {
-        next({
-          error: "Unable to Update",
-          message: "Admin user required.",
-        });
-      }
-    } else {
-      res.send({
+    const isAdmin = req.body.is_admin;
+    console.log(isAdmin, "This is whether the user is an admin");
+    if (isAdmin === false) {
+      next({
         error: "Unauthorized",
-        message: "You are not allowed to post the same game.",
+        message: "Only admin users are allowed to update games.",
+      });
+      return;
+    }
+
+    const {
+      title,
+      platform,
+      genre,
+      msrp,
+      score,
+      ourreview,
+      studio,
+      ourscore,
+      picturecard,
+      pictureheader,
+      picturebody,
+      picturefooter,
+      synopsis,
+      about,
+      forgamer,
+      notfor,
+      gameId,
+    } = req.body;
+
+    console.log(req.body, "This is req.body console log");
+
+    const allGames = await fetchAllGames(gameId);
+
+    const foundGame = allGames.find((game) => game.gameId === gameId);
+    
+    if (!foundGame) {
+      next({
+        error: "Invalid Game ID",
+        message: "The provided game ID does not exist.",
+      });
+      return;
+    }
+
+    const newUpdatedGame = await editGame(gameId, {
+      title,
+      platform,
+      genre,
+      msrp,
+      score,
+      ourreview,
+      studio,
+      ourscore,
+      picturecard,
+      pictureheader,
+      picturebody,
+      picturefooter,
+      synopsis,
+      about,
+      forgamer,
+      notfor,
+    });
+
+    console.log(newUpdatedGame, "New updated game console log");
+
+    if (newUpdatedGame) {
+      res.send(newUpdatedGame);
+    } else {
+      next({
+        error: "Unable to Update",
+        message: "Check headers or column information.",
       });
     }
   } catch (error) {
@@ -753,7 +787,7 @@ async function updateGame(req, res, next) {
 }
 
 app.put(
-  "/api/games/updategame/",
+  "/api/games/updategame",
   requireAdmin,
   updateGame
 );
