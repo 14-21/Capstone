@@ -189,10 +189,12 @@ async function fetchAllGamesByTitle() {
   }
 }
 
-async function deleteGame({gameId}) {
+async function deleteGame({ gameId }) {
   try {
     console.log(gameId, "game id type");
-    const { rows: [game] } = await client.query(
+    const {
+      rows: [game],
+    } = await client.query(
       `
         DELETE FROM games
         WHERE "gameId" = $1
@@ -326,7 +328,7 @@ async function fetchUsersByAdmin() {
   }
 }
 
-async function deleteUser({userId}) {
+async function deleteUser({ userId }) {
   console.log(
     userId,
     typeof userId,
@@ -454,6 +456,44 @@ RETURNING *;
   }
 }
 
+async function editGame({
+  gameId,
+  title,
+  platform,
+  genre,
+  msrp,
+  score,
+  ourreview,
+  studio,
+  ourscore,
+  picturecard,
+  pictureheader,
+  picturebody,
+  picturefooter,
+  synopsis,
+  about,
+  forgamer,
+  notfor,
+}) {
+  try {
+    const { rows } = await client.query(
+      `
+UPDATE games
+SET title = $1, platform = $2, genre = $3, msrp = $4, score = $5, ourreview = $6, studio = $7, ourscore = $8, picturecard = $9, pictureheader = $10, picturebody = $11, picturefooter = $12, synopsis = $13, about = $14, forgamer = $15, notfor = $16
+WHERE "gameId" = $17
+RETURNING *;
+`,
+      [title, platform, genre, msrp, score, ourreview, studio, ourscore, picturecard, pictureheader, picturebody, picturefooter, synopsis, about, forgamer, notfor, gameId]
+    );
+
+    if (rows.length) {
+      return rows[0];
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 async function deleteReview(reviewId) {
   console.log(reviewId, typeof reviewId);
   try {
@@ -482,9 +522,7 @@ async function createComments(commentObj) {
       `,
       [commentObj.commentbody, commentObj.origUserId, commentObj.origReviewId]
     );
-    if (rows.length) {
-      return rows[0];
-    }
+    return rows;
   } catch (error) {
     console.log(error);
   }
@@ -524,6 +562,36 @@ async function fetchAllCommentsByUserId(commentId) {
   }
 }
 
+async function fetchCommentById(commentId) {
+  const query = `
+    SELECT *
+    FROM comments
+    WHERE "commentId" = $1
+  `;
+  const values = [commentId];
+  const { rows } = await client.query(query, values);
+  return rows[0];
+}
+
+async function updateComment(commentId, updatedComment) {
+  const query = `
+    UPDATE comments
+    SET commentbody = $1, "origUserId" = $2, "origReviewId" = $3
+    WHERE "commentId" = $4
+    RETURNING *;
+  `;
+  const values = [
+    updatedComment.commentbody,
+    updatedComment.origUserId,
+    updatedComment.origReviewId,
+    commentId,
+  ];
+  const { rows } = await client.query(query, values);
+  return rows[0];
+}
+
+
+
 async function fetchAllCommentsByReviewId(origReviewId) {
   try {
     const { rows } = await client.query(
@@ -541,39 +609,11 @@ async function fetchAllCommentsByReviewId(origReviewId) {
   }
 }
 
-async function editComment(
-  { commentbody, origUserId, origReviewId },
-  commentId
-) {
+async function deleteComment({ commentId }) {
   try {
-    console.log(
-      commentbody,
-      origUserId,
-      origReviewId,
-      commentId,
-      "EDIT COMMENT DATABASE!!!"
-    );
-    const { rows } = await client.query(
-      `
-    UPDATE comments
-    SET commentbody = $1, "origUserId" = $2,"origReviewId"=$3
-    WHERE "commentId" = $4
-    RETURNING *;
-    `,
-      [commentbody, origUserId, origReviewId, commentId]
-    );
-    console.log(rows, "@@@@@@@@@@");
-    if (rows.length) {
-      return rows[0];
-    }
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-async function deleteComment({commentId}) {
-  try {
-    const { rows: [comment] } = await client.query(
+    const {
+      rows: [comment],
+    } = await client.query(
       `
           DELETE FROM comments
           WHERE "commentId" = $1
@@ -581,9 +621,8 @@ async function deleteComment({commentId}) {
           `,
       [commentId]
     );
-    console.log(comment, "delete comment function rows console.log")
-      return comment;
-  
+    console.log(comment, "delete comment function rows console.log");
+    return comment;
   } catch (error) {
     console.log(error);
   }
@@ -852,7 +891,7 @@ async function buildDatabase() {
       genre: "Adventure",
       msrp: "$29.99",
       score: "4",
-      ourreview: "Was this the last of the uncharted series?.",
+      ourreview: "Rise of the Tomb Raider really showcases the graphics of the game, voice acting, and CGI effects.",
       studio: "Techland",
       ourscore: "5",
       picturecard:
@@ -3000,8 +3039,7 @@ async function buildDatabase() {
       reviewGameId: 41,
     });
     const seedReview68 = await createReviews({
-      reviewbody:
-        "A lackluster game that fails to deliver on its promises.",
+      reviewbody: "A lackluster game that fails to deliver on its promises.",
       userscore: 4,
       reviewUserId: 26,
       reviewGameId: 44,
@@ -3062,14 +3100,12 @@ async function buildDatabase() {
       origReviewId: 13,
     });
     const seedComment8 = await createComments({
-      commentbody:
-        "Tactical gameplay at its finest.",
+      commentbody: "Tactical gameplay at its finest.",
       origUserId: 6,
       origReviewId: 26,
     });
     const seedComment9 = await createComments({
-      commentbody:
-        "I couldn't stop staring, simply beautiful.",
+      commentbody: "I couldn't stop staring, simply beautiful.",
       origUserId: 22,
       origReviewId: 9,
     });
@@ -3109,26 +3145,22 @@ async function buildDatabase() {
       origReviewId: 12,
     });
     const seedComment17 = await createComments({
-      commentbody:
-        "I kept replaying to explore more.",
+      commentbody: "I kept replaying to explore more.",
       origUserId: 15,
       origReviewId: 25,
     });
     const seedComment18 = await createComments({
-      commentbody:
-        "Weapons galore, endless customization options!",
+      commentbody: "Weapons galore, endless customization options!",
       origUserId: 8,
       origReviewId: 1,
     });
     const seedComment19 = await createComments({
-      commentbody:
-        "I felt like I was there!",
+      commentbody: "I felt like I was there!",
       origUserId: 23,
       origReviewId: 20,
     });
     const seedComment20 = await createComments({
-      commentbody:
-        "Characters had me laughing out loud.",
+      commentbody: "Characters had me laughing out loud.",
       origUserId: 19,
       origReviewId: 6,
     });
@@ -3168,8 +3200,7 @@ async function buildDatabase() {
       origReviewId: 19,
     });
     const seedComment28 = await createComments({
-      commentbody:
-        "Controls were intuitive, easy to learn.",
+      commentbody: "Controls were intuitive, easy to learn.",
       origUserId: 13,
       origReviewId: 10,
     });
@@ -3353,6 +3384,7 @@ module.exports = {
   fetchAllGamesByTitle,
   fetchGameByGenre,
   deleteGame,
+  editGame,
 
   createUsers,
   fetchAllUsers,
@@ -3372,7 +3404,8 @@ module.exports = {
   fetchAllComments,
   fetchAllCommentsByUserId,
   fetchAllCommentsByReviewId,
-  editComment, //only logged-in users can do this NOT admins
+  fetchCommentById,
+  updateComment,
   deleteComment,
 
   buildDatabase,
