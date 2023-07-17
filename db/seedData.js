@@ -226,6 +226,7 @@ async function editGame({
   notfor,
 }) {
   try {
+    console.log(title, platform, genre, msrp, score, ourreview, studio, ourscore, picturecard, pictureheader, picturebody, picturefooter, synopsis, about, forgamer, notfor, gameId, "*******")
     const { rows } = await client.query(
       `
 UPDATE games
@@ -233,7 +234,7 @@ SET title = $1, platform = $2, genre = $3, msrp = $4, score = $5, ourreview = $6
 WHERE "gameId" = $17
 RETURNING *;
 `,
-      [title, platform, genre, msrp, score, ourreview, studio, ourscore, picturecard, pictureheader, picturebody, picturefooter, synopsis, about, forgamer, notfor, gameId]
+      [title, platform, genre, msrp, Number(score), ourreview, studio, Number(ourscore), picturecard, pictureheader, picturebody, picturefooter, synopsis, about, forgamer, notfor, gameId]
     );
 
     if (rows.length) {
@@ -441,9 +442,7 @@ async function fetchAllReviewsByUserId(id) {
       [id]
     );
     console.log("end of select from reviews");
-    // if (rows.length) {
-    //   return rows;
-    // }
+ 
     return rows;
   } catch (error) {
     console.log(error);

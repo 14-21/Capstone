@@ -1,5 +1,5 @@
 function requireAdmin(req, res, next) {
-  console.log(req.user);
+  console.log(req.user, "******");
   try {
     if (!req.user || !req.user.is_admin) {
       next({
