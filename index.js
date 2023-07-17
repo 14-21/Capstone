@@ -738,7 +738,7 @@ async function updateGame(req, res, next) {
       } else {
         next({
           error: "Unable to Update",
-          message: "Admin user required.",
+          message: "Invalid inputs.",
         });
       }
     } else {
@@ -753,7 +753,7 @@ async function updateGame(req, res, next) {
 }
 
 app.put(
-  "/api/games/updategame/",
+  "/api/games/updategame",
   requireAdmin,
   updateGame
 );
