@@ -1142,7 +1142,7 @@ async function buildDatabase() {
       studio: "Hi-Rez Studios",
       ourscore: "2",
       picturecard:
-        "https://static.wikia.nocookie.net/phantasystar/images/8/81/Pso2_ngs_key_visual.jpg/revision/latest?cb=20201221173722",
+        "https://nordic.ign.com/phantasy-star-online-2-xbox-one/36533/review/phantasy-star-online-2-review",
       pictureheader:
         "https://mmoculture.com/wp-content/uploads/2021/04/PSO2-NG-image.png",
       picturebody:
@@ -1468,7 +1468,7 @@ async function buildDatabase() {
       studio: "Bungie",
       ourscore: "5",
       picturecard:
-        "https://static.wikia.nocookie.net/destinypedia/images/8/87/D2_BoxArt.jpg/revision/latest?cb=20170531045837",
+        "https://news.xbox.com/en-us/wp-content/uploads/sites/2/2020/06/Destiny2_Hero_Art.jpg",
       pictureheader:
         "https://cdn.geekwire.com/wp-content/uploads/2017/09/HORIZ_RGB_CL_A3.jpg",
       picturebody:
@@ -1718,7 +1718,7 @@ async function buildDatabase() {
       studio: "Xbox Games Studios",
       ourscore: "4",
       picturecard:
-        "https://static.wikia.nocookie.net/forzamotorsport/images/c/cf/FM23_Boxart.jpg/revision/latest?cb=20230606190530",
+        "https://assets-prd.ignimgs.com/2023/06/11/forza-1686512818132.jpg",
       pictureheader:
         "https://editors.dexerto.com/wp-content/uploads/2023/06/11/forza-motorsport-reboot-2023.jpg",
       picturebody:
