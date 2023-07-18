@@ -1142,7 +1142,7 @@ async function buildDatabase() {
       studio: "Hi-Rez Studios",
       ourscore: "2",
       picturecard:
-        "https://nordic.ign.com/phantasy-star-online-2-xbox-one/36533/review/phantasy-star-online-2-review",
+        "https://assets-prd.ignimgs.com/2021/06/23/pso-2-new-genesis-button-fin-1624434516456.jpg",
       pictureheader:
         "https://mmoculture.com/wp-content/uploads/2021/04/PSO2-NG-image.png",
       picturebody:
