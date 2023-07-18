@@ -645,7 +645,7 @@ async function buildDatabase() {
       msrp: "$69.99",
       score: "4",
       ourreview:
-        "Diablo 4 is a game available on Battle.net. It costs almost $70 and will run higher for the ultimate collector's edition.",
+        "Diablo 4 is a game available on Battle.net. It costs almost $70 and will run higher for the ultimate collector's edition at $99.99. All fans will really enjoy the ultimate collector's edition! We would definitely reccommend this game.",
       studio: "Blizzard",
       ourscore: "3",
       picturecard:
@@ -811,7 +811,7 @@ async function buildDatabase() {
       msrp: "$29.99",
       score: "4",
       ourreview:
-        "Sounds like the second in the line of zombie shooter survival games.",
+        "Sounds like the second in the line of zombie shooter survival games. With its epic gore and visceral gameplay, players will have a blast blasting zombies.",
       studio: "Deep Silver",
       ourscore: "3",
       picturecard:
@@ -865,7 +865,7 @@ async function buildDatabase() {
       genre: "Action",
       msrp: "$39.99",
       score: "3",
-      ourreview: "Was this the last of the uncharted series?.",
+      ourreview: "Was this the last of the Uncharted series? We certainlly hope not!",
       studio: "Techland",
       ourscore: "4",
       picturecard:
@@ -974,7 +974,7 @@ async function buildDatabase() {
       genre: "Simulation",
       msrp: "$14.99",
       score: "4",
-      ourreview: "Basically a goat of sim games and farming sims.",
+      ourreview: "Basically the GOAT of sim games and farming sims in 8bit art style.",
       studio: "Concerned Ape",
       ourscore: "5",
       picturecard:
@@ -1002,7 +1002,7 @@ async function buildDatabase() {
       msrp: "$14.99",
       score: "4",
       ourreview:
-        "Over 500 hours of gameplay, and that's without the expansion packs! Base game has so much content and so much to offer.",
+        "We have over 500 hours of gameplay, and that's without the expansion packs! Base game has so much content and so much to offer!",
       studio: "Paradox Interaction",
       ourscore: "5",
       picturecard:
@@ -1029,7 +1029,7 @@ async function buildDatabase() {
       msrp: "$4.94",
       score: "3",
       ourreview:
-        "So fun to play in an altered state with YOUR friends! Challenge each other for the most amazing fails for extra fun.",
+        "So fun to play in an altered state with YOUR friends! Challenge each other for the most amazing fails for extra fun!",
       studio: "Paradox Interaction",
       ourscore: "3",
       picturecard:
@@ -1056,7 +1056,7 @@ async function buildDatabase() {
       genre: "Adventure",
       msrp: "$9.99",
       score: "4",
-      ourreview: "Pretty good for a later sequenced game!",
+      ourreview: "Pretty good for a later sequenced game! Lara remains a bad-ass female lead!",
       studio: "Crystal Dynamics",
       ourscore: "3",
       picturecard:
@@ -1083,7 +1083,7 @@ async function buildDatabase() {
       genre: "MMO",
       msrp: "$19.99",
       score: "5",
-      ourreview: "BEAUTIFUL JRPG and MMO with many expansions!",
+      ourreview: "BEAUTIFUL JRPG and MMO with many expansions! From the rich story-telling to the complicated boss fight sequences, this game will always offer something for everyone!",
       studio: "Squre Enix",
       ourscore: "5",
       picturecard:
@@ -1138,7 +1138,7 @@ async function buildDatabase() {
       genre: "MMO",
       msrp: "Free",
       score: "3",
-      ourreview: "BEAUTIFUL JRPG and MMO with many expansions!",
+      ourreview: "BEAUTIFUL JRPG and MMO however the servers are starting to empty.",
       studio: "Hi-Rez Studios",
       ourscore: "2",
       picturecard:
@@ -1192,7 +1192,7 @@ async function buildDatabase() {
       genre: "Strategy",
       msrp: "$49.99",
       score: "3",
-      ourreview: "Pretty good with excellent story lines!",
+      ourreview: "Pretty good with excellent story lines! Conquer your kingdom, kill your way to the top.",
       studio: "Paradox Interactive",
       ourscore: "4",
       picturecard:
@@ -1220,7 +1220,7 @@ async function buildDatabase() {
       msrp: "$29.99",
       score: "3",
       ourreview:
-        "Almost more fructrating than the first. Yokai infest the land and our protagonist defends it!!",
+        "Almost more frustrating than the first. Yokai infest the land and our protagonist mnust defend it!!",
       studio: "KOEI TECMO Games Co Ltd",
       ourscore: "3",
       picturecard:
@@ -1247,7 +1247,7 @@ async function buildDatabase() {
       genre: "Racing",
       msrp: "$69.99",
       score: "5",
-      ourreview: "Formula 1 racing sim at its best!",
+      ourreview: "Formula 1 racing sim at its best! If you love realistic racing, this is the game for you!",
       studio: "Electronic Arts",
       ourscore: "5",
       picturecard:
@@ -1275,7 +1275,7 @@ async function buildDatabase() {
       msrp: "$69.99",
       score: "5",
       ourreview:
-        "WOW, another football game that accounts for such a large percentage of EA's annual revenue",
+        "WOW, another football game that accounts for such a large percentage of EA's annual revenue....",
       studio: "Electronic Arts",
       ourscore: "4",
       picturecard:
@@ -1357,7 +1357,7 @@ async function buildDatabase() {
       genre: "RPG",
       msrp: "$59.99",
       score: "4",
-      ourreview: "Long awaited sequel!",
+      ourreview: "Long awaited sequel! Cute graphics and even cuter voice acting.",
       studio: "Nintendo",
       ourscore: "4",
       picturecard:
@@ -1411,7 +1411,7 @@ async function buildDatabase() {
       genre: "Survival",
       msrp: "$14.99",
       score: "4",
-      ourreview: "Really cool graphics and really fun to play!",
+      ourreview: "Really cool graphics and really fun to play! The game has a learning curve, but it is worth the wait!",
       studio: "Klei Entertainment",
       ourscore: "4",
       picturecard:
@@ -1438,7 +1438,7 @@ async function buildDatabase() {
       genre: "Action",
       msrp: "$59.99",
       score: "5",
-      ourreview: "One of the GOATS!",
+      ourreview: "One of the GOATS! If you love George R. R. Martin, play this game!",
       studio: "FromSoftware Inc",
       ourscore: "5",
       picturecard: "https://i.redd.it/sqozuuuqce781.jpg",
@@ -1687,7 +1687,7 @@ async function buildDatabase() {
       msrp: "Free",
       score: "3",
       ourreview:
-        "Absolutely mind-blowing game that combines elements of battle royale, survival, and MOBA genres flawlessly, offering an unparalleled experience that will keep players hooked for hours on end with its addictive gameplay and stunning visuals",
+        "Absolutely mind-blowing game that combines elements of battle royale, survival, and MOBA genres flawlessly, offering an unparalleled experience that will keep players hooked for hours on end with its addictive gameplay and stunning visuals.",
       studio: "Nimble Neuron",
       ourscore: "4",
       picturecard: "https://cdkeyprices.com/images/games/5619440/cover.jpg",
