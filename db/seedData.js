@@ -2010,12 +2010,12 @@ async function buildDatabase() {
       lname: "Medhurst",
       password: "somethingDumb123",
       email: "atuny0@sohu.com",
-      profilepic: "https://source.unsplash.com/suLgJZ1edT4",
+      profilepic: "https://static.vecteezy.com/system/resources/previews/005/544/718/original/profile-icon-design-free-vector.jpg",
       is_admin: false,
     });
 
     const seedUser6 = await createUsers({
-      username: "SlaBing ",
+      username: "SlaBing",
       fname: "Slater",
       lname: "Bingly",
       password: "slaterhater234",
@@ -2025,7 +2025,7 @@ async function buildDatabase() {
     });
 
     const seedUser7 = await createUsers({
-      username: "CarlyButtonedUp ",
+      username: "CarlyButtonedUp",
       fname: "Carly",
       lname: "Button",
       password: "ljfkej24",
