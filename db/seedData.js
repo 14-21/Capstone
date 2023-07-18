@@ -2020,7 +2020,7 @@ async function buildDatabase() {
       lname: "Bingly",
       password: "slaterhater234",
       email: "hbingley1@gmail.com",
-      profilepic: "url/href for seedUser1url/href for tmedhurst",
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
       is_admin: false,
     });
 
@@ -2030,7 +2030,7 @@ async function buildDatabase() {
       lname: "Button",
       password: "ljfkej24",
       email: "button12349590x@sohu.com",
-      profilepic: "url/href for CarlyButtonedUp",
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
       is_admin: false,
     });
 
@@ -2040,8 +2040,8 @@ async function buildDatabase() {
       lname: "Weeks",
       password: "hienig89",
       email: "rshawe2@eharmony.com",
-      profilepic: "url/href for Rashad Weeks",
-      is_admin: false,
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
+            is_admin: false,
     });
 
     const seedUser9 = await createUsers({
@@ -2050,8 +2050,8 @@ async function buildDatabase() {
       lname: "Corkery",
       password: "L89Nbbje3",
       email: "nloiterton8@aol.com",
-      profilepic: "url/href for seedUser1",
-      is_admin: false,
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
+         is_admin: false,
     });
 
     const seedUser10 = await createUsers({
@@ -2060,8 +2060,8 @@ async function buildDatabase() {
       lname: "Therman",
       password: "hionwlHHIPN950",
       email: "umcgourty9@jalbum.net",
-      profilepic: "url/href for ThermanU",
-      is_admin: false,
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
+        is_admin: false,
     });
 
     const seedUser11 = await createUsers({
@@ -2070,8 +2070,8 @@ async function buildDatabase() {
       lname: "Rath",
       password: "Kinw&^045tG",
       email: "rhallawellb@dropbox.com",
-      profilepic: "url/href for RathAssunta",
-      is_admin: false,
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
+           is_admin: false,
     });
 
     const seedUser12 = await createUsers({
@@ -2080,8 +2080,8 @@ async function buildDatabase() {
       lname: "Goodwin",
       password: "post235jKKl2h",
       email: "lgribbinc@posterous.com",
-      profilepic: "url/href for SkilesG",
-      is_admin: false,
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
+       is_admin: false,
     });
 
     const seedUser13 = await createUsers({
@@ -2090,8 +2090,8 @@ async function buildDatabase() {
       lname: "Turley",
       password: "jIowne82JlwJJI",
       email: "mturleyd@tumblr.com",
-      profilepic: "url/href for MikeT123",
-      is_admin: false,
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
+        is_admin: false,
     });
 
     const seedUser14 = await createUsers({
@@ -2100,8 +2100,8 @@ async function buildDatabase() {
       lname: "Kimichi",
       password: "LnwkOhspwh928!!",
       email: "kminchelle@qicktrip.com",
-      profilepic: "url/href for MichKimi",
-      is_admin: false,
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
+        is_admin: false,
     });
 
     const seedUser15 = await createUsers({
@@ -2110,8 +2110,8 @@ async function buildDatabase() {
       lname: "Cardigan",
       password: "KlwhII928K",
       email: "acc@robohash.org",
-      profilepic: "url/href for ACardigan",
-      is_admin: false,
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
+         is_admin: false,
     });
 
     const seedUser16 = await createUsers({
@@ -2120,8 +2120,8 @@ async function buildDatabase() {
       lname: "Faye",
       password: "lng-86.58",
       email: "bleveragei@xinjianguni.edu",
-      profilepic: "url/href for BarryF1",
-      is_admin: false,
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
+       is_admin: false,
     });
 
     const seedUser17 = await createUsers({
@@ -2130,8 +2130,8 @@ async function buildDatabase() {
       lname: "Renner",
       password: "szWAG6hc",
       email: "aeatockj@psu.edu",
-      profilepic: "url/href for RennerL22",
-      is_admin: false,
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
+         is_admin: false,
     });
 
     const seedUser18 = await createUsers({
@@ -2140,7 +2140,7 @@ async function buildDatabase() {
       lname: "Ernser",
       password: "tq920JJI7kPXyf",
       email: "ckeernser@pen.io",
-      profilepic: "url/href for ErnserDoylful31",
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
       is_admin: false,
     });
 
@@ -2150,8 +2150,8 @@ async function buildDatabase() {
       lname: "Teresa Weber",
       password: "928arecusandaeest020",
       email: "froachel@howstuffworks.com",
-      profilepic: "url/href for TWeber25",
-      is_admin: false,
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
+        is_admin: false,
     });
 
     const seedUser20 = await createUsers({
@@ -2160,7 +2160,8 @@ async function buildDatabase() {
       lname: "Kensleyk",
       password: "ipsumut&GGEof28",
       email: "ckensleyk@pen.io",
-      profilepic: "url/href for C_KensleyStar",
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
+
       is_admin: false,
     });
 
@@ -2170,8 +2171,8 @@ async function buildDatabase() {
       lname: "Felicity Rosenbaum",
       password: "zQwaHTHbuZyr",
       email: "beykelhofm@wikispaces.com",
-      profilepic: "url/href for FRosenbaum",
-      is_admin: false,
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
+          is_admin: false,
     });
 
     const seedUser22 = await createUsers({
@@ -2180,8 +2181,8 @@ async function buildDatabase() {
       lname: "Keard",
       password: "bMQnPttV",
       email: "brickeardn@fema.gov",
-      profilepic: "url/href for KeardRk",
-      is_admin: false,
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
+       is_admin: false,
     });
 
     const seedUser23 = await createUsers({
@@ -2190,8 +2191,8 @@ async function buildDatabase() {
       lname: "Gronaver",
       password: "4a1dAKDv9KB9",
       email: "lgronaverp@cornell.edu",
-      profilepic: "url/href for GronaverL",
-      is_admin: false,
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
+         is_admin: false,
     });
 
     const seedUser24 = await createUsers({
@@ -2200,8 +2201,8 @@ async function buildDatabase() {
       lname: "Schowalter",
       password: "xZnWSWnqH",
       email: "fokillq@amazon.co",
-      profilepic: "url/href for SchowalterP",
-      is_admin: false,
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
+           is_admin: false,
     });
 
     const seedUser25 = await createUsers({
@@ -2210,8 +2211,8 @@ async function buildDatabase() {
       lname: "Tern Larkin",
       password: "HLDqN59vCF",
       email: "xisherwoodr@ask.com",
-      profilepic: "url/href for KTLarkin",
-      is_admin: false,
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
+        is_admin: false,
     });
 
     const seedUser26 = await createUsers({
@@ -2220,8 +2221,8 @@ async function buildDatabase() {
       lname: "Greenfelder",
       password: "ePawWgrnZR8L",
       email: "jissetts@hostgator.com",
-      profilepic: "url/href for MacyGreen8",
-      is_admin: false,
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
+          is_admin: false,
     });
 
     const seedUser27 = await createUsers({
@@ -2230,8 +2231,8 @@ async function buildDatabase() {
       lname: "Stracke",
       password: "5t6q4KC7O",
       email: "kdulyt@umich.edu",
-      profilepic: "url/href for MStracke",
-      is_admin: false,
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
+        is_admin: false,
     });
 
     const seedUser28 = await createUsers({
@@ -2240,8 +2241,8 @@ async function buildDatabase() {
       lname: "Mulaney",
       password: "llkjd$392j",
       email: "jmulaney@notsnl.com",
-      profilepic: "url/href for J_ohNbabyJ",
-      is_admin: false,
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
+          is_admin: false,
     });
 
     const seedUser29 = await createUsers({
@@ -2250,8 +2251,8 @@ async function buildDatabase() {
       lname: "Ungangwe",
       password: "L*hwU2H",
       email: "ungangugn@nsu.edu",
-      profilepic: "url/href for UngangweP",
-      is_admin: false,
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
+         is_admin: false,
     });
 
     const seedUser30 = await createUsers({
@@ -2260,7 +2261,7 @@ async function buildDatabase() {
       lname: "Gale",
       password: "Heni288&lwj",
       email: "glaej@gmail.com",
-      profilepic: "url/href for GaleJaxJax2222",
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
       is_admin: false,
     });
 
@@ -2270,7 +2271,7 @@ async function buildDatabase() {
       lname: "Smith",
       password: "xY3bP@w&8Zs!",
       email: "Jj@gmail.com",
-      profilepic: "url/href for GaleJaxJax2222",
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
       is_admin: false,
     });
 
@@ -2280,7 +2281,7 @@ async function buildDatabase() {
       lname: "Harris",
       password: "9$L*j6E#zFv2",
       email: "DanceDreamer92@gmail.com",
-      profilepic: "url/href for GaleJaxJax2222",
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
       is_admin: false,
     });
 
@@ -2290,7 +2291,7 @@ async function buildDatabase() {
       lname: "Mitchell",
       password: "Q7dG@k1S!5cP",
       email: "TheDangel92@gmail.com",
-      profilepic: "url/href for GaleJaxJax2222",
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
       is_admin: false,
     });
 
@@ -2300,7 +2301,7 @@ async function buildDatabase() {
       lname: "Sullivan",
       password: "X3@#gBp!29",
       email: "sunnyblue12@example.com",
-      profilepic: "url/href for GaleJaxJax2222",
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
       is_admin: false,
     });
 
@@ -2310,7 +2311,7 @@ async function buildDatabase() {
       lname: "Carter",
       password: "Qw2@9#nL4!",
       email: "wanderlust87@example.com",
-      profilepic: "url/href for ElectricShadow",
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
       is_admin: false,
     });
 
@@ -2320,7 +2321,8 @@ async function buildDatabase() {
       lname: "Thompson",
       password: "7^f$1Mz@8!",
       email: "radiantflower45@example.com",
-      profilepic: "url/href for SapphireWanderer",
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
+
       is_admin: false,
     });
 
@@ -2330,7 +2332,8 @@ async function buildDatabase() {
       lname: "Foster",
       password: "H@6g#9yT3!",
       email: "techgeek21@example.com",
-      profilepic: "url/href for CosmicDreamer",
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
+
       is_admin: false,
     });
 
@@ -2340,8 +2343,8 @@ async function buildDatabase() {
       lname: "Mitchell",
       password: "D5@*x!2oY7",
       email: "whimsicaldreamer98@example.com",
-      profilepic: "url/href for VelvetRaven",
-      is_admin: false,
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
+           is_admin: false,
     });
 
     const seedUser39 = await createUsers({
@@ -2350,7 +2353,7 @@ async function buildDatabase() {
       lname: "Gray",
       password: "J6%v#1tA@4",
       email: "adventureseeker55@example.com",
-      profilepic: "url/href for EnigmaticWhisper",
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
       is_admin: false,
     });
 
@@ -2360,7 +2363,7 @@ async function buildDatabase() {
       lname: "Richardson",
       password: "R3#s@5vP*9",
       email: "creativeartist77@example.com",
-      profilepic: "url/href for RadiantGlimmer",
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
       is_admin: false,
     });
 
@@ -2370,7 +2373,7 @@ async function buildDatabase() {
       lname: "Cooper",
       password: "2@L4c9Y$1%",
       email: "sportsfanatic23@example.com",
-      profilepic: "url/href for MidnightProwler",
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
       is_admin: false,
     });
 
@@ -2380,8 +2383,8 @@ async function buildDatabase() {
       lname: "Murphy",
       password: "K@9&b6Tq#8",
       email: "bookworm89@example.com",
-      profilepic: "url/href for QuirkyDoodle",
-      is_admin: false,
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
+            is_admin: false,
     });
 
     const seedUser43 = await createUsers({
@@ -2390,7 +2393,8 @@ async function buildDatabase() {
       lname: "Brookes",
       password: "F@2g7I$4%",
       email: "musiclover42@example.com",
-      profilepic: "url/href for NebulaSparkle",
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
+
       is_admin: false,
     });
 
@@ -2400,8 +2404,8 @@ async function buildDatabase() {
       lname: "Adams",
       password: "6J@4p!8K#2",
       email: "fitnessenthusiast61@example.com",
-      profilepic: "url/href for SereneBreeze",
-      is_admin: false,
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
+            is_admin: false,
     });
 
     const seedUser45 = await createUsers({
@@ -2410,7 +2414,8 @@ async function buildDatabase() {
       lname: "Peterson",
       password: "B#5&v4Rm!9",
       email: "foodiechef36@example.com",
-      profilepic: "url/href for MysticalSphinx",
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
+
       is_admin: false,
     });
 
@@ -2420,8 +2425,8 @@ async function buildDatabase() {
       lname: "Morgan",
       password: "T@7s#2qF3%",
       email: "natureexplorer79@example.com",
-      profilepic: "url/href for SilverLuna",
-      is_admin: false,
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
+          is_admin: false,
     });
 
     const seedUser47 = await createUsers({
@@ -2430,7 +2435,8 @@ async function buildDatabase() {
       lname: "Bennett",
       password: "M4!j#5vK@9",
       email: "animallover14@example.com",
-      profilepic: "url/href for WhisperingWillow",
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
+
       is_admin: false,
     });
 
@@ -2440,7 +2446,7 @@ async function buildDatabase() {
       lname: "Campbell",
       password: "8N@9p!7B#3",
       email: "thrillseeker27@example.com",
-      profilepic: "url/href for InfiniteJourney",
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
       is_admin: false,
     });
 
@@ -2450,8 +2456,8 @@ async function buildDatabase() {
       lname: "Reed",
       password: "G@3d5Rq*7%",
       email: "fashionista88@example.com",
-      profilepic: "url/href for EmberGazer",
-      is_admin: false,
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
+          is_admin: false,
     });
 
     const seedUser50 = await createUsers({
@@ -2460,7 +2466,7 @@ async function buildDatabase() {
       lname: "Phillips",
       password: "V$2!g5N@9#",
       email: "techsavvy73@example.com",
-      profilepic: "url/href for DreamyGlimpse",
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
       is_admin: false,
     });
 
@@ -2470,8 +2476,8 @@ async function buildDatabase() {
       lname: "Anderson",
       password: "P@ssw0rd123",
       email: " emily.anderson@example.com",
-      profilepic: "url/href for BrightStar22",
-      is_admin: false,
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
+            is_admin: false,
     });
 
     const seedUser52 = await createUsers({
@@ -2480,8 +2486,8 @@ async function buildDatabase() {
       lname: "Roberts",
       password: "Secret@987",
       email: "liam.roberts@example.com",
-      profilepic: "url/href for AquaWave16",
-      is_admin: false,
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
+          is_admin: false,
     });
 
     const seedUser53 = await createUsers({
@@ -2490,7 +2496,7 @@ async function buildDatabase() {
       lname: "Nunez",
       password: "StrongPass#1",
       email: "Crusher6X@example.com",
-      profilepic: "url/href for SilverArrow99",
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
       is_admin: false,
     });
 
@@ -2500,8 +2506,8 @@ async function buildDatabase() {
       lname: "Davis",
       password: "TigerEyes@3",
       email: "TangyWinger15@example.com",
-      profilepic: "url/href for SwiftTiger11",
-      is_admin: false,
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
+            is_admin: false,
     });
 
     const seedUser55 = await createUsers({
@@ -2510,7 +2516,7 @@ async function buildDatabase() {
       lname: "Luna",
       password: "RoseBloom$8",
       email: "Jester15@example.com",
-      profilepic: "url/href for MidnightRose44",
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
       is_admin: false,
     });
 
@@ -2520,7 +2526,7 @@ async function buildDatabase() {
       lname: "Dentonic",
       password: "GazeStars@12",
       email: "Phickle324@#@example.com",
-      profilepic: "url/href for StellarGazer88",
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
       is_admin: false,
     });
 
@@ -2530,7 +2536,7 @@ async function buildDatabase() {
       lname: "Grapp",
       password: "Melody$321",
       email: "Sunodo23@example.com",
-      profilepic: "url/href for WildSerenade77",
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
       is_admin: false,
     });
 
@@ -2540,7 +2546,7 @@ async function buildDatabase() {
       lname: "Wong",
       password: "Lightning@789",
       email: "rippalla@example.com",
-      profilepic: "url/href for ElectricDreams55",
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
       is_admin: false,
     });
 
@@ -2550,7 +2556,8 @@ async function buildDatabase() {
       lname: "Bistro",
       password: "Moonlight*567",
       email: "XYZ321@example.com",
-      profilepic: "url/href for LunaWhisper66",
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
+
       is_admin: false,
     });
 
@@ -2560,7 +2567,7 @@ async function buildDatabase() {
       lname: "George",
       password: "GalaxyQuest!9",
       email: "GernySkywalker@example.com",
-      profilepic: "url/href for CosmicJourney33",
+      profilepic: "https://www.flaticon.com/free-icon/user_847969",
       is_admin: false,
     });
 
