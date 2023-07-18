@@ -54,7 +54,7 @@ async function createTables() {
           lname VARCHAR(255) NOT NULL,
           password VARCHAR(255) NOT NULL,
           email VARCHAR(255) UNIQUE NOT NULL,
-          profilepic TEXT DEFAULT 'https://images.unsplash.com/photo-1511367461989-f85a21fda167?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1631&q=80',
+          profilepic TEXT DEFAULT 'https://www.flaticon.com/free-icon/user_847969',
           is_admin BOOLEAN DEFAULT false
           );
           `);
