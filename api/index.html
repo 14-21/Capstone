@@ -27,7 +27,7 @@
       <p>
         <ul>
             <li>
-                GET/games
+                GET /games
             </li>
         </ul>
       </p>
@@ -63,9 +63,171 @@
             </ul>
         </p>
     </section>
-   
-    <p></p>
-    <p></p>
-    <p></p>
+
+    <section>
+      <h2>Fetch All Users Data</h2>
+      <p>
+        <ul>
+          <li>
+           GET /games/users
+          </li>
+          <p> A request to this endpoint will "fetch" all users data.</p>
+          <li>
+            GET /games/usernames
+          </li>
+          <p>A request to this endpoint will "fetch" a specific user by their username. This requires an admin login.</p>
+          <li>
+            GET /adminusers
+          </li>
+          <p>
+            This endpoint will list all Admin Users. Requires Admin to use.
+          </p>
+          <li>
+            GET /games/get/user.
+          </li>
+          <p>
+            This endpoint will "fetch" a user by their SERIAL PRIMARY KEY in the database.
+          </p>
+        </ul>
+      </p>
+    </section>
+
+    <section>
+      <h2>
+        Fetch All Reviews Data
+      </h2>
+
+      <ul>
+        <li>
+          GET /api/games/reviews
+       </li>
+       <p>
+        This endpoint will "fetch" all the reviews on the reviews table of the database.
+       </p>
+       <li>
+        GET /api/games/user/specific/reviews
+       </li>
+       <p>
+        This endpoint will "fetch" all reviews made by a designated user.
+        </p>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Get Comments Data</h2>
+      <ul>
+        <li>
+          GET /games/users/comments/:origReviewId
+        </li>
+        <p>
+          This endpoint will "fetch" all comments by the review it is posted to.
+        </p>
+        <li>
+          GET /api/user/review/comments
+        </li>
+        <p>This endpoint "fetches" all comments made by a specified user.</p>
+        <li>
+          GET /api/games/all/comments
+        </li>
+        <p>
+          This endpoint "fetches" all comments from the database. This endpoint is only usable by and Admin User.
+        </p>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Posting to the Database</h2>
+      <p> Listed below are all post routes usable on the API.</p>
+    </section>
+    <section>
+      <ul>
+        <li>
+          POST /games/create/game
+        </li>
+        <p>You must be an admin to use this route.</p>
+        <li>
+          POST /games/users/register
+        </li>
+        <p>This Route is used to Sign up for an account on the website.
+        </p>
+        <li>
+          POST /games/users/login
+        </li>
+        <p>
+          This route allows registered users to login.
+        </p>
+        <li>
+          POST /api/review/post/comment
+        </li>
+        <p>
+          This endpoint allows a new comment to be posted by a logged in user.
+        </p>
+        <li>
+          POST /games/post/review
+        </li>
+        <p>
+          This endpoint allows logged in users to post a new review to a game.
+        </p>
+      </ul>
+    </section>
+    <section>
+      <h2>
+        Update Routes for the API
+      </h2>
+    </section>
+    <section>
+      <ul>
+        <li>
+          PUT /api/games/updategame
+        </li>
+        <p>
+          This route will allow Admins to update information on a specific game.
+        </p>
+        <li>
+          PUT /api/comments/update/:commentId
+        </li>
+        <p>
+          This route allows a user to edit a previously posted comment.
+        </p>
+        <li>
+          PUT /games/user/review/update
+        </li>
+        <p>
+          This route allows uses to edit a previously posted Game Review.
+        </p>
+      </ul>
+    </section>
+    <section>
+      <h2>Delete Routes on the API</h2>
+    </section>
+   <section>
+<ul>
+  <li>
+    DELETE /api/games/delete/:gameId
+  </li>
+  <p>
+    This route will allow Admin users to delete a game.
+  </p>
+  <li>
+    DELETE /api/users/delete/:userId
+  </li>
+  <p>
+    This route allows Admin users to delete a user account.
+  </p>
+  <li>
+    DELETE /api/games/user/review/delete/:id
+  </li>
+  <p>
+    This route allows users to delete a review they have previously posted.
+  </p>
+  <li>
+    DELETE /api/games/comments/delete/:commentId
+  </li>
+  <p>
+    This route allows users to delete a previously posted comment.
+  </p>
+</ul>
+   </section>
+    
   </body>
 </html>
