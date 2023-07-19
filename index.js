@@ -79,7 +79,7 @@ app.use("/", async (req, res, next) => {
 });
 
 app.get("/", function (req, res) {
-  res.sendFile(path.join(__dirname, "/index.html"));
+  res.sendFile(path.join(__dirname, "/api/index.html"));
 });
 
 const client = require("./db/index");
